@@ -11,9 +11,28 @@ import PageLabel from '../components/reusableComponents/PageLabel';
 import AuthFooter from '../components/reusableComponents/Footer/AuthFooter';
 import Checkbox from '../components/reusableComponents/Checkbox';
 import Space from '../components/reusableComponents/Space';
+import useAuthService from '../hooks/useAuthService';
 
-const Register = () => {
-  const props = {
+const Register = ({navigation}) => {
+  const {
+    fullName,
+    setFullName,
+    lastName,
+    setLastName,
+    email,
+    setEmail,
+    mobileNumber,
+    setMobileNumber,
+    password,
+    setPassword,
+    confirmPassword,
+    setConfirmPassword,
+    isTrialChecked,
+    setIsTrialChecked,
+    errors,
+    handleRegistrationSubmit,
+  } = useAuthService();
+  const labels = {
     label: 'Registration',
     heading:
       'Fill up the following details.',
@@ -26,19 +45,39 @@ const Register = () => {
     mobileNumber:'Mobile Number',
     password: 'Password',
     confirmPassword:"Confirm Password",
-    checkboxText:"Start your 15 days trial"
+    checkboxText:"Start your 15 days trial",
+    footerNavigateScreen: 'LoginScreen',
+    handleNavigation: (screenName) => navigation.navigate(screenName),
   };
 
   return (
     <View style={styles.mainContainer}>
       <View style={styles.pageLabel}>
-        <PageLabel label={props.label} />
+        <PageLabel label={labels.label} />
       </View>
       <View style={styles.container}>
-        <HeadingContainer heading={props.heading} />
-        <InputContainer {...props} />
-        <ButtonContainer {...props} />
-        <FooterContainer {...props} />
+        <HeadingContainer heading={labels.heading} />
+        <InputContainer
+          fullName={fullName}
+          setFullName={setFullName}
+          lastName={lastName}
+          setLastName={setLastName}
+          email={email}
+          setEmail={setEmail}
+          mobileNumber={mobileNumber}
+          setMobileNumber={setMobileNumber}
+          password={password}
+          setPassword={setPassword}
+          confirmPassword={confirmPassword}
+          setConfirmPassword={setConfirmPassword}
+          checkboxText={labels.checkboxText}
+          isTrialChecked={isTrialChecked}
+          setIsTrialChecked={setIsTrialChecked}
+          errors={errors}
+          {...labels}
+        />
+        <ButtonContainer {...labels} />
+        <FooterContainer {...labels} />
       </View>
     </View>
   );
@@ -52,38 +91,16 @@ const HeadingContainer = memo(({heading}) => (
 
 const InputContainer = memo((props) => (
   <View style={styles.inputContainer}>
-    <CustomTextInput
-      logoName={emailLogo}
-      placeholder={props.fullName}
-    />
-    <CustomTextInput
-      logoName={emailLogo}
-      placeholder={props.lastName}
-    />
-    <CustomTextInput
-      logoName={emailLogo}
-      placeholder={props.email}
-      showPasswordText={false}
-    />
-     <CustomTextInput
-      logoName={emailLogo}
-      placeholder={props.mobileNumber}
-    />
-    <CustomTextInput
-      logoName={lockLogo}
-      placeholder={props.password}
-      showPasswordText={true}
-    />
-      <CustomTextInput
-      logoName={lockLogo}
-      placeholder={props.confirmPassword}
-      showPasswordText={true}
-    />
+    <CustomTextInput logoName={emailLogo} placeholder={props.fullName}  onChangeText={(text) =>{ props.setFullName(text) } } />
+    <CustomTextInput logoName={emailLogo} placeholder={props.lastName}  onChangeText={(text) => props.setLastName(text)} />
+    <CustomTextInput logoName={emailLogo} placeholder={props.email} showPasswordText={false}  onChangeText={(text) => props.setEmail(text)} />
+    <CustomTextInput logoName={emailLogo} placeholder={props.mobileNumber}  onChangeText={(text) => props.setMobileNumber(text)} />
+    <CustomTextInput logoName={lockLogo} placeholder={props.password} showPasswordText={true}  onChangeText={(text) => props.setPassword(text)}/>
+    <CustomTextInput logoName={lockLogo} placeholder={props.confirmPassword} showPasswordText={true}  onChangeText={(text) => props.setConfirmPassword(text)} />
     <Space />
-    <Checkbox label={props.checkboxText}/>
+    <Checkbox label={props.checkboxText} />
   </View>
 ));
-
 const ButtonContainer = memo(props => (
   <View style={styles.button}>
     <CustomButton {...props} />
@@ -92,7 +109,7 @@ const ButtonContainer = memo(props => (
 
 const FooterContainer = memo(props => (
   <View style={styles.footer}>
-    <AuthFooter text={props.authFooterText} navigationText={props.linkText} />
+    <AuthFooter  {...props} text={props.authFooterText} navigationText={props.linkText} />
   </View>
 ));
 

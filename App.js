@@ -6,6 +6,18 @@ import RegisterScreen from './src/Pages/Register';
 import StartUpScreen from './src/Pages/StartUp';
 import OwnerHomeScreen from './src/Pages/Owner/Home';
 import ProfileScreen from './src/Pages/Profile';
+import OtpScreen from './src/Pages/Otp';
+import ForgotPasswordScreen from './src/Pages/ForgotPassword';
+import OnlineDrivers from './src/Pages/Owner/OnlineDrivers';
+import LocationScreen from './src/Pages/Owner/LocationScreen';
+import VehicleHome from './src/Pages/Vehicle/Home';
+import SubscriptionScreen from './src/Pages/Subscription/Home';
+import SubscriptionDescription from './src/Pages/Subscription/SubscriptionDescription';
+import EmployeeAdd from './src/Pages/Subscription/EmployeeAdd';
+import PaymentDetails from './src/Pages/Subscription/PaymentDetails';
+import SuccessScreen from './src/Pages/Subscription/SuccessScreen';
+import ReminderScreen from './src/Pages/Subscription/ReminderScreen';
+
 const App = () => {
   // Create a navigation stack
   const Stack = createNativeStackNavigator();
@@ -16,12 +28,33 @@ const App = () => {
         screenOptions={{
           headerShown: false,
         }}>
-
         <Stack.Screen name="StartUp" component={StartUpScreen} />
-         <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-         <Stack.Screen name="LoginScreen" component={LoginScreen} />
-         <Stack.Screen name="OwnerHomeScreen" component={OwnerHomeScreen} />
-         <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+        <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen} />
+        <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+        <Stack.Screen name="OtpScreen" component={OtpScreen} />
+        <Stack.Screen
+          name="ForgotPasswordScreen"
+          component={ForgotPasswordScreen}
+        />
+
+        <Stack.Screen name="OwnerHomeScreen" component={OwnerHomeScreen} />
+        <Stack.Screen name="OnlineDrivers" component={OnlineDrivers} />
+        <Stack.Screen name="LocationScreen" component={LocationScreen} />
+
+        <Stack.Screen name="VehicleHome" component={VehicleHome} />
+        <Stack.Screen name="ReminderScreen" component={ReminderScreen} />
+        <Stack.Screen
+          name="SubscriptionScreen"
+          component={SubscriptionScreen}
+        />
+        <Stack.Screen
+          name="SubscriptionDescription"
+          component={SubscriptionDescription}
+        />
+        <Stack.Screen name="EmployeeAdd" component={EmployeeAdd} />
+        <Stack.Screen name="PaymentDetails" component={PaymentDetails} />
+        <Stack.Screen name="SuccessScreen" component={SuccessScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

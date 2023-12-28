@@ -7,7 +7,7 @@ import editImage from '../../storage/images/edit.png';
 import deleteImage from '../../storage/images/delete.png';
 import onlineStatus from '../../storage/images/onlineStatus.png';
 
-const Card = ({imageLink,textName, onlinestatus,editShow,deleteShow}) => {
+const StatusCard = ({imageLink,label, onlinestatus,editShow,deleteShow,}) => {
 
   return (
     <View style={styles.inputContainer}>
@@ -17,7 +17,7 @@ const Card = ({imageLink,textName, onlinestatus,editShow,deleteShow}) => {
             <Image source={imageLink} style={globalStyles.logoImage} />
             <Text
             style={globalStyles.textInput}
-            >{textName}</Text>
+            >{label}</Text>
         </View>
         <View  style={styles.actionSection}>
         <View style={styles.actionSection}>
@@ -44,17 +44,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginVertical: 5,
     marginHorizontal: 20,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: {width: 0, height: 2},
-        shadowOpacity: 0.3,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
+    elevation: 1,
+    backgroundColor: Colors.inputWrapperBg, // Set the background color if needed
   },
   inputWrapper: {
     height: 40,
@@ -64,7 +55,7 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     borderRadius: 10,
     paddingHorizontal: 10,
-    backgroundColor: Colors.inputWrapperBg, // Set the background color if needed
+
   },
   labelSection:{
     flex:0.7,
@@ -85,4 +76,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Card;
+export default StatusCard;

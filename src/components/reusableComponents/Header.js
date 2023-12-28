@@ -86,10 +86,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.headerBg, // Set the background color if needed
     paddingVertical: 10,
   },
-  borderStyle: {
-    // borderWidth: 1,
-    // borderColor: 'white',
-  },
   backArrow: {
     flex: 0.3,
   },

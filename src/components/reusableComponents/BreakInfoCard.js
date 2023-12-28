@@ -7,13 +7,13 @@ import editImage from '../../storage/images/edit.png';
 
 const BreakInfoCard = ({textName, time}) => {
   return (
-    <View >
+
       <View style={styles.wrapper}>
         <Text    style={[globalStyles.text, { fontWeight: 'bold'}]}>{textName}</Text>
         <Text    style={[globalStyles.text]}>{time}</Text>
 
       </View>
-    </View>
+
   );
 };
 
@@ -22,12 +22,13 @@ const styles = StyleSheet.create({
   wrapper: {
 
     flexDirection: 'row',
-     justifyContent:'space-between',
+     justifyContent:'space-around',
+    flex:1,
     borderWidth: 1,
     borderColor: 'white',
     borderRadius: 10,
     paddingHorizontal: 10,
-    backgroundColor: Colors.inputWrapperBg, // Set the background color if needed
+    // Set the background color if needed
   },
 });
 

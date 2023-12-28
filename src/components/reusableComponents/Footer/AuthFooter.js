@@ -1,13 +1,16 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet,TouchableOpacity } from 'react-native';
 import { Fonts } from '../../../constants/fonts';
 import { Colors } from '../../../constants/colors'
 
-const AuthFooter = ({text,navigationText}) => {
+const AuthFooter = ({text,navigationText,handleNavigation,footerNavigateScreen}) => {
   return (
     <View style={styles.footer}>
       <Text style={styles.footerText}>{text}</Text>
+      <TouchableOpacity onPress={()=>{handleNavigation(footerNavigateScreen)}}>
       <Text style={styles.navigationLinkText}>{' '}{navigationText}</Text>
+      </TouchableOpacity>
+
     </View>
   );
 };

@@ -7,7 +7,7 @@ import editImage from '../../storage/images/edit.png';
 
 const InfoCard = ({label="label",data="data" ,editShow, ...rest}) => {
   return (
-    <View >
+
       <View style={styles.wrapper}>
         <Text    style={[globalStyles.text, { fontWeight: 'bold'}]}>{label}</Text>
         <Text    style={[globalStyles.text]}> : {data}</Text>
@@ -15,7 +15,7 @@ const InfoCard = ({label="label",data="data" ,editShow, ...rest}) => {
             <Image source={editImage} style={[globalStyles.logoImage,{marginLeft:5}]} />
           )}
       </View>
-    </View>
+
   );
 };
 
@@ -24,8 +24,8 @@ const styles = StyleSheet.create({
   wrapper: {
 
     flexDirection: 'row',
+    justifyContent:'center',
     alignItems: 'center',
-
     borderRadius: 10,
     paddingHorizontal: 10,
 
