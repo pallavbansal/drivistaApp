@@ -4,7 +4,7 @@ import {View, TouchableOpacity, StyleSheet, Text} from 'react-native';
 import {globalStyles} from '../../constants/globalStyles';
 
 const CustomButton = props => {
-  const {onPress = () => console.log('Pressed'), style} = props;
+  const {onPress = () => console.log('Pressed'), style,isModal=false} = props;
 
   switch (props.layout) {
     case '2':
@@ -22,7 +22,7 @@ const CustomButton = props => {
       <View>
         <TouchableOpacity
           style={[styles.buttonStyle, style || {}]}
-          onPress={props.handleNavigation}>
+          onPress={()=>props.handleNavigation(props.navigateScreen,isModal)}>
           <Text
             // eslint-disable-next-line react-native/no-inline-styles
             style={[globalStyles.text, {color: 'white', fontWeight: 'bold'}]}>

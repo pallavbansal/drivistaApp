@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {memo} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Text,TouchableOpacity} from 'react-native';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import CustomTextInput from '../components/reusableComponents/CustomTextInput';
@@ -9,6 +9,7 @@ import lockLogo from '../storage/images/lock.png';
 import Heading from '../components/reusableComponents/Heading';
 import PageLabel from '../components/reusableComponents/PageLabel';
 import AuthFooter from '../components/reusableComponents/Footer/AuthFooter';
+import {globalStyles} from '../constants/globalStyles';
 
 const Login = ({navigation}) => {
   const props = {
@@ -16,16 +17,14 @@ const Login = ({navigation}) => {
     heading:
       'Please enter your valid email address, we will send you a 4-digit code to verify.',
     email: 'Email Id',
-    buttonLabel:'Login',
+    buttonLabel: 'Login',
     password: 'Password',
     authFooterText: 'Do not have an account?',
     linkText: 'register',
-    navigateScreen:'OwnerHomeScreen',
-    handleNavigation:()=> navigation.navigate('OwnerHomeScreen')
+    navigateScreen: 'OwnerHomeScreen',
+    footerNavigateScreen: 'RegisterScreen',
+    handleNavigation: (screenName) => navigation.navigate(screenName),
   };
-  const handleNavigation=(navigateScreen)=>{
-    navigation.navigate(navigateScreen);
-  }
 
   return (
     <View style={styles.mainContainer}>
@@ -35,7 +34,8 @@ const Login = ({navigation}) => {
       <View style={styles.container}>
         <HeadingContainer heading={props.heading} />
         <InputContainer email={props.email} password={props.password} />
-        <ButtonContainer {...props}  />
+        <ForgetPasswordContainer  {...props}/>
+        <ButtonContainer {...props} />
         <FooterContainer {...props} />
       </View>
     </View>
@@ -62,16 +62,22 @@ const InputContainer = memo(({email, password}) => (
     />
   </View>
 ));
-
+const ForgetPasswordContainer = memo(props => (
+<TouchableOpacity onPress={()=>props.handleNavigation('ForgotPasswordScreen')}>
+      <View style={styles.forgetPassword}>
+        <Text style={[globalStyles.text]}>Forget password?</Text>
+      </View>
+    </TouchableOpacity>
+));
 const ButtonContainer = memo(props => (
   <View style={styles.button}>
-    <CustomButton {...props}  />
+    <CustomButton {...props} />
   </View>
 ));
 
 const FooterContainer = memo(props => (
   <View style={styles.footer}>
-    <AuthFooter text={props.authFooterText} navigationText={props.linkText} />
+    <AuthFooter {...props} text={props.authFooterText} navigationText={props.linkText} />
   </View>
 ));
 
@@ -111,6 +117,11 @@ const styles = StyleSheet.create({
     borderColor: 'white',
     borderRadius: 10,
     backgroundColor: Colors.inputWrapperBg,
+  },
+  forgetPassword: {
+    alignItems: 'flex-end',
+    marginTop: -20,
+    marginBottom: 10,
   },
   footer: {
     flex: 0.3,

@@ -5,6 +5,7 @@ export const Colors = {
   inputWrapperBg: '#fff',
   placeholder: '#999', // Add your placeholder color here
   headerBg:'#412160',
+  containerBg:'#ffffff',
   inputBoxBg:'white'
 
   // Add more colors as needed

@@ -1,8 +1,13 @@
 import React from 'react';
-import {View} from 'react-native';
+import {View,Text} from 'react-native';
 
-const FooterContainer = ({containerStyle}) => {
-  return <View style={containerStyle} />;
+const FooterContainer = ({containerStyle, text}) => {
+  return <View style={containerStyle}>
+    <Text>
+    {text}
+    </Text>
+
+    </View>;
 };
 
 export default FooterContainer;

@@ -50,6 +50,15 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
+
+	<key>NSAppTransportSecurity</key>
+<dict>
+  <key>NSAllowsArbitraryLoads</key>
+  <true/>
+</dict>
+<key>GMSApiKey</key>
+<string>AIzaSyB2rtoExWWydu6QR6rtg6ebOlHKfjZL9io</string>
+
 	<false/>
 </dict>
 </plist>
