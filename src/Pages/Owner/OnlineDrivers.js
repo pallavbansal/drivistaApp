@@ -47,6 +47,7 @@ const OnlineDrivers = ({navigation}) => {
         showPopUp={true}
         showBackArrow={true}
         showLabel={true}
+        showBackground={true}
         label={'Online Drivers'}
         containerStyle={styles.headContainer}
         handleNavigation={navigateScreen => {

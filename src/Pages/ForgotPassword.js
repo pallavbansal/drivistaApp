@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {memo} from 'react';
-import {View, StyleSheet, Text,TouchableOpacity} from 'react-native';
+import {View, StyleSheet, Text,TouchableOpacity,Alert} from 'react-native';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import CustomTextInput from '../components/reusableComponents/CustomTextInput';
@@ -11,9 +11,14 @@ import PageLabel from '../components/reusableComponents/PageLabel';
 import AuthFooter from '../components/reusableComponents/Footer/AuthFooter';
 import themeLogo from '../storage/images/theme.png';
 import BackgroundContainer from '../components/reusableComponents/Container/BackgroundContainer';
+import HeaderContainer from '../components/reusableComponents/Container/HeaderContainer';
+import { useAuthServiceHook } from '../services/hooks/auth/useAuthServiceHook';
 
 const ForgotPassword = ({navigation}) => {
-  const props = {
+  const { loading,setEmail,email,
+    setLoading,forgotPasswordRequest} =
+    useAuthServiceHook();
+  const labels = {
     label: 'Forgot Password',
     heading:
       'Please enter your valid email address, we will send you a 4-digit code to verify.',
@@ -23,7 +28,25 @@ const ForgotPassword = ({navigation}) => {
     authFooterText: '',
     linkText: 'Resend OTP',
     navigateScreen: 'OtpScreen',
-    handleNavigation: (screenName) => navigation.navigate(screenName),
+    // handleNavigation: (screenName) => navigation.navigate(screenName),
+    handleNavigation: async screenName => {
+   //   const response = await loginRequest();
+   setLoading(true);
+   const response = await forgotPasswordRequest();
+   setLoading(false);
+   try {
+     if (response.result === 'success') {
+      navigation.navigate(screenName, {caseType:'forgot_password',id: response.id});
+     } else if (response.result === 'failed') {
+       Alert.alert(response.message);
+     } else {
+       navigation.navigate(screenName);
+     }
+   } catch (error) {
+     console.error('Login error:', error);
+   }
+
+    },
   };
 
   return (
@@ -31,14 +54,19 @@ const ForgotPassword = ({navigation}) => {
       source={themeLogo}
     >
     <View style={styles.mainContainer}>
+    <HeaderContainer
+          showPopUp={false}
+          showBackArrow={true}
+          containerStyle={styles.headContainer}
+        />
       <View style={styles.pageLabel}>
-        <PageLabel label={props.label} />
+        <PageLabel label={labels.label} />
       </View>
       <View style={styles.container}>
-        <HeadingContainer heading={props.heading} />
-        <InputContainer email={props.email} password={props.password} />
-        <ButtonContainer {...props} />
-        <FooterContainer {...props} />
+        <HeadingContainer heading={labels.heading} />
+        <InputContainer labels={labels} email={email}    setEmail={setEmail} />
+        <ButtonContainer {...labels} />
+        <FooterContainer {...labels} />
       </View>
     </View>
     </BackgroundContainer>
@@ -51,11 +79,12 @@ const HeadingContainer = memo(({heading}) => (
   </View>
 ));
 
-const InputContainer = memo(({email, password}) => (
+const InputContainer = memo((props) => (
   <View style={styles.inputContainer}>
     <CustomTextInput
       logoName={emailLogo}
-      placeholder={email}
+      onChangeText={text => props.setEmail(text)}
+      placeholder={props.labels.email}
       showPasswordText={false}
     />
 
@@ -75,8 +104,12 @@ const FooterContainer = memo(props => (
 ));
 
 const styles = StyleSheet.create({
+
   mainContainer: {
     flex: 1,
+  },
+  headContainer: {
+    flex: 0.1,
   },
   pageLabel: {
     flex: 0.2,
@@ -84,7 +117,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
-    flex: 0.8,
+    flex: 0.5,
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     borderWidth: 1,
@@ -102,9 +135,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   inputContainer: {
-    flex: 0.3,
+    flex: 0.5,
     flexDirection: 'column',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
     borderWidth: 1,
     borderColor: 'white',
     borderRadius: 10,
@@ -116,10 +149,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   footer: {
-    flex: 0.3,
+    flex: 0.2,
+    justifyContent:'center'
   },
   button: {
-    flex: 0.3,
+    flex: 0.2,
+    // justifyContent:'center'
   },
   actionSection: {
     flex: 0.3,

@@ -1,19 +1,15 @@
-/* eslint-disable prettier/prettier */
 import React from 'react';
-import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import {globalStyles} from '../../constants/globalStyles';
-import auth_user_logo from '../../storage/images/auth_user_logo.png';
+import { View, Text, StyleSheet, ImageBackground,Image, TouchableOpacity } from 'react-native';
+import { globalStyles } from '../../constants/globalStyles';
 
 const NavigationCard = ({
   label,
-  linearGradientColor1,
-  linearGradientColor2,
+  bgImage,
   cardStyle,
   navigateScreen,
   handleNavigation,
   logoImage,
-  cardLogo
+  cardLogo,
 }) => {
   const handleCardPress = () => {
     if (navigateScreen) {
@@ -23,44 +19,45 @@ const NavigationCard = ({
 
   return (
     <TouchableOpacity style={cardStyle} onPress={handleCardPress}>
-      <LinearGradient
-        colors={[linearGradientColor1, linearGradientColor2]}
-        locations={[0.1, 0.85]} // 100% at index 0, 82% at index 1
-        style={[styles.container]}>
-        <View style={styles.logoSection}>
-          <Image
-            source={logoImage}
-            style={[globalStyles.logoImage, cardLogo]}
-          />
+      <ImageBackground source={bgImage} style={styles.imageBackground}>
+        <View style={styles.container}>
+          <View style={styles.logoSection}>
+            <Image
+              source={logoImage}
+              style={[globalStyles.logoImage, cardLogo]}
+            />
+          </View>
+          <View style={styles.labelSection}>
+            <Text
+              style={[
+                globalStyles.text,
+                { color: 'white', fontWeight: 'bold', fontSize: 16 },
+              ]}
+            >
+              {label}
+            </Text>
+          </View>
         </View>
-        <View style={styles.labelSection}>
-          <Text
-            style={[
-              globalStyles.text,
-              {color: 'white', fontWeight: 'bold', fontSize: 16},
-            ]}>
-            {label}
-          </Text>
-        </View>
-      </LinearGradient>
+      </ImageBackground>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
+  imageBackground: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'flex-end',
+  },
   container: {
-    height: 100,
-    flexDirection: 'row',
-    width: '60%',
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    flex:1,
+   flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
     borderColor: 'white',
     borderRadius: 10,
     paddingHorizontal: 10,
-    padding: 10,
-
+    backgroundColor: 'transparent', // Optional: use a transparent background for the inner content
   },
   logoSection: {
     flex: 0.5,

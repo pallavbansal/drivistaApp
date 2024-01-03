@@ -1,6 +1,7 @@
 import React from 'react';
 import { ImageBackground, StyleSheet } from 'react-native';
 
+
 const BackgroundContainer = ({ source, children }) => {
   return (
     <ImageBackground source={source} style={styles.backgroundImage} resizeMode="cover">

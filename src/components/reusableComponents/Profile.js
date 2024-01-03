@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
-import React, {memo} from 'react';
-import {View, StyleSheet, Image, Text} from 'react-native';
+import React, {memo, useState} from 'react';
+import {View, StyleSheet, Image, Text, TouchableOpacity} from 'react-native';
 import {Colors} from '../../constants/colors';
 import vehicle from '../../storage/images/vehicle.png';
 import edit from '../../storage/images/edit.png';
@@ -10,27 +10,26 @@ import {globalStyles} from '../../constants/globalStyles';
 import InfoCard from './InfoCard';
 import {Fonts} from '../../constants/fonts';
 
-const Profile = ({details, headerLabel}) => {
+const Profile = ({details, headerLabel,caseType,email,setEmail,mobileNumber,setMobileNumber,headLabel}) => {
+  const [editable, setEditable] = useState(false);
   const MainContainer = ({children}) => (
     <View style={styles.mainContainer}>{children}</View>
   );
 
+
+
+
   return (
     <MainContainer>
-      <HeaderContainer
-        label={headerLabel}
-        showBackArrow={true}
-        showLabel={true}
-        containerStyle={styles.headContainer}
-      />
+
       <View style={styles.profileContainer}>
-        <View style={styles.actionContainer}>
+        <TouchableOpacity style={styles.actionContainer} onPress={()=>setEditable(true)}>
           <Text style={globalStyles.text}>{'Edit'}</Text>
           <Image
             source={edit}
-            style={[globalStyles.logoImage, {width: 25, height: 25}]}
+            style={[globalStyles.logoImage, {width: 20, height: 20}]}
           />
-        </View>
+        </TouchableOpacity>
         <View style={styles.logoContainer}>
           <Image
             source={vehicle}
@@ -41,47 +40,48 @@ const Profile = ({details, headerLabel}) => {
               globalStyles.text,
               {fontSize: 25, fontWeight: 'bold', opacity: 0.7},
             ]}>
-            {'Kabir Singh'}
+            {details.first_name}{" "}{details.last_name}
           </Text>
         </View>
         <View style={styles.infoCardContainer}>
-          {details.map((item, index) => (
-            <InfoCard key={index} label={item.label} data={item.data} />
-          ))}
+
+            {
+              caseType === "user_profile" ? (
+                <ProfileInfoContainer  email={email} setEmail={setEmail} mobileNumber={mobileNumber} setMobileNumber={setMobileNumber}/>
+              ):""
+            }
         </View>
-        <View style={styles.footerContainer}>
-          <Text
-            style={[
-              globalStyles.text,
-              {fontSize: Fonts.sizes.medium, fontWeight: 'bold'},
-            ]}>
-            {'Change password ?'}
-          </Text>
-        </View>
+
       </View>
+      {
+
+      }
     </MainContainer>
   );
 };
-
+const ProfileInfoContainer = memo(props => (
+  <View >
+      <InfoCard label={'Email'} data={props.email} />
+        <InfoCard  label={'Mobile Number'} data={props.mobileNumber} />
+  </View>
+));
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     flexDirection: 'column',
-    // backgroundColor: Colors.primary,
-  },
-  headContainer: {
-    flex: 0.2,
+
   },
 
   profileContainer: {
-    flex: 0.7,
+    flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     margin: 10,
-    borderRadius: 1,
-    borderWidth: 0.5,
-    borderColor: 'white',
-    elevation: 2,
+    // borderRadius: 1,
+    // borderWidth: 0.5,
+    // borderColor: 'white',
+    elevation: 1,
+
   },
   actionContainer: {
     flex: 0.1,

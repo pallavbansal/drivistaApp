@@ -6,7 +6,8 @@ export const Colors = {
   placeholder: '#999', // Add your placeholder color here
   headerBg:'#412160',
   containerBg:'#ffffff',
-  inputBoxBg:'white'
+  inputBoxBg:'white',
+  breakInfoContainerBg:'#F0EEF3'
 
   // Add more colors as needed
 };

@@ -3,6 +3,7 @@ import {View, TouchableOpacity, StyleSheet, Text, Image} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'; // Assuming Ionicons is used for the checkbox
 import checked_checkbox from '../../storage/images/checked_checkbox.png';
 import {globalStyles} from '../../constants/globalStyles';
+import { Fonts } from '../../constants/fonts';
 
 const Checkbox = ({label, onChange, initialValue = false}) => {
   const [checked, setChecked] = useState(initialValue);
@@ -43,7 +44,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   label: {
-    fontSize: 16,
+    fontFamily: Fonts.family,
+    fontSize: Fonts.sizes.small,
+    fontWeight:Fonts.weight.bold,
     marginLeft:10
   },
 });

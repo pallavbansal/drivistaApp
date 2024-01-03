@@ -9,6 +9,7 @@ import {
 import InfoCard from '../reusableComponents/InfoCard';
 import BreakInfoCard from '../reusableComponents/BreakInfoCard';
 import CustomButton from '../reusableComponents/CustomButton';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 const BreakDetailsCard = ({label, navigateScreen, handleNavigation}) => {
   const handleCardPress = () => {
@@ -25,23 +26,30 @@ const BreakDetailsCard = ({label, navigateScreen, handleNavigation}) => {
           time="12 PM"
           editShow={false}
         />
-        <BreakInfoCard textName={'Break 1'} time={'00:30 hrs'} />
-        <BreakInfoCard textName={'Break 2'} time={'00:30 hrs'} />
-        <BreakInfoCard textName={'Break 3'} time={'00:30 hrs'} />
-        <BreakInfoCard textName={'Break 1'} time={'00:30 hrs'} />
-        <BreakInfoCard textName={'Break 2'} time={'00:30 hrs'} />
-        <BreakInfoCard textName={'Break 3'} time={'00:30 hrs'} />
-        <BreakInfoCard textName={'Break 3'} time={'00:30 hrs'} />
-        <BreakInfoCard textName={'Break 1'} time={'00:30 hrs'} />
-        <BreakInfoCard textName={'Break 2'} time={'00:30 hrs'} />
-        <BreakInfoCard textName={'Break 3'} time={'00:30 hrs'} />
-        <BreakInfoCard textName={'Break 3'} time={'00:30 hrs'} />
-        <BreakInfoCard textName={'Break 1'} time={'00:30 hrs'} />
-        <BreakInfoCard textName={'Break 2'} time={'00:30 hrs'} />
-        <BreakInfoCard textName={'Break 3'} time={'00:30 hrs'} />
-        <BreakInfoCard textName={'Break 1'} time={'00:30 hrs'} />
-        <BreakInfoCard textName={'Break 27'} time={'00:30 hrs'} />
-        <BreakInfoCard textName={'Break 38'} time={'00:30 hrs'} />
+        <BreakInfoCard
+          textName={'Break 1'}
+          time={'12:00pm - 12:30pm   |   30mins.'}
+        />
+        <BreakInfoCard
+          textName={'Break 1'}
+          time={'12:00pm - 12:30pm   |   30mins.'}
+        />
+        <BreakInfoCard
+          textName={'Break 1'}
+          time={'12:00pm - 12:30pm   |   30mins.'}
+        />
+        <BreakInfoCard
+          textName={'Break 1'}
+          time={'12:00pm - 12:30pm   |   30mins.'}
+        />
+        <BreakInfoCard
+          textName={'Break 1'}
+          time={'12:00pm - 12:30pm   |   30mins.'}
+        />
+        <BreakInfoCard
+          textName={'Break 1'}
+          time={'12:00pm - 12:30pm   |   30mins.'}
+        />
       </View>
 
       <TouchableOpacity
@@ -59,21 +67,18 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     flex: 1,
-    borderWidth: 1,
-    borderColor: 'grey',
-    marginHorizontal: 10,
+    marginHorizontal: 20,
     borderRadius: 10,
     paddingHorizontal: 10,
-
-    // paddingVertical: 20,
+    backgroundColor: Colors.breakInfoContainerBg,
   },
   breakContainer: {
     flex: 1,
     justifyContent: 'center',
   },
   footerContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
     marginTop: 10,
     marginBottom: 10,
   },

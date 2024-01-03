@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
 import React, {memo} from 'react';
-import {View, StyleSheet, Image, Text} from 'react-native';
+import {View, StyleSheet, ScrollView, Text} from 'react-native';
 import {Colors} from '../../constants/colors';
 import clock from '../../storage/images/clock.png';
 import HeaderContainer from '../../components/reusableComponents/Container/HeaderContainer';
@@ -66,6 +66,40 @@ const SubscriptionDescription = ({navigation}) => {
       description:
         'Monitor your staff’s shifts begin and taken break of start & finish time.',
     },
+    {
+      id: 10,
+      description:
+        'Monitor your staff’s shifts begin and taken break of start & finish time.',
+    },
+    {id: 11, description: 'Manage your staff status - ALL LIVE'},
+    {
+      id:124,
+      description:
+        'Monitor your staff’s shifts begin and taken break of start & finish time.',
+    },
+    {id: 13, description: 'Manage your staff status - ALL LIVE'},
+    {
+      id: 14,
+      description:
+        'Monitor your staff’s shifts begin and taken break of start & finish time.',
+    },
+    {
+      id: 10,
+      description:
+        'Monitor your staff’s shifts begin and taken break of start & finish time.',
+    },
+    {id: 11, description: 'Manage your staff status - ALL LIVE'},
+    {
+      id:124,
+      description:
+        'Monitor your staff’s shifts begin and taken break of start & finish time.',
+    },
+    {id: 13, description: 'Manage your staff status - ALL LIVE'},
+    {
+      id: 14,
+      description:
+        'Monitor your staff’s shifts begin and taken break of start & finish time.',
+    },
 
     // Add more objects as needed
   ];
@@ -78,17 +112,22 @@ const SubscriptionDescription = ({navigation}) => {
     <MainContainer>
       <HeaderContainer
         showBackArrow={true}
+        showBackground={false}
         containerStyle={styles.headContainer}
       />
+
       <View style={styles.container}>
         <LabelContainer {...props} />
+        <ScrollView style={{flex:0.9}}>
         <View style={styles.descriptionContainer}>
           {data.map(item => (
             <BulletContainer key={item.id} {...item} />
           ))}
         </View>
+        </ScrollView>
         <ButtonContainer {...props} />
       </View>
+
     </MainContainer>
   );
 };
@@ -97,14 +136,14 @@ const LabelContainer = memo(props => (
     <Text
       style={[
         globalStyles.text,
-        {fontSize: Fonts.sizes.large, fontWeight: 'bold'},
+        {fontSize: Fonts.sizes.medium, fontWeight: 'bold'},
       ]}>
       {props.heading}
     </Text>
     <Text
       style={[
         globalStyles.text,
-        {fontSize: Fonts.sizes.medium, fontWeight: 'bold', color: 'green'},
+        {fontSize: Fonts.sizes.small, fontWeight: 'bold', color: 'green'},
       ]}>
       {props.subHeading}
     </Text>
@@ -134,11 +173,11 @@ const styles = StyleSheet.create({
     flex: 0.1,
   },
   container: {
-    flex: 1,
+    flex: 0.9,
     flexDirection: 'column',
-    justifyContent: 'space-evenly',
+    justifyContent: 'flex-start',
     paddingHorizontal: 20,
-    margin: 20,
+    marginHorizontal: 20,
     borderRadius: 5,
     borderWidth: 1,
     borderColor: 'white',

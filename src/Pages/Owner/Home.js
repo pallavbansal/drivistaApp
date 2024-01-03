@@ -10,9 +10,13 @@ import vehicleLogo from '../../storage/images/vehicle.png';
 import driverOnline from '../../storage/images/driver_online.png';
 import driver from '../../storage/images/drivers.png';
 import themeLogo from '../../storage/images/theme.png';
+import shade1 from '../../storage/images/shade1.png';
 import BackgroundContainer from '../../components/reusableComponents/Container/BackgroundContainer';
+import { useAuthServiceHook } from '../../services/hooks/auth/useAuthServiceHook';
 
 const Home = ({navigation}) => {
+  const {logoutRequest} =
+  useAuthServiceHook();
   const navigationData = [
     {
       label: 'Drivers Online',
@@ -20,6 +24,7 @@ const Home = ({navigation}) => {
       linearGradientColor2: '#5A3C76',
       navigateScreen: 'OnlineDrivers',
       logoImage: driverOnline,
+      bgImage:shade1
     },
     {
       label: 'Your Vehicles',
@@ -27,6 +32,7 @@ const Home = ({navigation}) => {
       linearGradientColor2: '#5A3C76',
       navigateScreen: 'VehicleHome',
       logoImage: vehicleLogo,
+      bgImage:shade1
     },
 
     {
@@ -35,9 +41,16 @@ const Home = ({navigation}) => {
       linearGradientColor2: '#5A3C76',
       navigateScreen: 'LoginScreen',
       logoImage: driver,
+      bgImage:shade1
     },
   ];
   const handleNavigation = navigateScreen => {
+    if(navigateScreen === "logout")
+    {
+      logoutRequest();
+
+    }
+    else{
     const details = [
       {
         label: 'Email',
@@ -56,10 +69,11 @@ const Home = ({navigation}) => {
     };
 
     const profileParams = {
-      label: 'Vehicle Details',
+      headLabel : ' Vehicle Details',
       type: 'vehicle',
       details: details,
       // Add more parameters for 'ProfileScreen' as needed
+
     };
 
     const paramsToPass =
@@ -68,6 +82,7 @@ const Home = ({navigation}) => {
         : defaultParams;
 
     navigation.navigate(navigateScreen, paramsToPass);
+  }
   };
 
   const MainContainer = ({children}) => (
@@ -83,11 +98,13 @@ const Home = ({navigation}) => {
       source={themeLogo}
     >
     <MainContainer>
-      <HeaderContainer
-        showPopUp={true}
-        containerStyle={styles.headContainer}
-        handleNavigation={handleNavigation}
-      />
+    <HeaderContainer
+          showPopUp={true}
+          showBackArrow={true}
+          showBackground={false}
+          containerStyle={styles.headContainer}
+          handleNavigation={handleNavigation}
+        />
       <CardContainer>
         {navigationData.map((item, index) => (
           <NavigationCard
@@ -99,7 +116,6 @@ const Home = ({navigation}) => {
           />
         ))}
       </CardContainer>
-      <FooterContainer containerStyle={styles.footerContainer} />
     </MainContainer>
     </BackgroundContainer>
   );
@@ -109,23 +125,25 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
   },
-  headContainer: {
-    flex: 0.2,
+  headContainer:{
+   flex:0.2,
   },
   cardContainer: {
-    flex: 0.7,
-  },
-  footerContainer: {
-    flex: 0.2,
+    flex: 0.8,
+    justifyContent:'flex-start',
+   // backgroundColor:'red'
   },
   card: {
-    flex: 0.3,
-    marginVertical: 10,
+    flex: 0.25,
+    marginVertical:10,
+    width: '60%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
   cardLogo: {
-    height: 80,
-    width: 80,
-    marginLeft: -30,
+    height: 150,
+    width: 150,
+    marginLeft: -50,
   },
 });
 

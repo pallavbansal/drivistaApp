@@ -1,39 +1,60 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
-import {View, TextInput, StyleSheet, Platform, Image} from 'react-native';
+import React, {useRef} from 'react';
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Platform,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import {globalStyles} from '../../constants/globalStyles';
 import {Colors} from '../../constants/colors';
 import password_show from '../../storage/images/password_show.png';
-
+import vehicle from '../../storage/images/vehicle.png';
 
 const CustomTextInput = ({
   logoName,
   placeholder,
-  showPasswordText,
+  showPasswordGenIcon=false,
+  handlePasswordVisiblity,
+  passwordVisible,
   ...rest
 }) => {
+  const textInputRef = useRef(null);
+
+  const handlePress = () => {
+    textInputRef.current.focus();
+  };
+
   return (
     <View style={styles.inputContainer}>
       <View style={styles.inputWrapper}>
-        <View style={styles.initialSection}>
+        <TouchableOpacity
+          style={styles.initialSection}
+          activeOpacity={1}
+          onPress={handlePress}>
           <Image source={logoName} style={globalStyles.logoImage} />
           <TextInput
+           secureTextEntry={showPasswordGenIcon ? !passwordVisible :false}
+            ref={textInputRef}
             placeholder={placeholder}
             placeholderTextColor={Colors.placeholder}
             style={globalStyles.textInput}
             {...rest}
           />
-        </View>
-
-      {showPasswordText ? (
-         <View style={styles.actionSection}>
-         <Image source={password_show} style={globalStyles.logoImage} />
-        </View>
+        </TouchableOpacity>
+        {showPasswordGenIcon ? (
+          <TouchableOpacity
+            style={styles.actionSection}
+            onPress={handlePasswordVisiblity}>
+            <Image
+              source={passwordVisible ? vehicle : password_show}
+              style={globalStyles.logoImage}
+            />
+          </TouchableOpacity>
         ) : null}
-
       </View>
-
-
     </View>
   );
 };
@@ -42,7 +63,6 @@ const styles = StyleSheet.create({
   inputContainer: {
     borderRadius: 10,
     marginVertical: 5,
-
 
     ...Platform.select({
       ios: {
@@ -68,7 +88,7 @@ const styles = StyleSheet.create({
   },
   initialSection: {
     height: 40,
-    flex:0.7,
+    flex: 0.9,
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
@@ -77,9 +97,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: Colors.inputWrapperBg, // Set the background color if needed
   },
-  actionSection:{
-   flex:0.3,
-   alignItems:'flex-end'
+  actionSection: {
+    flex: 0.2,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    height: 40,
+    paddingRight:5,
+
   },
   input: {
     fontSize: 16,

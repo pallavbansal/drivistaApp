@@ -95,6 +95,7 @@ const Home = ({navigation}) => {
         showBackArrow={true}
         showLabel={true}
         showPopUp={true}
+        showBackground={true}
         containerStyle={styles.headContainer}
       />
       <View style={styles.container}>
@@ -137,7 +138,6 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     flexDirection: 'column',
-    // backgroundColor: Colors.primary,
   },
   headContainer: {
     flex: 0.2,
@@ -147,9 +147,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     margin: 10,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: 'white',
     padding: 20,
   },
   buttonContainer: {

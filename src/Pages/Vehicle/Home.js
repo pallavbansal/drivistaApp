@@ -27,7 +27,7 @@ const Home = ({navigation}) => {
     }
   ];
   const handleNavigation = () => {
-    navigation.navigate('ProfileScreen', {
+    navigation.navigate('VehicleDetails', {
       // Pass additional parameters here as an object
       label: 'Vehicle Detalils',
       type: 'vehicle',
@@ -53,11 +53,7 @@ const Home = ({navigation}) => {
           />
         </TouchableOpacity>
 
-        {expandedCard === index && (
-          <View style={styles.statusCardContainer}>
-            <BreakDetailsCard handleNavigation={handleNavigation} />
-          </View>
-        )}
+
       </View>
     ));
   };
@@ -68,6 +64,7 @@ const Home = ({navigation}) => {
         showPopUp={true}
         showBackArrow={true}
         showLabel={true}
+        showBackground={true}
         label={'Your Vehicles'}
         containerStyle={styles.headContainer}
         handleNavigation={navigateScreen => {

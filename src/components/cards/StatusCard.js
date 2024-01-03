@@ -6,6 +6,7 @@ import {Colors} from '../../constants/colors';
 import editImage from '../../storage/images/edit.png';
 import deleteImage from '../../storage/images/delete.png';
 import onlineStatus from '../../storage/images/onlineStatus.png';
+import { Fonts } from '../../constants/fonts';
 
 const StatusCard = ({imageLink,label, onlinestatus,editShow,deleteShow,}) => {
 
@@ -14,9 +15,9 @@ const StatusCard = ({imageLink,label, onlinestatus,editShow,deleteShow,}) => {
       <View style={styles.inputWrapper}>
 
         <View  style={styles.labelSection}>
-            <Image source={imageLink} style={globalStyles.logoImage} />
+            <Image source={imageLink} style={[globalStyles.logoImage,{height:25,width:25,marginRight:10}]} />
             <Text
-            style={globalStyles.textInput}
+            style={[globalStyles.textInput,styles.bulletText]}
             >{label}</Text>
         </View>
         <View  style={styles.actionSection}>
@@ -44,16 +45,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginVertical: 5,
     marginHorizontal: 20,
-    elevation: 1,
     backgroundColor: Colors.inputWrapperBg, // Set the background color if needed
   },
   inputWrapper: {
     height: 40,
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'white',
-    borderRadius: 10,
     paddingHorizontal: 10,
 
   },
@@ -73,6 +70,12 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 10,
+  },
+    bulletText: {
+    fontSize: Fonts.sizes.medium,
+    fontWeight:Fonts.weight.bold,
+    // textTransform: 'capitalize',
+    color: Colors.primary,
   },
 });
 
