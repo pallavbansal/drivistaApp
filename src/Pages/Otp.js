@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {memo} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet,Alert} from 'react-native';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import themeLogo from '../storage/images/theme.png';
@@ -9,9 +9,17 @@ import PageLabel from '../components/reusableComponents/PageLabel';
 import AuthFooter from '../components/reusableComponents/Footer/AuthFooter';
 import OtpInput from '../components/reusableComponents/OtpInput';
 import BackgroundContainer from '../components/reusableComponents/Container/BackgroundContainer';
+import HeaderContainer from '../components/reusableComponents/Container/HeaderContainer';
+import { useAuthServiceHook } from '../services/hooks/auth/useAuthServiceHook';
+import Spinner from '../components/reusableComponents/Spinner';
 
-const Otp = ({navigation}) => {
-  const props = {
+const Otp = ({navigation,route}) => {
+  const {id,caseType}=route.params;
+
+  const { loading,
+    setLoading,otp,setOtp,otpVerifyRequest,otpForgotPassVerifyRequest} =
+    useAuthServiceHook();
+  const labels = {
     label: 'Enter OTP',
     heading: 'Please enter the 4-digit code sent to your e-mail address.',
     email: 'Email Id',
@@ -20,12 +28,63 @@ const Otp = ({navigation}) => {
     authFooterText: 'Do not have an account?',
     linkText: 'register',
     navigateScreen: 'OwnerHomeScreen',
-    handleNavigation: () => navigation.navigate('OwnerHomeScreen'),
+    // handleNavigation: () => navigation.navigate('OwnerHomeScreen'),
+    handleNavigation: async screenName => {
+      if(caseType === "register")
+      {
+        setLoading(true);
+        const response = await otpVerifyRequest(id);
+        setLoading(false);
+
+        try {
+        if (response.result === 'success') {
+         // navigation.navigate(screenName);
+        } else if (response.result === 'failed') {
+          console.log('otp screwn:',response.message);
+          Alert.alert(response.message);
+        }
+        // else{
+        //   navigation.navigate(screenName);
+        // }
+      } catch (error) {
+        console.error('Login error:', error);
+      }
+    }
+    if(caseType === "forgot_password")
+    {
+      setLoading(true);
+      const response = await otpForgotPassVerifyRequest(id);
+      setLoading(false);
+
+      try {
+      if (response.result === 'success') {
+       navigation.navigate("ChangePassword",{caseType:'register',id: response.id,verification_uid:response.verification_uid});
+      } else if (response.result === 'failed') {
+        console.log('otp screwn:',response.message);
+        Alert.alert(response.message);
+      }
+      // else{
+      //   navigation.navigate(screenName);
+      // }
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+  }
+
+    },
   };
 
   const handleOtpComplete = otpValue => {
     console.log('Completed OTP:', otpValue);
+    setOtp(otpValue);
     // Handle the completed OTP value here, e.g., validation or submission
+  };
+
+  const renderSpinner = () => {
+    if (loading) {
+      return <Spinner />;
+    }
+    return null;
   };
 
   return (
@@ -33,13 +92,19 @@ const Otp = ({navigation}) => {
     source={themeLogo}
   >
     <View style={styles.mainContainer}>
+    {renderSpinner()}
+    <HeaderContainer
+          showPopUp={false}
+          showBackArrow={true}
+          containerStyle={styles.headContainer}
+        />
       <View style={styles.pageLabel}>
-        <PageLabel label={props.label} />
+        <PageLabel label={labels.label} />
       </View>
       <View style={styles.container}>
-        <HeadingContainer heading={props.heading} />
-        <OtpInput length={4} onComplete={handleOtpComplete} />
-        <ButtonContainer {...props} />
+        <HeadingContainer heading={labels.heading} />
+        <OtpInput length={4} setOtp={setOtp} otp={otp} onComplete={handleOtpComplete} />
+        <ButtonContainer {...labels} />
       </View>
     </View>
     </BackgroundContainer>
@@ -67,6 +132,10 @@ const FooterContainer = memo(props => (
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
+
+  },
+  headContainer: {
+    flex: 0.1,
   },
   pageLabel: {
     flex: 0.2,
@@ -74,13 +143,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
-    flex: 0.8,
+    flex: 0.5,
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     borderWidth: 1,
     borderColor: 'white',
     borderRadius: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 40,
     marginHorizontal: 20,
     paddingTop: 20,
     marginBottom: 20,

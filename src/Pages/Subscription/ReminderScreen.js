@@ -86,11 +86,10 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     flexDirection: 'column',
-    // backgroundColor: Colors.primary,
     borderRadius: 5,
     borderWidth: 1,
     borderColor: 'white',
-    padding: 20,
+    padding: 40,
   },
 
 

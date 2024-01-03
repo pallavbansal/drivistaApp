@@ -40,15 +40,16 @@ const styles = StyleSheet.create({
   centeredView: {
     justifyContent: 'center',
     alignItems: 'center',
-    elevation:999
+    elevation: 999,
   },
   modalView: {
-    width: '50%',
+    width: '30%',
+    marginTop: -10,
     marginRight: 10,
     marginLeft: 'auto',
     backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
+    borderRadius: 10,
+    paddingTop: 10,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -61,11 +62,9 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-    marginBottom: 10,
-    width: 100,
-    alignItems: 'center',
+    padding: 5,
+    width: '95%',
+    alignItems: 'flex-start',
   },
 });
 

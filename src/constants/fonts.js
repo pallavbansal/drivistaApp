@@ -5,13 +5,18 @@ export const Fonts = {
   sizes: {
     small: 12,
     medium: 14,
-    large: 20,
+    large: 30,
+    logoWithLabel:20,
     // Add more font sizes here as per your project's requirement
   },
   styles: {
     regular: 'normal',
-    bold: 'bold',
     italic: 'italic',
+    // Add more font styles here as needed (e.g., italic, semibold, etc.)
+  },
+  weight: {
+    regular: 'normal',
+    bold: 'bold',
     // Add more font styles here as needed (e.g., italic, semibold, etc.)
   },
   family: 'Verdana',

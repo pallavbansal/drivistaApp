@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import React, {useState} from 'react';
+import {View, TextInput, StyleSheet} from 'react-native';
 
-const OtpInput = ({ length, onComplete }) => {
-  const [otp, setOtp] = useState(new Array(length).fill(''));
+const OtpInput = ({length, onComplete, setOtp, otp}) => {
+  //const [otp, setOtp] = useState(new Array(length).fill(''));
 
   const handleChange = (value, index) => {
     const newOtp = [...otp];
@@ -11,9 +11,9 @@ const OtpInput = ({ length, onComplete }) => {
     setOtp(newOtp);
 
     const completed = newOtp.every(item => item !== '');
-    if (completed) {
-      onComplete(newOtp.join(''));
-    }
+    // if (completed) {
+    //   onComplete(newOtp.join(''));
+    // }
   };
 
   return (

@@ -34,6 +34,7 @@ const PaymentDetails = ({navigation}) => {
         showBackArrow={true}
         showLabel={true}
         showPopUp={true}
+        showBackground={true}
         containerStyle={styles.headContainer}
       />
       <View style={styles.container}>
@@ -106,9 +107,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     margin: 10,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: 'white',
     padding: 20,
 
   },
@@ -129,14 +127,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
 
 
-  },
-  counterValueContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 4,
-    backgroundColor: '#ECE5F5',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   totalAmountContainer: {
     flex: 0.7,

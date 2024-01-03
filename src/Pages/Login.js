@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
-import React, {memo} from 'react';
-import {View, StyleSheet, Text,TouchableOpacity} from 'react-native';
+import React, {memo, useState} from 'react';
+import {View, StyleSheet, Text, TouchableOpacity, Alert} from 'react-native';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import CustomTextInput from '../components/reusableComponents/CustomTextInput';
@@ -10,9 +10,24 @@ import Heading from '../components/reusableComponents/Heading';
 import PageLabel from '../components/reusableComponents/PageLabel';
 import AuthFooter from '../components/reusableComponents/Footer/AuthFooter';
 import {globalStyles} from '../constants/globalStyles';
+import HeaderContainer from '../components/reusableComponents/Container/HeaderContainer';
+import {useAuthServiceHook} from '../services/hooks/auth/useAuthServiceHook';
+import Spinner from '../components/reusableComponents/Spinner';
 
 const Login = ({navigation}) => {
-  const props = {
+  const {
+    loading,
+    setLoading,
+    setEmail,
+    email,
+    password,
+    setPassword,
+    passwordVisible,
+    setPasswordVisible,
+    loginRequest,
+  } = useAuthServiceHook();
+
+  const labels = {
     label: 'Login',
     heading:
       'Please enter your valid email address, we will send you a 4-digit code to verify.',
@@ -20,23 +35,60 @@ const Login = ({navigation}) => {
     buttonLabel: 'Login',
     password: 'Password',
     authFooterText: 'Do not have an account?',
-    linkText: 'register',
+    linkText: 'Register',
     navigateScreen: 'OwnerHomeScreen',
     footerNavigateScreen: 'RegisterScreen',
-    handleNavigation: (screenName) => navigation.navigate(screenName),
+    handleDirectNavigation: screenName => navigation.navigate(screenName),
+    handleNavigation: async screenName => {
+      setLoading(true);
+      const response = await loginRequest();
+      setLoading(false);
+      try {
+        if (response.result === 'verfication_failed') {
+          Alert.alert('Please validate fields!');
+        } else if (response.result === 'success') {
+          navigation.navigate(screenName);
+        } else if (response.result === 'failed') {
+          Alert.alert('Credentials Invalid');
+        } else {
+          navigation.navigate(screenName);
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+      }
+    },
   };
-
+  const renderSpinner = () => {
+    if (loading) {
+      return <Spinner />;
+    }
+    return null;
+  };
   return (
     <View style={styles.mainContainer}>
+      {renderSpinner()}
+      <HeaderContainer
+        showPopUp={false}
+        showBackArrow={true}
+        containerStyle={styles.headContainer}
+      />
       <View style={styles.pageLabel}>
-        <PageLabel label={props.label} />
+        <PageLabel label={labels.label} />
       </View>
       <View style={styles.container}>
-        <HeadingContainer heading={props.heading} />
-        <InputContainer email={props.email} password={props.password} />
-        <ForgetPasswordContainer  {...props}/>
-        <ButtonContainer {...props} />
-        <FooterContainer {...props} />
+        <HeadingContainer heading={labels.heading} />
+        <InputContainer
+          labels={labels}
+          email={email}
+          setEmail={setEmail}
+          setPasssword={setPassword}
+          password={password}
+          passwordVisible={passwordVisible}
+          setPasswordVisible={setPasswordVisible}
+        />
+        <ForgetPasswordContainer {...labels} />
+        <ButtonContainer {...labels} />
+        <FooterContainer {...labels} />
       </View>
     </View>
   );
@@ -48,26 +100,32 @@ const HeadingContainer = memo(({heading}) => (
   </View>
 ));
 
-const InputContainer = memo(({email, password}) => (
+const InputContainer = memo(props => (
   <View style={styles.inputContainer}>
     <CustomTextInput
       logoName={emailLogo}
-      placeholder={email}
-      showPasswordText={false}
+      onChangeText={text => props.setEmail(text)}
+      placeholder={props.labels.email}
     />
     <CustomTextInput
       logoName={lockLogo}
-      placeholder={password}
-      showPasswordText={true}
+      onChangeText={text => props.setPasssword(text)}
+      passwordVisible={props.passwordVisible}
+      handlePasswordVisiblity={() => {
+        props.setPasswordVisible(!props.passwordVisible);
+      }}
+      placeholder={props.labels.password}
+      showPasswordGenIcon={true}
     />
   </View>
 ));
 const ForgetPasswordContainer = memo(props => (
-<TouchableOpacity onPress={()=>props.handleNavigation('ForgotPasswordScreen')}>
-      <View style={styles.forgetPassword}>
-        <Text style={[globalStyles.text]}>Forget password?</Text>
-      </View>
-    </TouchableOpacity>
+  <TouchableOpacity
+    onPress={() => props.handleDirectNavigation('ForgotPasswordScreen')}>
+    <View style={styles.forgetPassword}>
+      <Text style={[globalStyles.text]}>Forget password?</Text>
+    </View>
+  </TouchableOpacity>
 ));
 const ButtonContainer = memo(props => (
   <View style={styles.button}>
@@ -77,7 +135,11 @@ const ButtonContainer = memo(props => (
 
 const FooterContainer = memo(props => (
   <View style={styles.footer}>
-    <AuthFooter {...props} text={props.authFooterText} navigationText={props.linkText} />
+    <AuthFooter
+      {...props}
+      text={props.authFooterText}
+      navigationText={props.linkText}
+    />
   </View>
 ));
 
@@ -86,13 +148,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.primary,
   },
+  headContainer: {
+    flex: 0.1,
+  },
   pageLabel: {
-    flex: 0.2,
+    flex: 0.1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   container: {
-    flex: 0.8,
+    flex: 0.7,
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     borderWidth: 1,
@@ -125,9 +190,11 @@ const styles = StyleSheet.create({
   },
   footer: {
     flex: 0.3,
+    justifyContent: 'flex-end',
   },
   button: {
     flex: 0.3,
+    justifyContent: 'center',
   },
   actionSection: {
     flex: 0.3,

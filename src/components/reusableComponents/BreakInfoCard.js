@@ -22,13 +22,8 @@ const styles = StyleSheet.create({
   wrapper: {
 
     flexDirection: 'row',
-     justifyContent:'space-around',
+     justifyContent:'space-between',
     flex:1,
-    borderWidth: 1,
-    borderColor: 'white',
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    // Set the background color if needed
   },
 });
 

@@ -14,7 +14,7 @@ const LogoWithLabel = ({label="label",logo="logo"}) => {
             source={logo}
             style={[globalStyles.logo, {width: 100, height: 100}]}
           />
-          <Text style={[globalStyles.text,{fontSize:Fonts.sizes.large,fontWeight:'bold'}]}>{label}</Text>
+          <Text style={[globalStyles.text,{fontSize:Fonts.sizes.logoWithLabel,fontWeight:'bold'}]}>{label}</Text>
       </>
 
   );

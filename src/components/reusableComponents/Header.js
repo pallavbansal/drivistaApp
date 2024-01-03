@@ -12,6 +12,7 @@ import {Colors} from '../../constants/colors';
 import left_arrow from '../../storage/images/left_arrow.png';
 import menu from '../../storage/images/menu.png';
 import NavigationPopUpCard from '../cards/NavigationPopUpCard'; // Import your NavigationPopUpCard component here
+import {Fonts} from '../../constants/fonts';
 
 const Header = ({
   textName,
@@ -19,6 +20,7 @@ const Header = ({
   showBackArrow = false,
   showPopUp = false,
   showLabel = false,
+  showBackground = false,
   navigationPopUpList,
   handleNavigation,
 }) => {
@@ -27,6 +29,20 @@ const Header = ({
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
+  const handlePopUpNavigation=(screenName)=>{
+    setModalVisible(false);
+    handleNavigation(screenName);
+  }
+
+
+  let wrapperStyle = styles.wrapper; // Default wrapper style
+
+  if (showBackground) {
+    wrapperStyle = {
+      ...styles.wrapper,
+      backgroundColor: Colors.headerBg, // Set your desired background color
+    };
+  }
 
   let leftArrowComponent = null;
   if (showBackArrow) {
@@ -43,7 +59,7 @@ const Header = ({
   let labelComponent = null;
   if (showLabel) {
     labelComponent = (
-      <Text style={[globalStyles.text, {fontWeight: 'bold', color: 'white'}]}>
+      <Text style={[globalStyles.text, styles.headerLabel]}>
         {textName}
       </Text>
     );
@@ -63,15 +79,19 @@ const Header = ({
 
   return (
     <View>
-      <View style={[styles.wrapper, showBackArrow && styles.borderStyle]}>
+      <View style={[styles.wrapper, showBackground && styles.backgroundTransparent]}>
         <View style={styles.backArrow}>{leftArrowComponent}</View>
-        <View style={styles.label}>{labelComponent}</View>
+        <View style={styles.label}>
+          <Text style={styles.headerLabel}>
+            {labelComponent}
+          </Text>
+        </View>
         <View style={styles.popUpLogo}>{PopUpNavigationComponent}</View>
       </View>
       {modalVisible && (
         <NavigationPopUpCard
           navigationPopUpList={navigationPopUpList}
-          handleNavigation={handleNavigation}
+          handleNavigation={handlePopUpNavigation}
         />
       )}
     </View>
@@ -83,8 +103,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
-    backgroundColor: Colors.headerBg, // Set the background color if needed
+   // backgroundColor: Colors.headerBg, // Set the background color if needed
     paddingVertical: 10,
+  },
+  backgroundTransparent: {
+    backgroundColor:Colors.headerBg,
   },
   backArrow: {
     flex: 0.3,
@@ -96,6 +119,12 @@ const styles = StyleSheet.create({
   popUpLogo: {
     flex: 0.3,
     alignItems: 'flex-end',
+  },
+  headerLabel: {
+    fontSize: Fonts.sizes.medium,
+    fontWeight: Fonts.weight.bold,
+    color:'white'
+
   },
 });
 

@@ -7,6 +7,7 @@ const HeaderContainer = ({
   label = 'Label',
   showLabel = false,
   showBackArrow = false,
+  showBackground=false,
   showPopUp = false,
   handleNavigation,
 }) => {
@@ -23,7 +24,7 @@ const HeaderContainer = ({
 
     {
       label: 'logout',
-      navigateScreen: 'ProfileScreen',
+      navigateScreen: 'logout',
     },
   ];
 
@@ -35,6 +36,7 @@ const HeaderContainer = ({
         showLabel={showLabel}
         showBackArrow={showBackArrow}
         showPopUp={showPopUp}
+        showBackground={showBackground}
         handleNavigation={handleNavigation}
       />
     </View>

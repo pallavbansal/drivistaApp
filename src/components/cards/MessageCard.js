@@ -41,6 +41,7 @@ const ButtonContainer = memo(props => (
   </View>
 ));
 const styles = StyleSheet.create({
+
   centeredView: {
     flex: 0.5,
     justifyContent: 'center',
