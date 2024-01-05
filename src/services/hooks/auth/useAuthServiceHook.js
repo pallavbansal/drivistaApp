@@ -15,7 +15,7 @@ import {
   forgotPasswordService,
   forgetPassVerifyService,
   changePasswordService,
-  changeProfilePasswordService
+  changeProfilePasswordService,
 } from '../../service';
 export const useAuthServiceHook = () => {
   const navigation = useNavigation();
@@ -24,7 +24,7 @@ export const useAuthServiceHook = () => {
   const [loading, setLoading] = useState(false);
   const [lastName, setLastName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState(false);
   const [isTrialChecked, setIsTrialChecked] = useState(false);
   const [errors, setErrors] = useState({});
   const [email, setEmail] = useState('');
@@ -32,6 +32,8 @@ export const useAuthServiceHook = () => {
   const [oldPassword, setOldPassword] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(true);
+  const [loginError, setLoginError] = useState({email: '', password: ''});
   const [otp, setOtp] = useState(new Array(4).fill(''));
   const dispatch = useDispatch();
   const validateEmailAndPassword = (email, password) => {
@@ -311,10 +313,14 @@ export const useAuthServiceHook = () => {
     passwordVisible,
     setPasswordVisible,
     confirmPasswordVisible,
+    isFormValid,
+    setIsFormValid,
     setConfirmPasswordVisible,
     forgotPasswordRequest,
     loginRequest,
     logoutRequest,
+    loginError,
+    setLoginError,
     registrationRequest,
     otpVerifyRequest,
     otpForgotPassVerifyRequest,

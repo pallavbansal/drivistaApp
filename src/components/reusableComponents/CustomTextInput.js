@@ -7,11 +7,13 @@ import {
   Platform,
   Image,
   TouchableOpacity,
+  Text
 } from 'react-native';
 import {globalStyles} from '../../constants/globalStyles';
 import {Colors} from '../../constants/colors';
 import password_show from '../../storage/images/password_show.png';
 import vehicle from '../../storage/images/vehicle.png';
+
 
 const CustomTextInput = ({
   logoName,
@@ -19,6 +21,8 @@ const CustomTextInput = ({
   showPasswordGenIcon=false,
   handlePasswordVisiblity,
   passwordVisible,
+  value,
+  errorText="",
   ...rest
 }) => {
   const textInputRef = useRef(null);
@@ -28,6 +32,14 @@ const CustomTextInput = ({
   };
 
   return (
+    <View>
+      <View style={styles.errorContainer}>
+      {errorText.length > 0 && ( // Conditionally render error message
+      <View >
+        <Text style={globalStyles.errorText}>{errorText}</Text>
+        </View>
+      )}
+       </View>
     <View style={styles.inputContainer}>
       <View style={styles.inputWrapper}>
         <TouchableOpacity
@@ -37,6 +49,7 @@ const CustomTextInput = ({
           <Image source={logoName} style={globalStyles.logoImage} />
           <TextInput
            secureTextEntry={showPasswordGenIcon ? !passwordVisible :false}
+           value={value}
             ref={textInputRef}
             placeholder={placeholder}
             placeholderTextColor={Colors.placeholder}
@@ -55,6 +68,9 @@ const CustomTextInput = ({
           </TouchableOpacity>
         ) : null}
       </View>
+
+    </View>
+
     </View>
   );
 };
@@ -105,12 +121,19 @@ const styles = StyleSheet.create({
     paddingRight:5,
 
   },
+  errorContainer:{
+  height:20,
+  marginTop:0,
+  marginBottom:-1,
+  //backgroundColor:'blue'
+  },
   input: {
     fontSize: 16,
   },
   icon: {
     marginRight: 10,
   },
+
 });
 
 export default CustomTextInput;

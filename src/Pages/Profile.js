@@ -1,14 +1,17 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect, useState} from 'react';
-import {View, StyleSheet, Image, Text, TouchableOpacity} from 'react-native';
-import ProfileComponent from '../components/reusableComponents/Profile';
+import {View, StyleSheet, Image, Text, TouchableOpacity,Alert} from 'react-native';
+//import {OwnerProfilComponent} from '../components/reusableComponents/Profile/Owner';
+import Owner from '../components/reusableComponents/Profile/Owner';
 import FooterContainer from '../components/reusableComponents/Container/FooterContainer';
 import {globalStyles} from '../constants/globalStyles';
 import {Fonts} from '../constants/fonts';
 import HeaderContainer from '../components/reusableComponents/Container/HeaderContainer';
 import {useDriverOnlineServiceHook} from '../services/hooks/auth/useDriverOnlineServiceHook';
 import {useSelector} from 'react-redux';
+import Spinner from '../components/reusableComponents/Spinner';
+import { useAuthServiceHook } from '../services/hooks/auth/useAuthServiceHook';
 
 const Profile = ({route, navigation}) => {
   const {user} = useSelector(state => state.userState);
@@ -22,50 +25,93 @@ const Profile = ({route, navigation}) => {
     mobileNumber,
     setMobileNumber,
     fetchProfileRequest,
-  } = useDriverOnlineServiceHook();
+    setFirstName,
+    firstName,
+    lastName,
+    setLastName,
+    updateUserProfileRequest,
 
+  } = useDriverOnlineServiceHook();
+  const {
+   logoutRequest
+
+  } = useAuthServiceHook();
+
+  const handleUpdateUserProfileRequest=async ()=>{
+    setLoading(true);
+    const response = await updateUserProfileRequest();
+    if(response.result === "failed")
+    {
+      Alert.alert(response.message)
+    }
+    else if(response.result === "unauthenticated")
+    {
+      logoutRequest();
+    }
+    setLoading(false);
+  }
   useEffect(() => {
     setEmail(user.email);
     setMobileNumber(user.mobile_number);
+    setLastName(user.last_name);
+    setFirstName(user.first_name);
   }, [user]);
+  console.log('mobile number:', mobileNumber);
 
   useEffect(() => {
     fetchProfileRequest();
   }, []);
 
-  const data = {
-    headLabel: 'Profile',
-    type: 'Default Type',
-    details: [
-      {
-        label: 'Email',
-        data: 'kabir343@gmail.com',
-      },
-      {
-        label: 'Mobile Number',
-        data: '9867656767',
-      },
-    ],
+  const labels = {
+    label: 'Edit Profile',
+    heading:
+      'Please enter your valid email address, we will send you a 4-digit code to verify.',
+    email: 'Email Id',
+    buttonLabel: 'Login',
+    password: 'Password',
+    authFooterText: 'Do not have an account?',
+    linkText: 'Register',
+    navigateScreen: 'OwnerHomeScreen',
+    footerNavigateScreen: 'RegisterScreen',
+    handleDirectNavigation: screenName => navigation.navigate(screenName),
   };
+  const handleBackArrow=()=>{
 
+  }
+  const renderSpinner = () => {
+    if (loading) {
+      return <Spinner />;
+    }
+    return null;
+  };
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
+      {renderSpinner()}
       <HeaderContainer
         label={'Profile'}
         showBackArrow={true}
         showLabel={true}
         showBackground={true}
         containerStyle={styles.headContainer}
+        handleBackArrow={handleBackArrow}
       />
       <View style={styles.profileContainer}>
-        <ProfileComponent
+        <Owner
           caseType={'user_profile'}
+          labels={labels}
+          loading={loading}
+          setLoading={setLoading}
           details={user}
           email={email}
           setEmail={setEmail}
           mobileNumber={mobileNumber}
           setMobileNumber={setMobileNumber}
-          headerLabel={data.headLabel}
+          setFirstName={setFirstName}
+          firstName={firstName}
+          lastName={lastName}
+          setLastName={setLastName}
+          updateUserProfileRequest={handleUpdateUserProfileRequest}
+          headerLabel={labels.headLabel}
         />
 
         <TouchableOpacity

@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {memo} from 'react';
+import React, {memo, useEffect} from 'react';
 import {View, StyleSheet, Text, Alert} from 'react-native';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
@@ -21,6 +21,8 @@ const ChangePassword = ({navigation, route}) => {
   const {
     loading,
     setLoading,
+    loginError,
+    setLoginError,
     oldPassword,
     setOldPassword,
     password,
@@ -29,10 +31,12 @@ const ChangePassword = ({navigation, route}) => {
     confirmPassword,
     passwordVisible,
     setPasswordVisible,
+    isFormValid,
+    setIsFormValid,
     confirmPasswordVisible,
     setConfirmPasswordVisible,
     changePasswordRequest,
-    changePasswordProfileRequest
+    changePasswordProfileRequest,
   } = useAuthServiceHook();
   const labels = {
     label: 'Change Password',
@@ -73,6 +77,34 @@ const ChangePassword = ({navigation, route}) => {
       }
     },
   };
+
+  const checkFormValidity = () => {
+    const isNewPasswordValid = password.length > 5; // Ensure password length is greater than 6
+    const isConfirmPasswordValid = confirmPassword.length > 0 && confirmPassword === password;
+
+    const isValid = isNewPasswordValid && isConfirmPasswordValid;
+    const errorCheck = {
+      password: !isNewPasswordValid
+        ? 'Password should be of atleast length six'
+        : '',
+      confirmPassword: !isConfirmPasswordValid
+        ? 'Confirm Password should match New Password'
+        : '',
+    };
+
+    setLoginError({
+      ...loginError,
+      password: errorCheck.password,
+      confirmPassword:errorCheck.confirmPassword
+    });
+    setIsFormValid(!isValid);
+  };
+
+  useEffect(() => {
+    checkFormValidity(); // Check validity on input change
+  }, [oldPassword, password, confirmPassword]);
+
+  console.log("conform pass:",confirmPassword);
   const renderSpinner = () => {
     if (loading) {
       return <Spinner />;
@@ -94,6 +126,7 @@ const ChangePassword = ({navigation, route}) => {
         <View style={styles.container}>
           {/* <InputContainer email={props.oldPassword} password={props.password} /> */}
           <InputContainer
+            loginError={loginError}
             labels={labels}
             caseType={caseType}
             oldPassword={oldPassword}
@@ -109,7 +142,7 @@ const ChangePassword = ({navigation, route}) => {
             {...labels}
           />
           <Space />
-          <ButtonContainer {...labels} />
+          <ButtonContainer isFormValid={isFormValid} {...labels} />
         </View>
       </View>
     </BackgroundContainer>
@@ -127,6 +160,7 @@ const InputContainer = memo(props => (
     {props.caseType === 'profile' ? (
       <CustomTextInput
         logoName={lockLogo}
+
         placeholder={props.labels.oldPassword}
         showPasswordGenIcon={false}
         passwordVisible={props.passwordVisible}
@@ -142,6 +176,7 @@ const InputContainer = memo(props => (
     <CustomTextInput
       logoName={lockLogo}
       placeholder={props.labels.newPassword}
+      errorText={props.password.length > 0 ? props.loginError.password : ""}
       showPasswordGenIcon={false}
       passwordVisible={props.passwordVisible}
       handlePasswordVisiblity={() => {
@@ -152,6 +187,7 @@ const InputContainer = memo(props => (
     <CustomTextInput
       logoName={lockLogo}
       placeholder={props.labels.confirmPassword}
+      errorText={props.password.length > 0 ? props.loginError.confirmPassword : ""}
       showPasswordGenIcon={false}
       passwordVisible={props.confirmPasswordVisible}
       handlePasswordVisiblity={() => {
@@ -164,7 +200,7 @@ const InputContainer = memo(props => (
 
 const ButtonContainer = memo(props => (
   <View style={styles.button}>
-    <CustomButton {...props} />
+    <CustomButton {...props} disabled={props.isFormValid} />
   </View>
 ));
 

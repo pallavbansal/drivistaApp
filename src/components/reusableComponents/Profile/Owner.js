@@ -11,19 +11,17 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
-import {Colors} from '../../constants/colors';
-import vehicle from '../../storage/images/vehicle.png';
-import edit from '../../storage/images/edit.png';
-import HeaderContainer from './Container/HeaderContainer';
-import {globalStyles} from '../../constants/globalStyles';
-import InfoCard from './InfoCard';
+import {Colors} from '../../../constants/colors';
+import vehicle from '../../../storage/images/vehicle.png';
+import edit from '../../../storage/images/edit.png';
+import HeaderContainer from '../Container/HeaderContainer';
+import {globalStyles} from '../../../constants/globalStyles';
 import {Fonts} from '../../constants/fonts';
-import CustomButton from './CustomButton';
-import CustomTextInput from './CustomTextInput';
-import ProfileEdit from './Profile/Owner';
-import Spinner from './Spinner';
+import CustomButton from '../CustomButton';
+import CustomTextInput from '../CustomTextInput';
+import Spinner from '../Spinner';
 
-const Profile = ({
+const Owner = ({
   labels,
   details,
   loading,
@@ -287,4 +285,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(Profile);
+export default memo(Owner);
