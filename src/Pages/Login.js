@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {memo, useState} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity, Alert} from 'react-native';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
@@ -13,6 +13,7 @@ import {globalStyles} from '../constants/globalStyles';
 import HeaderContainer from '../components/reusableComponents/Container/HeaderContainer';
 import {useAuthServiceHook} from '../services/hooks/auth/useAuthServiceHook';
 import Spinner from '../components/reusableComponents/Spinner';
+import Space from '../components/reusableComponents/Space';
 
 const Login = ({navigation}) => {
   const {
@@ -21,8 +22,12 @@ const Login = ({navigation}) => {
     setEmail,
     email,
     password,
+    loginError,
+    setLoginError,
     setPassword,
     passwordVisible,
+    isFormValid,
+    setIsFormValid,
     setPasswordVisible,
     loginRequest,
   } = useAuthServiceHook();
@@ -58,6 +63,30 @@ const Login = ({navigation}) => {
       }
     },
   };
+  const checkFormValidity = () => {
+    const isPasswordValid = password.length > 5; // Ensure password length is greater than 6
+    const emailValidationRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isEmailValid = emailValidationRegex.test(email);
+
+    const isValid = isPasswordValid && isEmailValid;
+    const errorCheck = {
+      email: !isEmailValid ? 'Email should contain @ and .com' : '',
+      password: !isPasswordValid
+        ? 'Password should be of atleast length six '
+        : '',
+    };
+    setLoginError({
+      ...loginError,
+      email: errorCheck.email,
+      password: errorCheck.password,
+    });
+
+    setIsFormValid(!isValid);
+  };
+
+  useEffect(() => {
+    checkFormValidity(); // Check validity on input change
+  }, [password, email]);
   const renderSpinner = () => {
     if (loading) {
       return <Spinner />;
@@ -79,6 +108,7 @@ const Login = ({navigation}) => {
         <HeadingContainer heading={labels.heading} />
         <InputContainer
           labels={labels}
+          loginError={loginError}
           email={email}
           setEmail={setEmail}
           setPasssword={setPassword}
@@ -86,8 +116,9 @@ const Login = ({navigation}) => {
           passwordVisible={passwordVisible}
           setPasswordVisible={setPasswordVisible}
         />
+        <Space/>
         <ForgetPasswordContainer {...labels} />
-        <ButtonContainer {...labels} />
+        <ButtonContainer {...labels} isFormValid={isFormValid} />
         <FooterContainer {...labels} />
       </View>
     </View>
@@ -104,11 +135,13 @@ const InputContainer = memo(props => (
   <View style={styles.inputContainer}>
     <CustomTextInput
       logoName={emailLogo}
+      errorText={props.email.length > 0 ? props.loginError.email : ""}
       onChangeText={text => props.setEmail(text)}
       placeholder={props.labels.email}
     />
     <CustomTextInput
       logoName={lockLogo}
+      errorText={props.password.length > 0 ? props.loginError.password : ""}
       onChangeText={text => props.setPasssword(text)}
       passwordVisible={props.passwordVisible}
       handlePasswordVisiblity={() => {
@@ -129,7 +162,7 @@ const ForgetPasswordContainer = memo(props => (
 ));
 const ButtonContainer = memo(props => (
   <View style={styles.button}>
-    <CustomButton {...props} />
+    <CustomButton {...props} disabled={props.isFormValid} />
   </View>
 ));
 

@@ -1,14 +1,18 @@
-import React, {useState} from 'react';
-import {View, TextInput, StyleSheet} from 'react-native';
+import React, { useRef } from 'react';
+import { View, TextInput, StyleSheet } from 'react-native';
 
-const OtpInput = ({length, onComplete, setOtp, otp}) => {
-  //const [otp, setOtp] = useState(new Array(length).fill(''));
+const OtpInput = ({ length, onComplete, setOtp, otp }) => {
+  const inputs = new Array(length).fill(null);
+  const inputRefs = inputs.map(() => useRef(null));
 
   const handleChange = (value, index) => {
     const newOtp = [...otp];
     newOtp[index] = value;
-
     setOtp(newOtp);
+
+    if (value && index < length - 1) {
+      inputRefs[index + 1].current.focus();
+    }
 
     const completed = newOtp.every(item => item !== '');
     // if (completed) {
@@ -21,6 +25,7 @@ const OtpInput = ({length, onComplete, setOtp, otp}) => {
       {otp.map((value, index) => (
         <TextInput
           key={index}
+          ref={inputRefs[index]}
           style={styles.input}
           maxLength={1}
           keyboardType="numeric"

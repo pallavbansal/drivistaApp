@@ -3,8 +3,8 @@ import React from 'react';
 import {View, TouchableOpacity, StyleSheet, Text} from 'react-native';
 import {globalStyles} from '../../constants/globalStyles';
 
-const CustomButton = props => {
-  const {onPress = () => console.log('Pressed'), style,isModal=false} = props;
+const CustomButton = (props) => {
+  const {onPress = () => console.log('Pressed'), style,isModal=false,disabled=false} = props;
 
   switch (props.layout) {
     case '2':
@@ -18,10 +18,12 @@ const CustomButton = props => {
     if (props.isVisible) {
       return null;
     }
+
     return (
       <View>
         <TouchableOpacity
-          style={[styles.buttonStyle, style || {}]}
+        disabled={disabled}
+          style={[styles.buttonStyle, style || {}, disabled && { opacity: 0.8 }]}
           onPress={()=>props.handleNavigation(props.navigateScreen,isModal)}>
           <Text
             // eslint-disable-next-line react-native/no-inline-styles
@@ -63,6 +65,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Verdana',
     fontSize: 9,
     fontStyle: 'italic',
+
   },
   button2Style: {
     height: 40,

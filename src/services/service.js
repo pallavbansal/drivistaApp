@@ -38,3 +38,9 @@ export const changePasswordService = async params => {
 export const changeProfilePasswordService = async (params, config) => {
   return await apiConfig.post('auth/change-password', params, config);
 };
+
+export const updateUserProfileService = async (params, config) => {
+  return await apiConfig.post('profile/me/edit', params, config);
+};
+
+

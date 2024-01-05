@@ -47,4 +47,14 @@ export const globalStyles = StyleSheet.create({
     height: 15,
 
   },
+  errorText: {
+    color: 'red',
+    fontSize: Fonts.sizes.small,
+    marginTop: 5,
+    fontStyle: Fonts.styles.regular,
+    textShadowColor: 'rgba(0, 0, 0, 0.1)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+
+  },
 });

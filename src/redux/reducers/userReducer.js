@@ -14,7 +14,7 @@ const initialState = {
 export const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_LOGIN_USER_DATA:
-      console.log('hey userReducer :', action.data.user);
+      console.log('hey userReducer :', action.data.token);
       return {
         ...state,
         user: action.data.user,
@@ -28,6 +28,7 @@ export const userReducer = (state = initialState, action) => {
       return {
         ...state,
         user: action.data.user,
+
         isAuth: true,
       };
 
@@ -44,6 +45,7 @@ export const userReducer = (state = initialState, action) => {
       return {
         ...state,
         user: {},
+        token:'',
         isAuth: false,
       };
 

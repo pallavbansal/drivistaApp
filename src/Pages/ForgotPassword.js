@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {memo} from 'react';
+import React, {memo, useEffect} from 'react';
 import {View, StyleSheet, Text,TouchableOpacity,Alert} from 'react-native';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
@@ -13,9 +13,13 @@ import themeLogo from '../storage/images/theme.png';
 import BackgroundContainer from '../components/reusableComponents/Container/BackgroundContainer';
 import HeaderContainer from '../components/reusableComponents/Container/HeaderContainer';
 import { useAuthServiceHook } from '../services/hooks/auth/useAuthServiceHook';
+import { Fonts } from '../constants/fonts';
 
 const ForgotPassword = ({navigation}) => {
-  const { loading,setEmail,email,
+  const { loading,setEmail,email,isFormValid,
+    loginError,
+    setLoginError,
+    setIsFormValid,
     setLoading,forgotPasswordRequest} =
     useAuthServiceHook();
   const labels = {
@@ -28,6 +32,7 @@ const ForgotPassword = ({navigation}) => {
     authFooterText: '',
     linkText: 'Resend OTP',
     navigateScreen: 'OtpScreen',
+    footerNavigateScreen:'OtpScreen',
     // handleNavigation: (screenName) => navigation.navigate(screenName),
     handleNavigation: async screenName => {
    //   const response = await loginRequest();
@@ -48,7 +53,28 @@ const ForgotPassword = ({navigation}) => {
 
     },
   };
+  const checkFormValidity = () => {
 
+    const emailValidationRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isEmailValid = emailValidationRegex.test(email);
+
+    const isValid =  isEmailValid;
+    const errorCheck = {
+      email: !isEmailValid ? 'Email should contain @ and .com' : '',
+
+    };
+
+    setLoginError({
+      ...loginError,
+      email: errorCheck.email,
+    });
+
+
+    setIsFormValid(!isValid);
+  };
+  useEffect(() => {
+    checkFormValidity(); // Check validity on input change
+  }, [ email]);
   return (
     <BackgroundContainer
       source={themeLogo}
@@ -64,8 +90,10 @@ const ForgotPassword = ({navigation}) => {
       </View>
       <View style={styles.container}>
         <HeadingContainer heading={labels.heading} />
-        <InputContainer labels={labels} email={email}    setEmail={setEmail} />
-        <ButtonContainer {...labels} />
+        <InputContainer labels={labels} email={email}   setEmail={setEmail} loginError={loginError} />
+        <ButtonContainer {...labels} isFormValid={isFormValid}   />
+
+        {/* <ResendButtonContainer {...labels} buttonLabel={labels.linkText} /> */}
         <FooterContainer {...labels} />
       </View>
     </View>
@@ -83,6 +111,7 @@ const InputContainer = memo((props) => (
   <View style={styles.inputContainer}>
     <CustomTextInput
       logoName={emailLogo}
+      errorText={props.email.length > 0 ? props.loginError.email : ""}
       onChangeText={text => props.setEmail(text)}
       placeholder={props.labels.email}
       showPasswordText={false}
@@ -93,14 +122,24 @@ const InputContainer = memo((props) => (
 
 const ButtonContainer = memo(props => (
   <View style={styles.button}>
+    <CustomButton {...props} disabled={props.isFormValid} />
+  </View>
+));
+
+const ResendButtonContainer = memo(props => (
+  <View style={styles.resendButton}>
     <CustomButton {...props} />
   </View>
 ));
 
 const FooterContainer = memo(props => (
-  <View style={styles.footer}>
-    <AuthFooter text={props.authFooterText} navigationText={props.linkText} />
-  </View>
+  <TouchableOpacity
+        style={styles.footer}
+        onPress={() => {
+          props.handleNavigation(props.navigateScreen)
+        }}>
+        <Text style={styles.navigationLinkText}> {props.linkText}</Text>
+      </TouchableOpacity>
 ));
 
 const styles = StyleSheet.create({
@@ -150,15 +189,38 @@ const styles = StyleSheet.create({
   },
   footer: {
     flex: 0.2,
-    justifyContent:'center'
+    justifyContent:'center',
+    alignItems:'center'
   },
   button: {
     flex: 0.2,
     // justifyContent:'center'
   },
+  resendButton:{
+    flex: 0.2,
+    // alignItems:'center',
+    justifyContent:'center',
+   // width:200,
+
+
+
+    // margin:'auto',
+    // marginLeft:'50%',
+    // marginRight:'50%',
+    //  width:'60%',
+    backgroundColor:'red'
+  },
   actionSection: {
     flex: 0.3,
     alignItems: 'flex-end',
+  },
+  navigationLinkText: {
+    fontSize: Fonts.sizes.medium,
+    fontWeight:Fonts.weight.bold,
+    color: Colors.primary,
+    textShadowColor: 'rgba(0, 0, 0, 0.1)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
 });
 
