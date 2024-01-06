@@ -21,7 +21,7 @@ import CustomButton from '../CustomButton';
 import CustomTextInput from '../CustomTextInput';
 import Spinner from '../Spinner';
 
-const Vehicle = ({
+const Vehicles = ({
   editable,
   setEditable,
   vehicleName,
@@ -35,9 +35,7 @@ const Vehicle = ({
 }) => {
   console.log('vehicle data hry:', details);
 
-  const MainContainer = ({children}) => (
-    <View style={styles.mainContainer}>{children}</View>
-  );
+
   console.log('check for editable:', editable);
   const textInputRef = useRef(null);
   const handleInputPress = () => {
@@ -105,6 +103,10 @@ const Vehicle = ({
     </MainContainer>
   );
 };
+
+const MainContainer = ({children}) => (
+  <View style={styles.mainContainer}>{children}</View>
+);
 const LogoHeaderContainer = memo(props => (
   <View style={styles.logoContainer}>
     <View style={{flex: 0.5}}>
@@ -256,4 +258,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(Vehicle);
+export default memo(Vehicles);

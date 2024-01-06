@@ -12,6 +12,7 @@ import {
 import {globalStyles} from '../../constants/globalStyles';
 import {Colors} from '../../constants/colors';
 import password_show from '../../storage/images/password_show.png';
+import password_hide from '../../storage/images/password_hide.png';
 import vehicle from '../../storage/images/vehicle.png';
 
 const CustomTextInput = ({
@@ -66,7 +67,7 @@ const CustomTextInput = ({
               style={styles.actionSection}
               onPress={handlePasswordVisiblity}>
               <Image
-                source={passwordVisible ? vehicle : password_show}
+                source={passwordVisible ? password_show : password_hide}
                 style={globalStyles.logoImage}
               />
             </TouchableOpacity>

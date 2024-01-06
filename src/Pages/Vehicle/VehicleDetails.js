@@ -1,16 +1,11 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect, useState} from 'react';
-import {View, StyleSheet, Image, Alert} from 'react-native';
-import ProfileComponent from '../../components/reusableComponents/Profile';
-import FooterContainer from '../../components/reusableComponents/Container/FooterContainer';
-
+import {View, StyleSheet, Image, Alert, TextInput} from 'react-native';
 import HeaderContainer from '../../components/reusableComponents/Container/HeaderContainer';
-import {globalStyles} from '../../constants/globalStyles';
-import {Fonts} from '../../constants/fonts';
 import CustomButton from '../../components/reusableComponents/CustomButton';
-import Vehicle from '../../components/reusableComponents/Profile/Vehicle';
 import {useVehicleServiceHook} from '../../services/hooks/vehicle/useVehicleServiceHook';
+import Vehicles from '../../components/reusableComponents/Profile/Vehicles';
 
 const VehicleDetails = ({route, navigation}) => {
   const {
@@ -74,7 +69,7 @@ const VehicleDetails = ({route, navigation}) => {
       />
       <View style={styles.container}>
         <View style={styles.profileContainer}>
-          <Vehicle
+          <Vehicles
             details={details}
             editable={editable}
             setEditable={setEditable}
@@ -86,6 +81,12 @@ const VehicleDetails = ({route, navigation}) => {
             setDriverName={setDriverName}
           />
         </View>
+        {/* <TextInput
+          style={styles.input}
+          placeholder="Enter Vehicle Name"
+          value={vehicleName}
+          onChangeText={text =>setVehicleName(text)}
+        /> */}
         {
           editable ? (
             <View style={styles.buttonContainer}>
