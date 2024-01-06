@@ -11,6 +11,8 @@ import driverOnline from '../../storage/images/driver_online.png';
 import driver from '../../storage/images/drivers.png';
 import themeLogo from '../../storage/images/theme.png';
 import shade1 from '../../storage/images/shade1.png';
+import shade2 from '../../storage/images/shade2.png';
+import shade3 from '../../storage/images/shade3.png';
 import BackgroundContainer from '../../components/reusableComponents/Container/BackgroundContainer';
 import { useAuthServiceHook } from '../../services/hooks/auth/useAuthServiceHook';
 
@@ -32,7 +34,7 @@ const Home = ({navigation}) => {
       linearGradientColor2: '#5A3C76',
       navigateScreen: 'VehicleHome',
       logoImage: vehicleLogo,
-      bgImage:shade1
+      bgImage:shade2
     },
 
     {
@@ -41,7 +43,7 @@ const Home = ({navigation}) => {
       linearGradientColor2: '#5A3C76',
       navigateScreen: 'LoginScreen',
       logoImage: driver,
-      bgImage:shade1
+      bgImage:shade3
     },
   ];
   const handleNavigation = navigateScreen => {

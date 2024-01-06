@@ -43,6 +43,8 @@ const Login = ({navigation}) => {
     linkText: 'Register',
     navigateScreen: 'OwnerHomeScreen',
     footerNavigateScreen: 'RegisterScreen',
+    navigateBackScreen:'LoginScreen',
+    navigateBackNavigation:()=> navigation.pop(),
     handleDirectNavigation: screenName => navigation.navigate(screenName),
     handleNavigation: async screenName => {
       setLoading(true);
@@ -97,9 +99,11 @@ const Login = ({navigation}) => {
     <View style={styles.mainContainer}>
       {renderSpinner()}
       <HeaderContainer
+      labels={labels}
         showPopUp={false}
-        showBackArrow={false}
+        showBackArrow={true}
         containerStyle={styles.headContainer}
+        handleBackNavigation={labels.navigateBackNavigation}
       />
       <View style={styles.pageLabel}>
         <PageLabel label={labels.label} />

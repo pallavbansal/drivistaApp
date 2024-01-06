@@ -41,10 +41,6 @@ const Owner = ({
   setEditable,
   updateUserProfileRequest,
 }) => {
-
-  const MainContainer = ({children}) => (
-    <View style={styles.mainContainer}>{children}</View>
-  );
   console.log('check for editable:', editable);
   const textInputRef = useRef(null);
   const handleInputPress = () => {
@@ -122,6 +118,11 @@ const Owner = ({
     </MainContainer>
   );
 };
+
+const MainContainer = ({children}) => (
+  <View style={styles.mainContainer}>{children}</View>
+);
+
 const LogoHeaderContainer = memo(props => (
   <View style={styles.logoContainer}>
     <View style={{flex: 0.5}}>

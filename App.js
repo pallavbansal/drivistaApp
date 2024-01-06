@@ -32,7 +32,6 @@ const App = () => {
         screenOptions={{
           headerShown: false,
         }}>
-
         {isAuth ? (
           <>
             <Stack.Screen name="OwnerHomeScreen" component={OwnerHomeScreen} />
@@ -57,6 +56,7 @@ const App = () => {
           </>
         ) : (
           <>
+            <Stack.Screen name="StartUp" component={StartUpScreen} />
             <Stack.Screen name="LoginScreen" component={LoginScreen} />
             <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
             <Stack.Screen name="OtpScreen" component={OtpScreen} />
@@ -64,7 +64,6 @@ const App = () => {
               name="ForgotPasswordScreen"
               component={ForgotPasswordScreen}
             />
-            <Stack.Screen name="StartUp" component={StartUpScreen} />
           </>
         )}
         <Stack.Screen name="ChangePassword" component={ChangePassword} />

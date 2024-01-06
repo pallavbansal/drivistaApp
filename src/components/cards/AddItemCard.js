@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     borderRadius: 10,
     marginVertical: 5,
-    marginHorizontal: 25,
+    marginHorizontal: 20,
     backgroundColor: Colors.inputWrapperBg, // Set the background color if needed
   },
   inputWrapper: {

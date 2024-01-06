@@ -12,7 +12,8 @@ import logo from '../storage/images/logo.png';
 import shade1 from '../storage/images/shade1.png';
 import shade2 from '../storage/images/shade2.png';
 import shade3 from '../storage/images/shade3.png';
-import wallet from '../storage/images/wallet.png';
+import login_logo from '../storage/images/login_logo.png';
+import driver_login from '../storage/images/driver_login.png';
 import BackgroundContainer from '../components/reusableComponents/Container/BackgroundContainer';
 
 const StartUp = ({navigation}) => {
@@ -30,8 +31,8 @@ const StartUp = ({navigation}) => {
       linearGradientColor1: '#70A48E',
       linearGradientColor2: '#5A3C76',
       navigateScreen: 'LoginScreen',
-      logoImage: authUserLogo,
-      bgImage:shade1
+      logoImage: login_logo,
+      bgImage:shade2
     },
 
     {
@@ -39,8 +40,8 @@ const StartUp = ({navigation}) => {
       linearGradientColor1: '#A4A270',
       linearGradientColor2: '#5A3C76',
       navigateScreen: 'LoginScreen',
-      logoImage: authUserLogo,
-      bgImage:shade1
+      logoImage: driver_login,
+      bgImage:shade3
     },
   ];
   const handleNavigation = navigateScreen => {
