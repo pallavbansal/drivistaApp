@@ -21,26 +21,19 @@ import CustomButton from '../CustomButton';
 import CustomTextInput from '../CustomTextInput';
 import Spinner from '../Spinner';
 
-const Owner = ({
-  labels,
-  details,
-  loading,
-  setLoading,
-  headerLabel,
-  caseType,
-  email,
-  setEmail,
-  mobileNumber,
-  setMobileNumber,
-  setFirstName,
-  firstName,
-  lastName,
-  setLastName,
-  headLabel,
+const Vehicle = ({
   editable,
   setEditable,
+  vehicleName,
+  setVehicleName,
+  vehicleNumber,
+  setVehicleNumber,
+  driverName,
+  setDriverName,
+  details,
   updateUserProfileRequest,
 }) => {
+  console.log('vehicle data hry:', details);
 
   const MainContainer = ({children}) => (
     <View style={styles.mainContainer}>{children}</View>
@@ -72,7 +65,7 @@ const Owner = ({
   return (
     <MainContainer>
       <View style={styles.profileContainer}>
-        <TouchableOpacity style={styles.actionContainer} onPress={handlePress}>
+        <TouchableOpacity style={styles.actionContainer} onPress={()=>setEditable(!editable)}>
           {!editable ? (
             <View style={{flexDirection: 'row'}}>
               <Text style={globalStyles.text}>{'Edit'}</Text>
@@ -82,39 +75,29 @@ const Owner = ({
               />
             </View>
           ) : (
-            <View style={[styles.buttonStyle]}>
-              <Text
-                style={[
-                  globalStyles.text,
-                  {color: 'white', fontWeight: 'bold'},
-                ]}>
-                {'update'}
-              </Text>
-            </View>
+                    ""
+            //  <View style={[styles.buttonStyle]}>
+            //   <Text
+            //     style={[
+            //       globalStyles.text,
+            //       {color: 'white', fontWeight: 'bold'},
+            //     ]}>
+            //     {'Reset'}
+            //   </Text>
+            // </View>
           )}
         </TouchableOpacity>
-        <LogoHeaderContainer
-          editable={editable}
-          details={details}
-          setFirstName={setFirstName}
-          firstName={firstName}
-          lastName={lastName}
-          setLastName={setLastName}
-          textInputRef={textInputRef}
-          handleInputPress={handleInputPress}
-        />
+        <LogoHeaderContainer />
         <View style={styles.infoCardContainer}>
-          {caseType === 'user_profile' ? (
-            <ProfileInfoContainer
-              editable={editable}
-              email={email}
-              setEmail={setEmail}
-              mobileNumber={mobileNumber}
-              setMobileNumber={setMobileNumber}
-            />
-          ) : (
-            ''
-          )}
+          <ProfileInfoContainer
+            editable={editable}
+            vehicleNumber={vehicleNumber}
+            vehicleName={vehicleName}
+            setVehicleName={setVehicleName}
+            setVehicleNumber={setVehicleNumber}
+            driverName={driverName}
+            setDriverName={setDriverName}
+          />
         </View>
       </View>
 
@@ -130,75 +113,51 @@ const LogoHeaderContainer = memo(props => (
         style={[globalStyles.logoImage, {width: 100, height: 100}]}
       />
     </View>
-    <View
-      style={{
-        flexDirection: 'row',
-        flex: 0.3,
-        justifyContent: 'space-evenly',
-        width: '70%',
-      }}>
-      {props.editable ? (
-        <TouchableOpacity style={[styles.input, styles.text]}>
-          <TextInput
-            //   ref={props.textInputRef}
-            // placeholder={"placeholder"}
-            // style={[styles.input, styles.text]}
-            value={props.firstName}
-            onChangeText={text => {
-              props.setFirstName(text);
-              // props.textInputRef.current.focus(); // Focus on input when text is changed
-            }}
-          />
-        </TouchableOpacity>
-      ) : (
-        <Text
-          style={[
-            globalStyles.text,
-            {fontSize: 25, fontWeight: 'bold', opacity: 0.7},
-          ]}>
-          {props.firstName}{' '}
-        </Text>
-      )}
-
-      {props.editable ? (
-        <TextInput
-          // ref={props.textInputRef}
-          style={[styles.input, styles.text]}
-          value={props.lastName}
-          onChangeText={text => props.setLastName(text)}
-        />
-      ) : (
-        <Text
-          style={[
-            globalStyles.text,
-            {fontSize: 25, fontWeight: 'bold', opacity: 0.7},
-          ]}>
-          {props.lastName}
-        </Text>
-      )}
-    </View>
   </View>
 ));
 
 const ProfileInfoContainer = memo(props => (
   <View>
     <View style={styles.wrapper}>
-      <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>{'Email '}</Text>
-
-      <Text style={styles.text}>: {props.email}</Text>
-    </View>
-    <View style={styles.wrapper}>
       <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
-        {'Mobile Number'}
+        {'Vehicle Number'}
       </Text>
       {props.editable ? (
         <TextInput
           style={[styles.input, styles.text]}
-          value={props.mobileNumber}
-          onChangeText={text => props.setMobileNumber(text)}
+          value={props.vehicleNumber}
+          onChangeText={text => props.setVehicleNumber(text)}
         />
       ) : (
-        <Text style={styles.text}>: {props.mobileNumber}</Text>
+        <Text style={styles.text}>: {props.vehicleNumber}</Text>
+      )}
+    </View>
+    <View style={styles.wrapper}>
+      <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
+        {'Vehicle Name'}
+      </Text>
+      {props.editable ? (
+        <TextInput
+          style={[styles.input, styles.text]}
+          value={props.vehicleName}
+          onChangeText={text => props.setVehicleName(text)}
+        />
+      ) : (
+        <Text style={styles.text}>: {props.vehicleName}</Text>
+      )}
+    </View>
+    <View style={styles.wrapper}>
+      <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
+        {'Driver Name'}
+      </Text>
+      {props.editable ? (
+        <TextInput
+          style={[styles.input, styles.text]}
+          value={props.driverName}
+          onChangeText={text => props.setDriverName(text)}
+        />
+      ) : (
+        <Text style={styles.text}>: {props.driverName}</Text>
       )}
     </View>
   </View>
@@ -297,4 +256,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(Owner);
+export default memo(Vehicle);

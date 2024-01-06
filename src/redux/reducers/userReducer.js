@@ -3,7 +3,8 @@ import {
   LOGOUT_USER,
   SET_LOGIN_USER_DATA,
   SET_REGISTER_USER_DATA,
-  SET_USER_PROFILE_DATA
+  SET_USER_PROFILE_DATA,
+  SET_NEW_VEHICLE_DATA
 } from '../constants/ActionTypes';
 const initialState = {
   user: {},

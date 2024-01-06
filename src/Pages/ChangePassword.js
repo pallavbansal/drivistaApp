@@ -47,7 +47,7 @@ const ChangePassword = ({navigation, route}) => {
     confirmPassword: 'Confirm Password',
     buttonLabel: 'Submit',
     navigateScreen: 'OtpScreen',
-    // handleNavigation: screenName => navigation.navigate(screenName),
+    handleDirectNavigation: screenName => navigation.pop(),
     handleNavigation: async screenName => {
       setLoading(true);
       if (caseType === 'register') {
@@ -79,23 +79,32 @@ const ChangePassword = ({navigation, route}) => {
   };
 
   const checkFormValidity = () => {
+    const isOldPasswordValid = oldPassword.length > 5;
     const isNewPasswordValid = password.length > 5; // Ensure password length is greater than 6
-    const isConfirmPasswordValid = confirmPassword.length > 0 && confirmPassword === password;
+    const isConfirmPasswordValid =
+      confirmPassword.length > 0 && confirmPassword === password;
 
     const isValid = isNewPasswordValid && isConfirmPasswordValid;
     const errorCheck = {
-      password: !isNewPasswordValid
-        ? 'Password should be of atleast length six'
-        : '',
-      confirmPassword: !isConfirmPasswordValid
-        ? 'Confirm Password should match New Password'
-        : '',
+      oldPassword:
+        !isOldPasswordValid && oldPassword !== ''
+          ? 'Password should be of atleast length six'
+          : '',
+      password:
+        !isNewPasswordValid && password !== ''
+          ? 'Password should be of atleast length six'
+          : '',
+      confirmPassword:
+        !isConfirmPasswordValid && confirmPassword !== ''
+          ? 'Confirm Password should match New Password'
+          : '',
     };
 
     setLoginError({
       ...loginError,
+      oldPassword: errorCheck.oldPassword,
       password: errorCheck.password,
-      confirmPassword:errorCheck.confirmPassword
+      confirmPassword: errorCheck.confirmPassword,
     });
     setIsFormValid(!isValid);
   };
@@ -104,7 +113,7 @@ const ChangePassword = ({navigation, route}) => {
     checkFormValidity(); // Check validity on input change
   }, [oldPassword, password, confirmPassword]);
 
-  console.log("conform pass:",confirmPassword);
+  console.log('conform pass:', confirmPassword);
   const renderSpinner = () => {
     if (loading) {
       return <Spinner />;
@@ -117,8 +126,10 @@ const ChangePassword = ({navigation, route}) => {
       <View style={styles.mainContainer}>
         <HeaderContainer
           showPopUp={false}
+          labels={labels}
           showBackArrow={true}
           containerStyle={styles.headContainer}
+          handleBackNavigation={labels.handleDirectNavigation}
         />
         <View style={styles.pageLabel}>
           <PageLabel label={labels.label} />
@@ -160,7 +171,7 @@ const InputContainer = memo(props => (
     {props.caseType === 'profile' ? (
       <CustomTextInput
         logoName={lockLogo}
-
+        errorText={props.loginError.oldPassword}
         placeholder={props.labels.oldPassword}
         showPasswordGenIcon={false}
         passwordVisible={props.passwordVisible}
@@ -176,7 +187,7 @@ const InputContainer = memo(props => (
     <CustomTextInput
       logoName={lockLogo}
       placeholder={props.labels.newPassword}
-      errorText={props.password.length > 0 ? props.loginError.password : ""}
+      errorText={props.loginError.password}
       showPasswordGenIcon={false}
       passwordVisible={props.passwordVisible}
       handlePasswordVisiblity={() => {
@@ -187,7 +198,7 @@ const InputContainer = memo(props => (
     <CustomTextInput
       logoName={lockLogo}
       placeholder={props.labels.confirmPassword}
-      errorText={props.password.length > 0 ? props.loginError.confirmPassword : ""}
+      errorText={props.loginError.confirmPassword}
       showPasswordGenIcon={false}
       passwordVisible={props.confirmPasswordVisible}
       handlePasswordVisiblity={() => {

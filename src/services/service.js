@@ -43,4 +43,23 @@ export const updateUserProfileService = async (params, config) => {
   return await apiConfig.post('profile/me/edit', params, config);
 };
 
+export const fetchVehicleListService = async config => {
+  //console.log('fetchVehicleListRequest token:', config);
+  // apiConfig.defaults.headers.common['Authorization'] = `Bearer ${'47|YNVKur2y1QCNZx8R6xVOtDW9JDwYyJ79zGHbIkjK70502a5d'}`;
+  return await apiConfig.post('vehicles/fetch-vehicle-by-user', '', config);
+};
+export const deleteVehicleService = async (params, config) => {
+  return await apiConfig.post('vehicles/delete', params, config);
+};
+
+
+export const updateVehicleDetailsService = async (params, config) => {
+  return await apiConfig.post('vehicles/update', params, config);
+};
+
+export const saveVehicleDetailsService = async (params, config) => {
+  return await apiConfig.post('vehicles/add', params, config);
+};
+
+
 

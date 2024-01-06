@@ -24,12 +24,12 @@ export const useAuthServiceHook = () => {
   const [loading, setLoading] = useState(false);
   const [lastName, setLastName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isTrialChecked, setIsTrialChecked] = useState(false);
   const [errors, setErrors] = useState({});
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState(false);
-  const [oldPassword, setOldPassword] = useState(false);
+  const [password, setPassword] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [isFormValid, setIsFormValid] = useState(true);
@@ -103,9 +103,6 @@ export const useAuthServiceHook = () => {
     if (fullName.length < 5) {
       return {result: 'failed', message: 'First Name  is too small'};
     }
-    if (lastName.length < 5) {
-      return {result: 'failed', message: 'Last  Name  is too small'};
-    }
     if (mobileNumber.length < 10) {
       return {result: 'failed', message: 'mobile Number is incorrect'};
     }
@@ -135,6 +132,7 @@ export const useAuthServiceHook = () => {
         return {result: 'failed', message: response.data.message};
       }
     } catch (error) {
+      console.log('vvv:', error.response);
       return {result: 'failed'};
       //   console.log('vvv:', error.response);
       //  console.log(error.response);
@@ -176,10 +174,10 @@ export const useAuthServiceHook = () => {
     const params = {
       email: email,
     };
-
+    console.log("before check pass:",params)
     try {
       const response = await forgotPasswordService(params);
-      //   console.log("check pass:",response.data)
+
       console.log('check pass:', response.data);
       if (response.data.status_code === 1) {
         return {result: 'success', id: response.data.data.id};
@@ -187,8 +185,9 @@ export const useAuthServiceHook = () => {
         return {result: 'failed', message: response.data.message};
       }
     } catch (error) {
-      return {result: 'failed', message: 'Something went wrong'};
       console.log('vvv:', error.response);
+      return {result: 'failed', message: 'Something went wrong'};
+
       //  console.log(error.response);
     }
   };

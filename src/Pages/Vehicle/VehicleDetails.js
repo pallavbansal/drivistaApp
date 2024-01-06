@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
-import React, {memo} from 'react';
-import {View, StyleSheet, Image, Text} from 'react-native';
+import React, {memo, useEffect, useState} from 'react';
+import {View, StyleSheet, Image, Alert} from 'react-native';
 import ProfileComponent from '../../components/reusableComponents/Profile';
 import FooterContainer from '../../components/reusableComponents/Container/FooterContainer';
 
@@ -9,46 +9,91 @@ import HeaderContainer from '../../components/reusableComponents/Container/Heade
 import {globalStyles} from '../../constants/globalStyles';
 import {Fonts} from '../../constants/fonts';
 import CustomButton from '../../components/reusableComponents/CustomButton';
-
+import Vehicle from '../../components/reusableComponents/Profile/Vehicle';
+import {useVehicleServiceHook} from '../../services/hooks/vehicle/useVehicleServiceHook';
 
 const VehicleDetails = ({route, navigation}) => {
   const {
+    loading,
+    setLoading,
+    vehicleNumber,
+    setVehicleNumber,
+    vehicleName,
+    setVehicleName,
+    driverName,
+    setDriverName,
+    vehicleDetailsEditRequest
+  } = useVehicleServiceHook();
+  const {
     headLabel = 'Vehicle Details',
     type = 'Default Type',
-    details = [
-      {
-        label: 'Email',
-        data: 'kabir343@gmail.com',
-      },
-      {
-        label: 'Mobile Number',
-        data: '9867656767',
-      },
-    ],
+    details = [],
   } = route.params;
+  const [editable, setEditable] = useState(false);
+  useEffect(() => {
+    setVehicleName(details.vehicle_name);
+    setVehicleNumber(details.vehicle_number);
+    setDriverName(details.driver_name);
+  }, [details]);
+
   const props = {
     buttonLabel: 'Save',
     navigateScreen: 'SuccessScreen',
-    handleNavigation: screenName => navigation.navigate(screenName),
+    // handleNavigation: screenName => navigation.navigate(screenName),
+    handleNavigation: async screenName => {
+      setLoading(true);
+      const response = await vehicleDetailsEditRequest(details.id);
+      setLoading(false);
+      try {
+         if (response.result === 'success') {
+          Alert.alert('Success');
+        } else if (response.result === 'failed') {
+          Alert.alert(response.message);
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+      }
+    },
+  };
+  const labels = {
+    label:'Vehicle Details',
+    navigateBackScreen: '',
+    handleDirectNavigation: screenName => navigation.pop(),
   };
   return (
     <View style={styles.mainContainer}>
       <HeaderContainer
-        label={'Vehicle Details'}
+      labels={labels}
+        label={labels.label}
         showBackArrow={true}
         showLabel={true}
         showBackground={true}
-        showPopUp={true}
+        showPopUp={false}
         containerStyle={styles.headContainer}
+        handleBackNavigation={labels.handleDirectNavigation}
       />
       <View style={styles.container}>
         <View style={styles.profileContainer}>
-          <ProfileComponent caseType={'vehicle_profile'} details={details} headerLabel={headLabel} />
+          <Vehicle
+            details={details}
+            editable={editable}
+            setEditable={setEditable}
+            vehicleName={vehicleName}
+            setVehicleName={setVehicleName}
+            vehicleNumber={vehicleNumber}
+            setVehicleNumber={setVehicleNumber}
+            driverName={driverName}
+            setDriverName={setDriverName}
+          />
         </View>
+        {
+          editable ? (
+            <View style={styles.buttonContainer}>
+            <ButtonContainer {...props} />
+          </View>
+          ):""
+        }
 
-        <View style={styles.buttonContainer}>
-          <ButtonContainer {...props} />
-        </View>
       </View>
     </View>
   );

@@ -15,6 +15,7 @@ import { useAuthServiceHook } from '../services/hooks/auth/useAuthServiceHook';
 
 const Profile = ({route, navigation}) => {
   const {user} = useSelector(state => state.userState);
+   const [editable, setEditable] = useState(false);
   console.log('redux user data:', user);
   //const [details,setDetails]=useState({});
   const {
@@ -41,7 +42,7 @@ const Profile = ({route, navigation}) => {
     setLoading(true);
     const response = await updateUserProfileRequest();
     if(response.result === "failed")
-    {
+    { setEditable(true);
       Alert.alert(response.message)
     }
     else if(response.result === "unauthenticated")
@@ -73,6 +74,7 @@ const Profile = ({route, navigation}) => {
     linkText: 'Register',
     navigateScreen: 'OwnerHomeScreen',
     footerNavigateScreen: 'RegisterScreen',
+    handleBackNavigation:()=> navigation.pop(),
     handleDirectNavigation: screenName => navigation.navigate(screenName),
   };
   const handleBackArrow=()=>{
@@ -89,11 +91,13 @@ const Profile = ({route, navigation}) => {
       {renderSpinner()}
       <HeaderContainer
         label={'Profile'}
+        labels={labels}
         showBackArrow={true}
         showLabel={true}
         showBackground={true}
         containerStyle={styles.headContainer}
         handleBackArrow={handleBackArrow}
+        handleBackNavigation={labels.handleBackNavigation}
       />
       <View style={styles.profileContainer}>
         <Owner
@@ -110,6 +114,8 @@ const Profile = ({route, navigation}) => {
           firstName={firstName}
           lastName={lastName}
           setLastName={setLastName}
+          editable={editable}
+          setEditable={setEditable}
           updateUserProfileRequest={handleUpdateUserProfileRequest}
           headerLabel={labels.headLabel}
         />

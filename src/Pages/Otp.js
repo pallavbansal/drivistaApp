@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect} from 'react';
-import {View, StyleSheet,Alert} from 'react-native';
+import {View, StyleSheet, Alert} from 'react-native';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import themeLogo from '../storage/images/theme.png';
@@ -10,17 +10,22 @@ import AuthFooter from '../components/reusableComponents/Footer/AuthFooter';
 import OtpInput from '../components/reusableComponents/OtpInput';
 import BackgroundContainer from '../components/reusableComponents/Container/BackgroundContainer';
 import HeaderContainer from '../components/reusableComponents/Container/HeaderContainer';
-import { useAuthServiceHook } from '../services/hooks/auth/useAuthServiceHook';
+import {useAuthServiceHook} from '../services/hooks/auth/useAuthServiceHook';
 import Spinner from '../components/reusableComponents/Spinner';
 
-const Otp = ({navigation,route}) => {
-  const {id,caseType}=route.params;
+const Otp = ({navigation, route}) => {
+  const {id, caseType} = route.params;
 
-  const { loading,
+  const {
+    loading,
     isFormValid,
     setIsFormValid,
-    setLoading,otp,setOtp,otpVerifyRequest,otpForgotPassVerifyRequest} =
-    useAuthServiceHook();
+    setLoading,
+    otp,
+    setOtp,
+    otpVerifyRequest,
+    otpForgotPassVerifyRequest,
+  } = useAuthServiceHook();
   const labels = {
     label: 'Enter OTP',
     heading: 'Please enter the 4-digit code sent to your e-mail address.',
@@ -30,51 +35,51 @@ const Otp = ({navigation,route}) => {
     authFooterText: 'Do not have an account?',
     linkText: 'register',
     navigateScreen: 'OwnerHomeScreen',
-    // handleNavigation: () => navigation.navigate('OwnerHomeScreen'),
+    handleDirectNavigation: () => navigation.pop(),
     handleNavigation: async screenName => {
-      if(caseType === "register")
-      {
+      if (caseType === 'register') {
         setLoading(true);
         const response = await otpVerifyRequest(id);
         setLoading(false);
 
         try {
-        if (response.result === 'success') {
-         // navigation.navigate(screenName);
-        } else if (response.result === 'failed') {
-          console.log('otp screwn:',response.message);
-          Alert.alert(response.message);
+          if (response.result === 'success') {
+            // navigation.navigate(screenName);
+          } else if (response.result === 'failed') {
+            console.log('otp screwn:', response.message);
+            Alert.alert(response.message);
+          }
+          // else{
+          //   navigation.navigate(screenName);
+          // }
+        } catch (error) {
+          console.error('Login error:', error);
         }
-        // else{
-        //   navigation.navigate(screenName);
-        // }
-      } catch (error) {
-        console.error('Login error:', error);
       }
-    }
-    if(caseType === "forgot_password")
-    {
-      setLoading(true);
-      const response = await otpForgotPassVerifyRequest(id);
-      setLoading(false);
+      if (caseType === 'forgot_password') {
+        setLoading(true);
+        const response = await otpForgotPassVerifyRequest(id);
+        setLoading(false);
 
-      try {
-      if (response.result === 'success') {
-        navigation.pop();
-       navigation.navigate("ChangePassword",{caseType:'register',id: response.id,verification_uid:response.verification_uid});
-
-      } else if (response.result === 'failed') {
-        console.log('otp screwn:',response.message);
-        Alert.alert(response.message);
+        try {
+          if (response.result === 'success') {
+            navigation.pop();
+            navigation.navigate('ChangePassword', {
+              caseType: 'register',
+              id: response.id,
+              verification_uid: response.verification_uid,
+            });
+          } else if (response.result === 'failed') {
+            console.log('otp screwn:', response.message);
+            Alert.alert(response.message);
+          }
+          // else{
+          //   navigation.navigate(screenName);
+          // }
+        } catch (error) {
+          console.error('Login error:', error);
+        }
       }
-      // else{
-      //   navigation.navigate(screenName);
-      // }
-    } catch (error) {
-      console.error('Login error:', error);
-    }
-  }
-
     },
   };
 
@@ -85,18 +90,15 @@ const Otp = ({navigation,route}) => {
     // Handle the completed OTP value here, e.g., validation or submission
   };
 
-  useEffect(()=>{
-    console.log("hry form otp:",otp);
+  useEffect(() => {
+    console.log('hry form otp:', otp);
     const otpEmpty = otp.some(element => element === '');
-    if(otpEmpty)
-    {
+    if (otpEmpty) {
       setIsFormValid(true);
-    }
-    else{
+    } else {
       setIsFormValid(false);
     }
-  },[otp])
-
+  }, [otp]);
 
   const renderSpinner = () => {
     if (loading) {
@@ -106,25 +108,30 @@ const Otp = ({navigation,route}) => {
   };
 
   return (
-    <BackgroundContainer
-    source={themeLogo}
-  >
-    <View style={styles.mainContainer}>
-    {renderSpinner()}
-    <HeaderContainer
+    <BackgroundContainer source={themeLogo}>
+      <View style={styles.mainContainer}>
+        {renderSpinner()}
+        <HeaderContainer
           showPopUp={false}
           showBackArrow={true}
+          labels={labels}
           containerStyle={styles.headContainer}
+          handleBackNavigation={labels.handleDirectNavigation}
         />
-      <View style={styles.pageLabel}>
-        <PageLabel label={labels.label} />
+        <View style={styles.pageLabel}>
+          <PageLabel label={labels.label} />
+        </View>
+        <View style={styles.container}>
+          <HeadingContainer heading={labels.heading} />
+          <OtpInput
+            length={4}
+            setOtp={setOtp}
+            otp={otp}
+            onComplete={handleOtpComplete}
+          />
+          <ButtonContainer {...labels} isFormValid={isFormValid} />
+        </View>
       </View>
-      <View style={styles.container}>
-        <HeadingContainer heading={labels.heading} />
-        <OtpInput length={4} setOtp={setOtp} otp={otp} onComplete={handleOtpComplete} />
-        <ButtonContainer {...labels}  isFormValid={isFormValid} />
-      </View>
-    </View>
     </BackgroundContainer>
   );
 };
@@ -137,7 +144,7 @@ const HeadingContainer = memo(({heading}) => (
 
 const ButtonContainer = memo(props => (
   <View style={styles.button}>
-    <CustomButton {...props} disabled={props.isFormValid}/>
+    <CustomButton {...props} disabled={props.isFormValid} />
   </View>
 ));
 
@@ -150,7 +157,6 @@ const FooterContainer = memo(props => (
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-
   },
   headContainer: {
     flex: 0.1,

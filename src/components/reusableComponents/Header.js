@@ -16,6 +16,7 @@ import {Fonts} from '../../constants/fonts';
 
 const Header = ({
   textName,
+  labels,
   showChildren,
   showBackArrow = false,
   showPopUp = false,
@@ -23,17 +24,17 @@ const Header = ({
   showBackground = false,
   navigationPopUpList,
   handleNavigation,
+  handleBackNavigation,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
-  const handlePopUpNavigation=(screenName)=>{
+  const handlePopUpNavigation = screenName => {
     setModalVisible(false);
     handleNavigation(screenName);
-  }
-
+  };
 
   let wrapperStyle = styles.wrapper; // Default wrapper style
 
@@ -47,7 +48,7 @@ const Header = ({
   let leftArrowComponent = null;
   if (showBackArrow) {
     leftArrowComponent = (
-      <TouchableOpacity onPress={toggleModal}>
+      <TouchableOpacity  onPress={() => handleBackNavigation(labels.navigateBackScreen)} >
         <Image
           source={left_arrow}
           style={[globalStyles.logoImage, {marginLeft: 5}]}
@@ -59,9 +60,7 @@ const Header = ({
   let labelComponent = null;
   if (showLabel) {
     labelComponent = (
-      <Text style={[globalStyles.text, styles.headerLabel]}>
-        {textName}
-      </Text>
+      <Text style={[globalStyles.text, styles.headerLabel]}>{textName}</Text>
     );
   }
 
@@ -79,12 +78,17 @@ const Header = ({
 
   return (
     <View>
-      <View style={[styles.wrapper, showBackground && styles.backgroundTransparent]}>
-        <View style={styles.backArrow}>{leftArrowComponent}</View>
+      <View
+        style={[
+          styles.wrapper,
+          showBackground && styles.backgroundTransparent,
+        ]}>
+        <TouchableOpacity
+          style={styles.backArrow}>
+          {leftArrowComponent}
+        </TouchableOpacity>
         <View style={styles.label}>
-          <Text style={styles.headerLabel}>
-            {labelComponent}
-          </Text>
+          <Text style={styles.headerLabel}>{labelComponent}</Text>
         </View>
         <View style={styles.popUpLogo}>{PopUpNavigationComponent}</View>
       </View>
@@ -103,11 +107,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
-   // backgroundColor: Colors.headerBg, // Set the background color if needed
+    // backgroundColor: Colors.headerBg, // Set the background color if needed
     paddingVertical: 10,
   },
   backgroundTransparent: {
-    backgroundColor:Colors.headerBg,
+    backgroundColor: Colors.headerBg,
   },
   backArrow: {
     flex: 0.3,
@@ -123,8 +127,7 @@ const styles = StyleSheet.create({
   headerLabel: {
     fontSize: Fonts.sizes.medium,
     fontWeight: Fonts.weight.bold,
-    color:'white'
-
+    color: 'white',
   },
 });
 
