@@ -5,11 +5,13 @@ import Header from '../Header';
 const HeaderContainer = ({
   containerStyle,
   label = 'Label',
+  labels,
   showLabel = false,
   showBackArrow = false,
   showBackground=false,
   showPopUp = false,
   handleNavigation,
+  handleBackNavigation
 }) => {
   const navigationPopUpList = [
     {
@@ -32,12 +34,14 @@ const HeaderContainer = ({
     <View style={containerStyle}>
       <Header
         textName={label}
+        labels={labels}
         navigationPopUpList={navigationPopUpList}
         showLabel={showLabel}
         showBackArrow={showBackArrow}
         showPopUp={showPopUp}
         showBackground={showBackground}
         handleNavigation={handleNavigation}
+        handleBackNavigation={handleBackNavigation}
       />
     </View>
   );

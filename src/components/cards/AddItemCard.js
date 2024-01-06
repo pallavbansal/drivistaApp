@@ -10,58 +10,30 @@ import {
 } from 'react-native';
 import {globalStyles} from '../../constants/globalStyles';
 import {Colors} from '../../constants/colors';
-import editImage from '../../storage/images/edit.png';
-import deleteImage from '../../storage/images/delete.png';
-import onlineStatus from '../../storage/images/onlineStatus.png';
+import addNew from '../../storage/images/add_new.png';
 import {Fonts} from '../../constants/fonts';
 
-const StatusCard = ({
-  id,
-  imageLink,
-  label,
-  vehicle_name = 'test',
-  onlinestatus,
-  editShow,
-  deleteShow,
-  handleDeleteItem,
-  handleNavigation
+const AddItemCard = ({
+  label="Item Name",
+  handleAddItem
 }) => {
   return (
     <View style={styles.inputContainer}>
       <View style={styles.inputWrapper}>
         <View style={styles.labelSection}>
-          <Image
-            source={imageLink}
-            style={[
-              globalStyles.logoImage,
-              {height: 25, width: 25, marginRight: 10},
-            ]}
-          />
+
           <Text style={[globalStyles.textInput, styles.bulletText]}>
-            {vehicle_name}
+            {label}
           </Text>
         </View>
         <View style={styles.actionSection}>
-          <View style={styles.actionSection}>
-            {onlinestatus === true && (
-              <Image source={onlineStatus} style={globalStyles.logoImage} />
-            )}
-            {editShow === true && (
-               <TouchableOpacity onPress={() => handleNavigation(id)}>
-               <Image
-                 source={editImage}
-                 style={[globalStyles.logoImage, {height: 20, width: 20,marginLeft:5}]}
-               />
-             </TouchableOpacity>
-            )}
-            {deleteShow === true && (
-              <TouchableOpacity onPress={() => handleDeleteItem(id)}>
+          <View>
+          <TouchableOpacity onPress={handleAddItem}>
                 <Image
-                  source={deleteImage}
+                  source={addNew}
                   style={[globalStyles.logoImage, {height: 20, width: 20,marginLeft:5}]}
                 />
               </TouchableOpacity>
-            )}
           </View>
         </View>
       </View>
@@ -73,7 +45,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     borderRadius: 10,
     marginVertical: 5,
-    marginHorizontal: 20,
+    marginHorizontal: 25,
     backgroundColor: Colors.inputWrapperBg, // Set the background color if needed
   },
   inputWrapper: {
@@ -103,8 +75,9 @@ const styles = StyleSheet.create({
     fontSize: Fonts.sizes.medium,
     fontWeight: Fonts.weight.bold,
     // textTransform: 'capitalize',
+    opacity:0.4,
     color: Colors.primary,
   },
 });
 
-export default StatusCard;
+export default AddItemCard;

@@ -1,6 +1,12 @@
 /* eslint-disable prettier/prettier */
-import React, {memo} from 'react';
-import {View, StyleSheet, KeyboardAvoidingView, Alert} from 'react-native';
+import React, {memo, useEffect} from 'react';
+import {
+  View,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Alert,
+  ScrollView,
+} from 'react-native';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import CustomTextInput from '../components/reusableComponents/CustomTextInput';
@@ -20,8 +26,12 @@ const Register = ({navigation}) => {
   const {
     loading,
     setLoading,
+    loginError,
+    setLoginError,
     fullName,
     setFullName,
+    isFormValid,
+    setIsFormValid,
     lastName,
     setLastName,
     email,
@@ -48,7 +58,7 @@ const Register = ({navigation}) => {
     buttonLabel: 'Sign Up',
     authFooterText: 'Already have an Account?',
     linkText: 'Sign In',
-    fullName: 'Full Name',
+    fullName: 'First Name',
     lastName: 'Last Name',
     mobileNumber: 'Mobile Number',
     password: 'Password',
@@ -56,7 +66,8 @@ const Register = ({navigation}) => {
     checkboxText: 'Start your 15 days trial',
     footerNavigateScreen: 'LoginScreen',
     navigateScreen: 'OtpScreen',
-    handleDirectNavigation: screenName => navigation.navigate(screenName),
+    navigateBackScreen:'LoginScreen',
+    handleDirectNavigation: screenName => navigation.pop(),
     handleNavigation: async screenName => {
       console.log('what is screen:', screenName);
       setLoading(true);
@@ -67,7 +78,10 @@ const Register = ({navigation}) => {
           Alert.alert('Verfication failed');
         } else if (response.result === 'success') {
           console.log('response bb:', response.id);
-          navigation.navigate(screenName, {caseType:'register',id: response.id});
+          navigation.navigate(screenName, {
+            caseType: 'register',
+            id: response.id,
+          });
         } else if (response.result === 'failed') {
           Alert.alert(response.message);
         } else {
@@ -78,6 +92,66 @@ const Register = ({navigation}) => {
       }
     },
   };
+  const checkFormValidity = () => {
+    const isFirstNameValid = fullName.length >= 3;
+    const isLastNameValid = lastName.length >= 3;
+    const isMobileNumberValid = mobileNumber.length >= 10;
+    const isPasswordValid = password.length > 5; // Ensure password length is greater than 6
+    const emailValidationRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isEmailValid = emailValidationRegex.test(email);
+    const isConfirmPasswordValid =
+      confirmPassword.length > 0 && confirmPassword === password;
+
+    const errorCheck = {
+      fullName:
+        !isFirstNameValid && fullName !== ''
+          ? 'First Name length should be atleast 3'
+          : '',
+      lastName:
+        !isLastNameValid && lastName !== ''
+          ? 'Last Name length should be atleast 3'
+          : '',
+      email:
+        !isEmailValid && email !== '' ? 'Email should contain @ and .com' : '',
+      mobileNumber:
+        !isMobileNumberValid && mobileNumber !== ''
+          ? 'Mobile Number should be atleast 10 letters'
+          : '',
+      password:
+        !isPasswordValid && password !== ''
+          ? 'Password should be of atleast length six '
+          : '',
+      confirmPassword:
+        !isConfirmPasswordValid && confirmPassword !== ''
+          ? 'Confirm Password should match New Password'
+          : '',
+    };
+    const isValid =
+      isFirstNameValid &&
+      isLastNameValid &&
+      isEmailValid &&
+      isMobileNumberValid &&
+      isPasswordValid &&
+      isConfirmPasswordValid;
+    setLoginError({
+      ...loginError,
+      fullName: errorCheck.fullName,
+      lastName:errorCheck.lastName,
+      email: errorCheck.email,
+      mobileNumber: errorCheck.mobileNumber,
+      password: errorCheck.password,
+      confirmPassword: errorCheck.confirmPassword,
+    });
+
+    setIsFormValid(!isValid);
+  };
+
+  useEffect(() => {
+    checkFormValidity(); // Check validity on input change
+  }, [fullName, lastName, mobileNumber, password, confirmPassword, email]);
+
+  console.log('check first name:', fullName);
+
   const renderSpinner = () => {
     if (loading) {
       return <Spinner />;
@@ -86,43 +160,49 @@ const Register = ({navigation}) => {
   };
   return (
     <View style={styles.mainContainer}>
-       {renderSpinner()}
+      {renderSpinner()}
       <HeaderContainer
+        labels={labels}
         showBackArrow={true}
         containerStyle={styles.headContainer}
+        handleBackNavigation={labels.handleDirectNavigation}
       />
       <View style={styles.pageLabel}>
         <PageLabel label={labels.label} />
       </View>
-      <View style={styles.container}>
-        <HeadingContainer heading={labels.heading} />
-        <InputContainer
-          labels={labels}
-          fullName={fullName}
-          setFullName={setFullName}
-          lastName={lastName}
-          setLastName={setLastName}
-          email={email}
-          setEmail={setEmail}
-          mobileNumber={mobileNumber}
-          setMobileNumber={setMobileNumber}
-          password={password}
-          setPassword={setPassword}
-          confirmPassword={confirmPassword}
-          setConfirmPassword={setConfirmPassword}
-          checkboxText={labels.checkboxText}
-          isTrialChecked={isTrialChecked}
-          setIsTrialChecked={setIsTrialChecked}
-          passwordVisible={passwordVisible}
-          setPasswordVisible={setPasswordVisible}
-          confirmPasswordVisible={confirmPasswordVisible}
-          setConfirmPasswordVisible={setConfirmPasswordVisible}
-          errors={errors}
-          {...labels}
-        />
-        <ButtonContainer {...labels} />
-        <FooterContainer {...labels} />
-      </View>
+      <ScrollView style={{flex: 0.9}}>
+        <View style={styles.container}>
+          <Space />
+          <HeadingContainer heading={labels.heading} />
+          <InputContainer
+            labels={labels}
+            fullName={fullName}
+            loginError={loginError}
+            setFullName={setFullName}
+            lastName={lastName}
+            setLastName={setLastName}
+            email={email}
+            setEmail={setEmail}
+            mobileNumber={mobileNumber}
+            setMobileNumber={setMobileNumber}
+            password={password}
+            setPassword={setPassword}
+            confirmPassword={confirmPassword}
+            setConfirmPassword={setConfirmPassword}
+            checkboxText={labels.checkboxText}
+            isTrialChecked={isTrialChecked}
+            setIsTrialChecked={setIsTrialChecked}
+            passwordVisible={passwordVisible}
+            setPasswordVisible={setPasswordVisible}
+            confirmPasswordVisible={confirmPasswordVisible}
+            setConfirmPasswordVisible={setConfirmPasswordVisible}
+            errors={errors}
+            {...labels}
+          />
+          <ButtonContainer {...labels} isFormValid={isFormValid} />
+          <FooterContainer {...labels} />
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -137,6 +217,7 @@ const InputContainer = memo(props => (
   <View style={styles.inputContainer}>
     <CustomTextInput
       logoName={emailLogo}
+      errorText={props.loginError.fullName}
       placeholder={props.labels.fullName}
       onChangeText={text => {
         props.setFullName(text);
@@ -144,22 +225,26 @@ const InputContainer = memo(props => (
     />
     <CustomTextInput
       logoName={emailLogo}
+      errorText={props.loginError.lastName}
       placeholder={props.labels.lastName}
       onChangeText={text => props.setLastName(text)}
     />
     <CustomTextInput
       logoName={emailLogo}
+      errorText={props.loginError.email}
       placeholder={props.labels.email}
       showPasswordGenIcon={false}
       onChangeText={text => props.setEmail(text)}
     />
     <CustomTextInput
       logoName={emailLogo}
+      errorText={props.loginError.mobileNumber}
       placeholder={props.labels.mobileNumber}
       onChangeText={text => props.setMobileNumber(text)}
     />
     <CustomTextInput
       logoName={lockLogo}
+      errorText={props.loginError.password}
       placeholder={props.labels.password}
       showPasswordGenIcon={true}
       passwordVisible={props.passwordVisible}
@@ -170,6 +255,7 @@ const InputContainer = memo(props => (
     />
     <CustomTextInput
       logoName={lockLogo}
+      errorText={props.loginError.confirmPassword}
       placeholder={props.labels.confirmPassword}
       showPasswordGenIcon={true}
       passwordVisible={props.confirmPasswordVisible}
@@ -178,13 +264,14 @@ const InputContainer = memo(props => (
       }}
       onChangeText={text => props.setConfirmPassword(text)}
     />
+
     <Space />
     <Checkbox label={props.checkboxText} />
   </View>
 ));
 const ButtonContainer = memo(props => (
   <View style={styles.button}>
-    <CustomButton {...props} />
+    <CustomButton {...props} disabled={props.isFormValid} />
   </View>
 ));
 
@@ -212,7 +299,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
-    flex: 0.8,
+    flex: 0.9,
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     borderWidth: 1,

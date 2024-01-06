@@ -98,7 +98,7 @@ const Login = ({navigation}) => {
       {renderSpinner()}
       <HeaderContainer
         showPopUp={false}
-        showBackArrow={true}
+        showBackArrow={false}
         containerStyle={styles.headContainer}
       />
       <View style={styles.pageLabel}>
