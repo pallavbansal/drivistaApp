@@ -7,48 +7,50 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
-import {Colors} from '../../constants/colors';
-import StatusCard from '../../components/cards/StatusCard';
-// import CustomCard from '../../components/cards/CustomCard';
-import HeaderContainer from '../../components/reusableComponents/Container/HeaderContainer';
-import FooterContainer from '../../components/reusableComponents/Container/FooterContainer';
-import vehicleLogo from '../../storage/images/drivers.png';
-import BreakDetailsCard from '../../components/cards/BreakDetailsCard';
-import {useVehicleServiceHook} from '../../services/hooks/vehicle/useVehicleServiceHook';
+import {Colors} from '../../../constants/colors';
+import StatusCard from '../../../components/cards/StatusCard';
+import HeaderContainer from '../../../components/reusableComponents/Container/HeaderContainer';
+import FooterContainer from '../../../components/reusableComponents/Container/FooterContainer';
+import userLogo from '../../../storage/images/user.png';
 import {useSelector} from 'react-redux';
-import showDeleteConfirmation from '../../components/reusableComponents/showDeleteConfirmation';
-import AddItemCard from '../../components/cards/AddItemCard';
+import showDeleteConfirmation from '../../../components/reusableComponents/showDeleteConfirmation';
+import AddItemCard from '../../../components/cards/AddItemCard';
 import {Text} from 'react-native';
+import {useDriverServiceHook} from '../../../services/hooks/driver/useDriverServiceHook';
 
 const Home = ({navigation}) => {
   const {
-    fetchVehicleListRequest,
-    deleteVehicleRequest,
-    vehicleName,
-    setVehicleName,
-    vehicleNumber,
-    setVehicleNumber,
-    driverName,
-    setDriverName,
-    saveVehicleRequest,
-  } = useVehicleServiceHook();
+    fetchDriverListRequest,
+    deleteDriverRequest,
+    saveDriverRequest,
+    email,
+    setEmail,
+    mobileNumber,
+    setFirstName,
+    firstName,
+    lastName,
+    setLastName,
+    setMobileNumber,
+    password,
+    setPasssword,
+  } = useDriverServiceHook();
   const [modalVisible, setModalVisible] = useState(false);
-  const {vehicle} = useSelector(state => state.vehicleState);
-  const [vehicleData, setVehicleData] = useState([]);
+  const {drivers} = useSelector(state => state.driverState);
+  const [driversData, setDriversData] = useState([]);
   // console.log('hey vehicleReducer in home :', vehicle);
   useEffect(() => {
-    setVehicleData(vehicle);
-  }, [vehicle]);
+    setDriversData(drivers);
+  }, [drivers]);
 
   useEffect(() => {
-    fetchVehicleListRequest();
+    fetchDriverListRequest();
   }, []);
 
   const handleNavigation = item => {
-    navigation.navigate('VehicleDetails', {
+    navigation.navigate('DriverDetails', {
       // Pass additional parameters here as an object
-      label: 'Vehicle Detalils',
-      type: 'vehicle',
+      label: 'Driver Detalils',
+      type: 'driver',
       details: item,
       // Add more parameters as needed
     });
@@ -58,15 +60,17 @@ const Home = ({navigation}) => {
     editShow: true,
     deleteShow: true,
   };
-  const handleVehicleRequest = async () => {
+  const handleDriverRequest = async () => {
     if (
-      driverName.length < 3 ||
-      vehicleName.length < 3 ||
-      vehicleNumber.length < 3
+      firstName.length < 3 ||
+      lastName.length < 3 ||
+      email.length < 3 ||
+      password < 6 ||
+      mobileNumber.length < 10
     ) {
       Alert.alert('Fields Input length sould be atleast three !');
     } else {
-      const response = await saveVehicleRequest();
+      const response = await saveDriverRequest();
       handleClose();
     }
   };
@@ -75,21 +79,20 @@ const Home = ({navigation}) => {
   };
   const handleClose = () => {
     setModalVisible(false);
-    setVehicleName(''); // Reset the input field on modal close
-    setVehicleNumber('');
-    setDriverName('');
+    setFirstName(''); // Reset the input field on modal close
+    setLastName('');
+    setEmail('');
   };
   const handleDeleteItem = id => {
-    showDeleteConfirmation(id, deleteVehicleRequest);
+    showDeleteConfirmation(id, deleteDriverRequest);
   };
   const renderCards = vehicleData => {
-    return vehicleData.map((item, index) => (
+    return driversData.map((item, index) => (
       <View>
         <View key={item.id}>
-
           <StatusCard
-            imageLink={vehicleLogo}
-            textName={item.vehicle_name}
+            imageLink={userLogo}
+            textName={item.first_name}
             {...actions}
             {...item}
             handleDeleteItem={id => handleDeleteItem(id)}
@@ -112,26 +115,30 @@ const Home = ({navigation}) => {
         showBackArrow={true}
         showLabel={true}
         showBackground={true}
-        label={'Your Vehicles'}
+        label={'Your Employees'}
         containerStyle={styles.headContainer}
         handleNavigation={navigateScreen => {
           navigation.navigate(navigateScreen);
         }}
         handleBackNavigation={labels.handleDirectNavigation}
       />
-      <AddItemCard label="Add Vehicle" handleAddItem={handleAddItem} />
-      <View style={styles.cardContainer}>{renderCards(vehicleData)}</View>
+      <AddItemCard label="Add Employee" handleAddItem={handleAddItem} />
+      <View style={styles.cardContainer}>{renderCards(driversData)}</View>
       <FooterContainer containerStyle={styles.footerContainer} />
       <ModalContainer
-        vehicleName={vehicleName}
+        firstName={firstName}
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
-        setVehicleName={setVehicleName}
-        vehicleNumber={vehicleNumber}
-        setVehicleNumber={setVehicleNumber}
-        driverName={driverName}
-        setDriverName={setDriverName}
-        handleVehicleRequest={handleVehicleRequest}
+        setFirstName={setFirstName}
+        lastName={lastName}
+        setLastName={setLastName}
+        email={email}
+        setEmail={setEmail}
+        password={password}
+        setPasssword={setPasssword}
+        mobileNumber={mobileNumber}
+        setMobileNumber={setMobileNumber}
+        handleDriverRequest={handleDriverRequest}
         handleClose={handleClose}
       />
     </View>
@@ -150,26 +157,38 @@ const ModalContainer = memo(props => (
       <View style={styles.modalContent}>
         <TextInput
           style={styles.input}
-          placeholder="Enter Vehicle Name"
-          value={props.vehicleName}
-          onChangeText={text => props.setVehicleName(text)}
+          placeholder="Enter First Name"
+          value={props.firstName}
+          onChangeText={text => props.setFirstName(text)}
         />
         <TextInput
           style={styles.input}
-          placeholder="Enter Vehicle Number"
-          value={props.vehicleNumber}
-          onChangeText={text => props.setVehicleNumber(text)}
+          placeholder="Enter Last Number"
+          value={props.lastName}
+          onChangeText={text => props.setLastName(text)}
         />
         <TextInput
           style={styles.input}
-          placeholder="Enter Driver Name"
-          value={props.driverName}
-          onChangeText={text => props.setDriverName(text)}
+          placeholder="Enter Email Id"
+          value={props.email}
+          onChangeText={text => props.setEmail(text)}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Enter Password"
+          value={props.password}
+          onChangeText={text => props.setPasssword(text)}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Enter Mobile Number"
+          value={props.mobileNumber}
+          onChangeText={text => props.setMobileNumber(text)}
         />
         <View style={styles.modalButtons}>
           <TouchableOpacity
             style={styles.saveButton}
-            onPress={() => props.handleVehicleRequest()}>
+            onPress={() => props.handleDriverRequest()}>
             <Text style={styles.buttonText}>Save</Text>
           </TouchableOpacity>
           <TouchableOpacity

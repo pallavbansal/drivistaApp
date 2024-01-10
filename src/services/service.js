@@ -44,14 +44,11 @@ export const updateUserProfileService = async (params, config) => {
 };
 
 export const fetchVehicleListService = async config => {
-  //console.log('fetchVehicleListRequest token:', config);
-  // apiConfig.defaults.headers.common['Authorization'] = `Bearer ${'47|YNVKur2y1QCNZx8R6xVOtDW9JDwYyJ79zGHbIkjK70502a5d'}`;
   return await apiConfig.post('vehicles/fetch-vehicle-by-user', '', config);
 };
 export const deleteVehicleService = async (params, config) => {
   return await apiConfig.post('vehicles/delete', params, config);
 };
-
 
 export const updateVehicleDetailsService = async (params, config) => {
   return await apiConfig.post('vehicles/update', params, config);
@@ -61,5 +58,20 @@ export const saveVehicleDetailsService = async (params, config) => {
   return await apiConfig.post('vehicles/add', params, config);
 };
 
+//driver
+export const fetchDriverListService = async config => {
+  return await apiConfig.post('driver/fetch-drivers-by-parent-id', '', config);
+};
+export const deleteDriverService = async (params, config) => {
+  return await apiConfig.post('driver/delete', params, config);
+};
+export const saveDriverDetailsService = async (params, config) => {
+  return await apiConfig.post('driver/add', params, config);
+};
 
+
+
+export const updateDriverDetailsService = async (params, config) => {
+  return await apiConfig.post('driver/update', params, config);
+};
 

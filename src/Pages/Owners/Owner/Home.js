@@ -2,19 +2,19 @@
 /* eslint-disable prettier/prettier */
 import React, {memo} from 'react';
 import {View, StyleSheet} from 'react-native';
-import {Colors} from '../../constants/colors';
-import NavigationCard from '../../components/cards/NavigationCard';
-import HeaderContainer from '../../components/reusableComponents/Container/HeaderContainer';
-import FooterContainer from '../../components/reusableComponents/Container/FooterContainer';
-import vehicleLogo from '../../storage/images/vehicle.png';
-import driverOnline from '../../storage/images/driver_online.png';
-import driver from '../../storage/images/drivers.png';
-import themeLogo from '../../storage/images/theme.png';
-import shade1 from '../../storage/images/shade1.png';
-import shade2 from '../../storage/images/shade2.png';
-import shade3 from '../../storage/images/shade3.png';
-import BackgroundContainer from '../../components/reusableComponents/Container/BackgroundContainer';
-import { useAuthServiceHook } from '../../services/hooks/auth/useAuthServiceHook';
+import {Colors} from '../../../constants/colors';
+import NavigationCard from '../../../components/cards/NavigationCard';
+import HeaderContainer from '../../../components/reusableComponents/Container/HeaderContainer';
+import FooterContainer from '../../../components/reusableComponents/Container/FooterContainer';
+import vehicleLogo from '../../../storage/images/vehicle.png';
+import driverOnline from '../../../storage/images/driver_online.png';
+import driver from '../../../storage/images/drivers.png';
+import themeLogo from '../../../storage/images/theme.png';
+import shade1 from '../../../storage/images/shade1.png';
+import shade2 from '../../../storage/images/shade2.png';
+import shade3 from '../../../storage/images/shade3.png';
+import BackgroundContainer from '../../../components/reusableComponents/Container/BackgroundContainer';
+import { useAuthServiceHook } from '../../../services/hooks/auth/useAuthServiceHook';
 
 const Home = ({navigation}) => {
   const {logoutRequest} =
@@ -36,12 +36,11 @@ const Home = ({navigation}) => {
       logoImage: vehicleLogo,
       bgImage:shade2
     },
-
     {
-      label: 'Your Drivers',
+      label: 'Your Employees',
       linearGradientColor1: '#A4A270',
       linearGradientColor2: '#5A3C76',
-      navigateScreen: 'LoginScreen',
+      navigateScreen: 'DriverHome',
       logoImage: driver,
       bgImage:shade3
     },

@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     elevation: 999,
   },
   modalView: {
-    width: '30%',
+    width: '40%',
     marginTop: -10,
     marginRight: 10,
     marginLeft: 'auto',
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 20,
-    padding: 5,
+    padding: 10,
     width: '95%',
     alignItems: 'flex-start',
   },

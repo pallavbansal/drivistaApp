@@ -2,18 +2,18 @@
 /* eslint-disable prettier/prettier */
 import React, {memo, useState} from 'react';
 import {View, StyleSheet, Image, Text} from 'react-native';
-import {Colors} from '../../constants/colors';
-import reminder from '../../storage/images/reminder.png';
-import HeaderContainer from '../../components/reusableComponents/Container/HeaderContainer';
-import {globalStyles} from '../../constants/globalStyles';
-import InfoCard from '../../components/reusableComponents/InfoCard';
-import Heading from '../../components/reusableComponents/Heading';
-import CustomButton from '../../components/reusableComponents/CustomButton';
+import {Colors} from '../../../constants/colors';
+import reminder from '../../../storage/images/reminder.png';
+import HeaderContainer from '../../../components/reusableComponents/Container/HeaderContainer';
+import {globalStyles} from '../../../constants/globalStyles';
+import InfoCard from '../../../components/reusableComponents/InfoCard';
+import Heading from '../../../components/reusableComponents/Heading';
+import CustomButton from '../../../components/reusableComponents/CustomButton';
 import {fonts} from 'react-native-elements/dist/config';
-import {Fonts} from '../../constants/fonts';
-import Space from '../../components/reusableComponents/Space';
-import LogoWithLabel from '../../components/reusableComponents/LogoWithLabel';
-import ModalView from '../../components/reusableComponents/ModalView';
+import {Fonts} from '../../../constants/fonts';
+import Space from '../../../components/reusableComponents/Space';
+import LogoWithLabel from '../../../components/reusableComponents/LogoWithLabel';
+import ModalView from '../../../components/reusableComponents/ModalView';
 
 const ReminderScreen = ({navigation}) => {
   const [isConfirmationModalVisible, setIsConfirmationModalVisible] =

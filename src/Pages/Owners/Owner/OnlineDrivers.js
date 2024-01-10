@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
 import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
-import {Colors} from '../../constants/colors';
-import StatusCard from '../../components/cards/StatusCard';
+import {Colors} from '../../../constants/colors';
+import StatusCard from '../../../components/cards/StatusCard';
 // import CustomCard from '../../components/cards/CustomCard';
-import HeaderContainer from '../../components/reusableComponents/Container/HeaderContainer';
-import FooterContainer from '../../components/reusableComponents/Container/FooterContainer';
-import userLogo from '../../storage/images/user.png';
-import BreakDetailsCard from '../../components/cards/BreakDetailsCard';
+import HeaderContainer from '../../../components/reusableComponents/Container/HeaderContainer';
+import FooterContainer from '../../../components/reusableComponents/Container/FooterContainer';
+import userLogo from '../../../storage/images/user.png';
+import BreakDetailsCard from '../../../components/cards/BreakDetailsCard';
 
 const OnlineDrivers = ({navigation}) => {
   const [expandedCard, setExpandedCard] = useState(null);

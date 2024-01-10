@@ -4,20 +4,23 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from './src/Pages/Login';
 import RegisterScreen from './src/Pages/Register';
 import StartUpScreen from './src/Pages/StartUp';
-import OwnerHomeScreen from './src/Pages/Owner/Home';
+import OwnerHomeScreen from './src/Pages/Owners/Owner/Home';
 import ProfileScreen from './src/Pages/Profile';
 import OtpScreen from './src/Pages/Otp';
 import ForgotPasswordScreen from './src/Pages/ForgotPassword';
-import OnlineDrivers from './src/Pages/Owner/OnlineDrivers';
-import LocationScreen from './src/Pages/Owner/LocationScreen';
-import VehicleHome from './src/Pages/Vehicle/Home';
-import SubscriptionScreen from './src/Pages/Subscription/Home';
-import SubscriptionDescription from './src/Pages/Subscription/SubscriptionDescription';
-import EmployeeAdd from './src/Pages/Subscription/EmployeeAdd';
-import PaymentDetails from './src/Pages/Subscription/PaymentDetails';
-import SuccessScreen from './src/Pages/Subscription/SuccessScreen';
-import ReminderScreen from './src/Pages/Subscription/ReminderScreen';
-import VehicleDetails from './src/Pages/Vehicle/VehicleDetails';
+import OnlineDrivers from './src/Pages/Owners/Owner/OnlineDrivers';
+import LocationScreen from './src/Pages/Owners/Owner/LocationScreen';
+import VehicleHome from './src/Pages/Owners/Vehicle/Home';
+import DriverHome from './src/Pages/Owners/Driver/Home';
+import SubscriptionScreen from './src/Pages/Owners/Subscription/Home';
+import SubscriptionDescription from './src/Pages/Owners/Subscription/SubscriptionDescription';
+import EmployeeAdd from './src/Pages/Owners/Subscription/EmployeeAdd';
+import PaymentDetails from './src/Pages/Owners/Subscription/PaymentDetails';
+import SuccessScreen from './src/Pages/Owners/Subscription/SuccessScreen';
+import ReminderScreen from './src/Pages/Owners/Subscription/ReminderScreen';
+import VehicleDetails from './src/Pages/Owners/Vehicle/VehicleDetails';
+import DriverDetails from './src/Pages/Owners/Driver/DriverDetails';
+import CalenderScreen from './src/Pages/Owners/Driver/Calender';
 import ChangePassword from './src/Pages/ChangePassword';
 import {useSelector} from 'react-redux';
 
@@ -43,7 +46,11 @@ const App = () => {
             <Stack.Screen name="OnlineDrivers" component={OnlineDrivers} />
             <Stack.Screen name="LocationScreen" component={LocationScreen} />
             <Stack.Screen name="VehicleHome" component={VehicleHome} />
+            <Stack.Screen name="DriverHome" component={DriverHome} />
             <Stack.Screen name="VehicleDetails" component={VehicleDetails} />
+            <Stack.Screen name="CalenderScreen" component={CalenderScreen} />
+
+            <Stack.Screen name="DriverDetails" component={DriverDetails} />
             <Stack.Screen name="ReminderScreen" component={ReminderScreen} />
             <Stack.Screen
               name="SubscriptionScreen"

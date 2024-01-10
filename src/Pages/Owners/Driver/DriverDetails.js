@@ -1,24 +1,31 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect, useState} from 'react';
-import {View, StyleSheet, Image, Alert, TextInput} from 'react-native';
-import HeaderContainer from '../../components/reusableComponents/Container/HeaderContainer';
-import CustomButton from '../../components/reusableComponents/CustomButton';
-import {useVehicleServiceHook} from '../../services/hooks/vehicle/useVehicleServiceHook';
-import Vehicles from '../../components/reusableComponents/Profile/Vehicles';
+import {View, StyleSheet, Alert} from 'react-native';
+import HeaderContainer from '../../../components/reusableComponents/Container/HeaderContainer';
+import CustomButton from '../../../components/reusableComponents/CustomButton';
+import {useDriverServiceHook} from '../../../services/hooks/driver/useDriverServiceHook';
+import Drivers from '../../../components/reusableComponents/Profile/Drivers';
 
-const VehicleDetails = ({route, navigation}) => {
+const DriverDetails = ({route, navigation}) => {
   const {
-    loading,
     setLoading,
-    vehicleNumber,
-    setVehicleNumber,
-    vehicleName,
-    setVehicleName,
-    driverName,
-    setDriverName,
-    vehicleDetailsEditRequest
-  } = useVehicleServiceHook();
+    loading,
+    fetchDriverListRequest,
+    deleteDriverRequest,
+    saveDriverRequest,
+    email,
+    setEmail,
+    mobileNumber,
+    setFirstName,
+    firstName,
+    lastName,
+    setLastName,
+    setMobileNumber,
+    password,
+    setPasssword,
+    driverDetailsEditRequest,
+  } = useDriverServiceHook();
   const {
     headLabel = 'Vehicle Details',
     type = 'Default Type',
@@ -26,10 +33,17 @@ const VehicleDetails = ({route, navigation}) => {
   } = route.params;
   const [editable, setEditable] = useState(false);
   useEffect(() => {
-    setVehicleName(details.vehicle_name);
-    setVehicleNumber(details.vehicle_number);
-    setDriverName(details.driver_name);
+    setFirstName(details.first_name);
+    setLastName(details.last_number);
+    setEmail(details.email);
+    setMobileNumber(details.mobile_number);
+    setPasssword(details.password)
   }, [details]);
+
+  const handleCalender=(id)=>{
+
+    navigation.navigate('CalenderScreen');
+  }
 
   const props = {
     buttonLabel: 'Save',
@@ -37,10 +51,10 @@ const VehicleDetails = ({route, navigation}) => {
     // handleNavigation: screenName => navigation.navigate(screenName),
     handleNavigation: async screenName => {
       setLoading(true);
-      const response = await vehicleDetailsEditRequest(details.id);
+      const response = await driverDetailsEditRequest(details.id);
       setLoading(false);
       try {
-         if (response.result === 'success') {
+        if (response.result === 'success') {
           Alert.alert('Success');
         } else if (response.result === 'failed') {
           Alert.alert(response.message);
@@ -51,14 +65,14 @@ const VehicleDetails = ({route, navigation}) => {
     },
   };
   const labels = {
-    label:'Vehicle Details',
+    label: 'Employee Details',
     navigateBackScreen: '',
     handleDirectNavigation: screenName => navigation.pop(),
   };
   return (
     <View style={styles.mainContainer}>
       <HeaderContainer
-      labels={labels}
+        labels={labels}
         label={labels.label}
         showBackArrow={true}
         showLabel={true}
@@ -66,19 +80,25 @@ const VehicleDetails = ({route, navigation}) => {
         showPopUp={false}
         containerStyle={styles.headContainer}
         handleBackNavigation={labels.handleDirectNavigation}
+
       />
       <View style={styles.container}>
         <View style={styles.profileContainer}>
-          <Vehicles
+          <Drivers
             details={details}
             editable={editable}
             setEditable={setEditable}
-            vehicleName={vehicleName}
-            setVehicleName={setVehicleName}
-            vehicleNumber={vehicleNumber}
-            setVehicleNumber={setVehicleNumber}
-            driverName={driverName}
-            setDriverName={setDriverName}
+            firstName={firstName}
+            setFirstName={setFirstName}
+            lastName={lastName}
+            setLastName={setLastName}
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPasssword={setPasssword}
+            mobileNumber={mobileNumber}
+            setMobileNumber={setMobileNumber}
+            handleCalender={handleCalender}
           />
         </View>
         {/* <TextInput
@@ -87,14 +107,13 @@ const VehicleDetails = ({route, navigation}) => {
           value={vehicleName}
           onChangeText={text =>setVehicleName(text)}
         /> */}
-        {
-          editable ? (
-            <View style={styles.buttonContainer}>
+        {editable ? (
+          <View style={styles.buttonContainer}>
             <ButtonContainer {...props} />
           </View>
-          ):""
-        }
-
+        ) : (
+          ''
+        )}
       </View>
     </View>
   );
@@ -118,6 +137,7 @@ const styles = StyleSheet.create({
     flex: 0.8,
   },
   buttonContainer: {
+    marginTop:20,
     flex: 0.2,
     width: '50%',
     marginLeft: 'auto',
@@ -128,4 +148,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(VehicleDetails);
+export default memo(DriverDetails);

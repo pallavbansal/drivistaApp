@@ -1,15 +1,12 @@
 import React, {memo} from 'react';
 import {View, StyleSheet, Image, Text} from 'react-native';
-import success from '../../storage/images/success.png';
-import plus from '../../storage/images/plus.png';
-import minus from '../../storage/images/minus.png';
-import wallet from '../../storage/images/wallet.png';
-import HeaderContainer from '../../components/reusableComponents/Container/HeaderContainer';
-import {globalStyles} from '../../constants/globalStyles';
-import CustomButton from '../../components/reusableComponents/CustomButton';
-import {Fonts} from '../../constants/fonts';
-import Space from '../../components/reusableComponents/Space';
-import LogoWithLabel from '../../components/reusableComponents/LogoWithLabel';
+import success from '../../../storage/images/success.png';
+import HeaderContainer from '../../../components/reusableComponents/Container/HeaderContainer';
+import {globalStyles} from '../../../constants/globalStyles';
+import CustomButton from '../../../components/reusableComponents/CustomButton';
+import {Fonts} from '../../../constants/fonts';
+import Space from '../../../components/reusableComponents/Space';
+import LogoWithLabel from '../../../components/reusableComponents/LogoWithLabel';
 
 const SuccessScreen = ({navigation}) => {
   const props = {

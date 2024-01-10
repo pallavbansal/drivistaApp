@@ -1,8 +1,11 @@
-import {SET_LOGIN_USER_DATA,SET_REGISTER_USER_DATA,
-   LOGOUT_USER,SET_USER_PROFILE_DATA,
-   SET_VEHICLE_DATA,
-   SET_NEW_VEHICLE_DATA
-  } from '../constants/ActionTypes';
+import {
+  SET_LOGIN_USER_DATA,
+  SET_REGISTER_USER_DATA,
+  LOGOUT_USER,
+  SET_USER_PROFILE_DATA,
+  SET_VEHICLE_DATA,
+  SET_DRIVERS_DATA,
+} from '../constants/ActionTypes';
 export function setUserData(data) {
   return {
     type: SET_LOGIN_USER_DATA,
@@ -16,8 +19,6 @@ export function setUserProfileData(data) {
     data: data,
   };
 }
-
-
 
 export function setVehicleData(data) {
   return {
@@ -33,6 +34,13 @@ export function setNewVehicleData(data) {
   };
 }
 
+export function setDriversData(data) {
+  return {
+    type: SET_DRIVERS_DATA,
+    data: data,
+  };
+}
+
 export function setRegisterUserData(data) {
   return {
     type: SET_REGISTER_USER_DATA,
@@ -43,6 +51,5 @@ export function setRegisterUserData(data) {
 export function logoutUser() {
   return {
     type: LOGOUT_USER,
-
   };
 }

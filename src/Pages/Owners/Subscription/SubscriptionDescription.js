@@ -2,16 +2,16 @@
 /* eslint-disable prettier/prettier */
 import React, {memo} from 'react';
 import {View, StyleSheet, ScrollView, Text} from 'react-native';
-import {Colors} from '../../constants/colors';
-import clock from '../../storage/images/clock.png';
-import HeaderContainer from '../../components/reusableComponents/Container/HeaderContainer';
-import {globalStyles} from '../../constants/globalStyles';
-import InfoCard from '../../components/reusableComponents/InfoCard';
-import Heading from '../../components/reusableComponents/Heading';
-import CustomButton from '../../components/reusableComponents/CustomButton';
+import {Colors} from '../../../constants/colors';
+import clock from '../../../storage/images/clock.png';
+import HeaderContainer from '../../../components/reusableComponents/Container/HeaderContainer';
+import {globalStyles} from '../../../constants/globalStyles';
+import InfoCard from '../../../components/reusableComponents/InfoCard';
+import Heading from '../../../components/reusableComponents/Heading';
+import CustomButton from '../../../components/reusableComponents/CustomButton';
 import {fonts} from 'react-native-elements/dist/config';
-import {Fonts} from '../../constants/fonts';
-import Space from '../../components/reusableComponents/Space';
+import {Fonts} from '../../../constants/fonts';
+import Space from '../../../components/reusableComponents/Space';
 import {color} from 'react-native-elements/dist/helpers';
 
 const SubscriptionDescription = ({navigation}) => {

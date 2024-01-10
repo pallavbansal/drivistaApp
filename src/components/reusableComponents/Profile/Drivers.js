@@ -12,30 +12,31 @@ import {
   Alert,
 } from 'react-native';
 import {Colors} from '../../../constants/colors';
-import userProfileLogo from '../../../storage/images/user_profile.png';
+import driving from '../../../storage/images/driving.png';
 import edit from '../../../storage/images/edit.png';
+import calender from '../../../storage/images/calender.png';
+import HeaderContainer from '../Container/HeaderContainer';
 import {globalStyles} from '../../../constants/globalStyles';
 
-const Owner = ({
-  labels,
-  details,
-  loading,
-  setLoading,
-  headerLabel,
-  caseType,
+const Drivers = ({
+  editable,
+  setEditable,
   email,
   setEmail,
   mobileNumber,
-  setMobileNumber,
   setFirstName,
   firstName,
   lastName,
   setLastName,
-  headLabel,
-  editable,
-  setEditable,
+  setMobileNumber,
+  password,
+  setPasssword,
+  details,
   updateUserProfileRequest,
+  handleCalender,
 }) => {
+  console.log('vehicle data hry:', details);
+
   console.log('check for editable:', editable);
   const textInputRef = useRef(null);
   const handleInputPress = () => {
@@ -63,7 +64,9 @@ const Owner = ({
   return (
     <MainContainer>
       <View style={styles.profileContainer}>
-        <TouchableOpacity style={styles.actionContainer} onPress={handlePress}>
+        <TouchableOpacity
+          style={styles.actionContainer}
+          onPress={() => setEditable(!editable)}>
           {!editable ? (
             <View style={{flexDirection: 'row'}}>
               <Text style={globalStyles.text}>{'Edit'}</Text>
@@ -73,39 +76,35 @@ const Owner = ({
               />
             </View>
           ) : (
-            <View style={[styles.buttonStyle]}>
-              <Text
-                style={[
-                  globalStyles.text,
-                  {color: 'white', fontWeight: 'bold'},
-                ]}>
-                {'update'}
-              </Text>
-            </View>
+            ''
+            //  <View style={[styles.buttonStyle]}>
+            //   <Text
+            //     style={[
+            //       globalStyles.text,
+            //       {color: 'white', fontWeight: 'bold'},
+            //     ]}>
+            //     {'Reset'}
+            //   </Text>
+            // </View>
           )}
         </TouchableOpacity>
-        <LogoHeaderContainer
-          editable={editable}
-          details={details}
-          setFirstName={setFirstName}
-          firstName={firstName}
-          lastName={lastName}
-          setLastName={setLastName}
-          textInputRef={textInputRef}
-          handleInputPress={handleInputPress}
-        />
+        <LogoHeaderContainer />
         <View style={styles.infoCardContainer}>
-          {caseType === 'user_profile' ? (
-            <ProfileInfoContainer
-              editable={editable}
-              email={email}
-              setEmail={setEmail}
-              mobileNumber={mobileNumber}
-              setMobileNumber={setMobileNumber}
-            />
-          ) : (
-            ''
-          )}
+          <ProfileInfoContainer
+            editable={editable}
+            details={details}
+            firstName={firstName}
+            setFirstName={setFirstName}
+            lastName={lastName}
+            setLastName={setLastName}
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPasssword={setPasssword}
+            mobileNumber={mobileNumber}
+            setMobileNumber={setMobileNumber}
+            handleCalender={handleCalender}
+          />
         </View>
       </View>
 
@@ -117,61 +116,13 @@ const Owner = ({
 const MainContainer = ({children}) => (
   <View style={styles.mainContainer}>{children}</View>
 );
-
 const LogoHeaderContainer = memo(props => (
   <View style={styles.logoContainer}>
     <View style={{flex: 0.5}}>
       <Image
-        source={userProfileLogo}
+        source={driving}
         style={[globalStyles.logoImage, {width: 100, height: 100}]}
       />
-    </View>
-    <View
-      style={{
-        flexDirection: 'row',
-        flex: 0.3,
-        justifyContent: 'space-evenly',
-        width: '70%',
-      }}>
-      {props.editable ? (
-        <TouchableOpacity style={[styles.input, styles.text]}>
-          <TextInput
-            //   ref={props.textInputRef}
-            // placeholder={"placeholder"}
-            // style={[styles.input, styles.text]}
-            value={props.firstName}
-            onChangeText={text => {
-              props.setFirstName(text);
-              // props.textInputRef.current.focus(); // Focus on input when text is changed
-            }}
-          />
-        </TouchableOpacity>
-      ) : (""
-        // <Text
-        //   style={[
-        //     globalStyles.text,
-        //     {fontSize: 25, fontWeight: 'bold', opacity: 0.7},
-        //   ]}>
-        //   {props.firstName}{' '}
-        // </Text>
-      )}
-
-      {props.editable ? (
-        <TextInput
-          // ref={props.textInputRef}
-          style={[styles.input, styles.text]}
-          value={props.lastName}
-          onChangeText={text => props.setLastName(text)}
-        />
-      ) : (
-        <Text
-          style={[
-            globalStyles.text,
-            {fontSize: 25, fontWeight: 'bold', opacity: 0.7},
-          ]}>
-           {props.firstName}{' '}{props.lastName}
-        </Text>
-      )}
     </View>
   </View>
 ));
@@ -179,13 +130,22 @@ const LogoHeaderContainer = memo(props => (
 const ProfileInfoContainer = memo(props => (
   <View>
     <View style={styles.wrapper}>
-      <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>{'Email '}</Text>
-
-      <Text style={styles.text}>: {props.email}</Text>
+      <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
+        {'Employee Name'}
+      </Text>
+      {props.editable ? (
+        <TextInput
+          style={[styles.input, styles.text]}
+          value={props.firstName}
+          onChangeText={text => props.setFirstName(text)}
+        />
+      ) : (
+        <Text style={styles.text}>: {props.firstName}</Text>
+      )}
     </View>
     <View style={styles.wrapper}>
       <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
-        {'Mobile Number'}
+        {'Phone No'}
       </Text>
       {props.editable ? (
         <TextInput
@@ -197,6 +157,45 @@ const ProfileInfoContainer = memo(props => (
         <Text style={styles.text}>: {props.mobileNumber}</Text>
       )}
     </View>
+    <View style={styles.wrapper}>
+      <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
+        {'Email Id'}
+      </Text>
+      {props.editable ? (
+        <TextInput
+          style={[styles.input, styles.text]}
+          value={props.email}
+          onChangeText={text => props.setEmail(text)}
+        />
+      ) : (
+        <Text style={styles.text}>: {props.email}</Text>
+      )}
+    </View>
+    <View style={styles.wrapper}>
+      <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
+        {'Password'}
+      </Text>
+      {props.editable ? (
+        <TextInput
+          style={[styles.input, styles.text]}
+          value={props.password}
+          onChangeText={text => props.setPasssword(text)}
+        />
+      ) : (
+        <Text style={styles.text}>: {props.password}</Text>
+      )}
+    </View>
+    <TouchableOpacity
+      onPress={()=>props.handleCalender(props.details.id)}
+      style={styles.wrapper}>
+      <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
+        {'Work History:'}
+      </Text>
+      <Image
+        source={calender}
+        style={[globalStyles.logoImage, {width: 20, height: 20}]}
+      />
+    </TouchableOpacity>
   </View>
 ));
 const styles = StyleSheet.create({
@@ -246,7 +245,7 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    // justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
     paddingHorizontal: 10,
@@ -259,7 +258,6 @@ const styles = StyleSheet.create({
     padding: 5,
     width: '50%',
     marginHorizontal: 5,
-    justifyContent:'center'
   },
   initialSection: {
     height: 40,
@@ -294,4 +292,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(Owner);
+export default memo(Drivers);
