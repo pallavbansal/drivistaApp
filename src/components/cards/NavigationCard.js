@@ -1,6 +1,14 @@
 import React from 'react';
-import { View, Text, StyleSheet, ImageBackground,Image, TouchableOpacity } from 'react-native';
-import { globalStyles } from '../../constants/globalStyles';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
+import {globalStyles} from '../../constants/globalStyles';
+import { Fonts } from '../../constants/fonts';
 
 const NavigationCard = ({
   label,
@@ -31,9 +39,8 @@ const NavigationCard = ({
             <Text
               style={[
                 globalStyles.text,
-                { color: 'white', fontWeight: 'bold', fontSize: 16 },
-              ]}
-            >
+                {color: 'white', fontWeight: 'bold', fontSize: 20},
+              ]}>
               {label}
             </Text>
           </View>
@@ -44,17 +51,16 @@ const NavigationCard = ({
 };
 
 const styles = StyleSheet.create({
+
   imageBackground: {
     flex: 1,
     resizeMode: 'cover',
     justifyContent: 'flex-end',
   },
   container: {
-    flex:1,
-   flexDirection: 'row',
+    flex: 1,
+    flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'white',
     borderRadius: 10,
     paddingHorizontal: 10,
     backgroundColor: 'transparent', // Optional: use a transparent background for the inner content

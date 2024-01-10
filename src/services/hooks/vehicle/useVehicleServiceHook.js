@@ -137,14 +137,7 @@ export const useVehicleServiceHook = () => {
       const response = await saveVehicleDetailsService(params, config);
       console.log('after saveVehicleRequest profile:', response.data.data);
       const res = await fetchVehicleListRequest();
-      //  dispatch(setNewVehicleData(response.data.data.vehicle));
-      //   if (response.data.status_code === 1) {
-      //     console.log('login resounse:', response.data.data);
 
-      //     return {result: 'success'};
-      //   } else if (response.data.status_code === 2) {
-      //     return {result: 'failed'};
-      //   }
     } catch (error) {
       console.log('saveVehicleRequest:', error.response);
     }

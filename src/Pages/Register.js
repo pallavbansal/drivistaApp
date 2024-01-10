@@ -11,7 +11,9 @@ import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import CustomTextInput from '../components/reusableComponents/CustomTextInput';
 import emailLogo from '../storage/images/email.png';
+import userLogo from '../storage/images/user.png';
 import lockLogo from '../storage/images/lock.png';
+import phoneLogo from '../storage/images/phone.png';
 import Heading from '../components/reusableComponents/Heading';
 import PageLabel from '../components/reusableComponents/PageLabel';
 import AuthFooter from '../components/reusableComponents/Footer/AuthFooter';
@@ -216,7 +218,7 @@ const HeadingContainer = memo(({heading}) => (
 const InputContainer = memo(props => (
   <View style={styles.inputContainer}>
     <CustomTextInput
-      logoName={emailLogo}
+      logoName={userLogo}
       errorText={props.loginError.fullName}
       placeholder={props.labels.fullName}
       onChangeText={text => {
@@ -224,7 +226,7 @@ const InputContainer = memo(props => (
       }}
     />
     <CustomTextInput
-      logoName={emailLogo}
+      logoName={userLogo}
       errorText={props.loginError.lastName}
       placeholder={props.labels.lastName}
       onChangeText={text => props.setLastName(text)}
@@ -237,7 +239,7 @@ const InputContainer = memo(props => (
       onChangeText={text => props.setEmail(text)}
     />
     <CustomTextInput
-      logoName={emailLogo}
+      logoName={phoneLogo}
       errorText={props.loginError.mobileNumber}
       placeholder={props.labels.mobileNumber}
       onChangeText={text => props.setMobileNumber(text)}

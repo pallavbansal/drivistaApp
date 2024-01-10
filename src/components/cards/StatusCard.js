@@ -19,7 +19,7 @@ const StatusCard = ({
   id,
   imageLink,
   label,
-  vehicle_name = 'test',
+  textName = 'test',
   onlinestatus,
   editShow,
   deleteShow,
@@ -38,7 +38,7 @@ const StatusCard = ({
             ]}
           />
           <Text style={[globalStyles.textInput, styles.bulletText]}>
-            {vehicle_name}
+            {textName}
           </Text>
         </View>
         <View style={styles.actionSection}>

@@ -48,10 +48,11 @@ const Header = ({
   let leftArrowComponent = null;
   if (showBackArrow) {
     leftArrowComponent = (
-      <TouchableOpacity  onPress={() => handleBackNavigation(labels.navigateBackScreen)} >
+      <TouchableOpacity
+        onPress={() => handleBackNavigation(labels.navigateBackScreen)}>
         <Image
           source={left_arrow}
-          style={[globalStyles.logoImage, {marginLeft: 5}]}
+          style={[globalStyles.logoImage, {width:20,height:20,marginLeft: 5}]}
         />
       </TouchableOpacity>
     );
@@ -83,8 +84,7 @@ const Header = ({
           styles.wrapper,
           showBackground && styles.backgroundTransparent,
         ]}>
-        <TouchableOpacity
-          style={styles.backArrow}>
+        <TouchableOpacity style={styles.backArrow}>
           {leftArrowComponent}
         </TouchableOpacity>
         <View style={styles.label}>

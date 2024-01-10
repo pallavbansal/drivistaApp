@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     flex: 0.8,
+
     flexDirection:'column',
     justifyContent:'flex-start',
 
@@ -104,11 +105,10 @@ const styles = StyleSheet.create({
     flex: 0.25,
    // marginHorizontal:40,
     marginVertical:10,
-
+   // height:80,
     width: '60%',
     marginLeft: 'auto',
     marginRight: 'auto',
-    // backgroundColor:'red'
   },
   cardLogo: {
     height: 60,
