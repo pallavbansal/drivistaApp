@@ -15,6 +15,7 @@ import shade2 from '../../../storage/images/shade2.png';
 import shade3 from '../../../storage/images/shade3.png';
 import BackgroundContainer from '../../../components/reusableComponents/Container/BackgroundContainer';
 import { useAuthServiceHook } from '../../../services/hooks/auth/useAuthServiceHook';
+import {navigationPopUpList} from '../../../constants/navigation';
 
 const Home = ({navigation}) => {
   const {logoutRequest} =
@@ -105,6 +106,7 @@ const Home = ({navigation}) => {
           showBackground={false}
           containerStyle={styles.headContainer}
           handleNavigation={handleNavigation}
+          navigationPopUpList={navigationPopUpList}
         />
       <CardContainer>
         {navigationData.map((item, index) => (

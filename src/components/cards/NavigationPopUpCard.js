@@ -16,7 +16,10 @@ const NavigationPopUpCard = ({navigationPopUpList, handleNavigation}) => {
             key={index}
             style={[
               styles.button,
-              {backgroundColor: index === 0 ? Colors.headerBg : 'white'},
+              {
+                backgroundColor:
+                  item.label === 'profile' ? Colors.headerBg : 'white',
+              },
             ]}
             onPress={() => handleNavigation(item.navigateScreen)}>
             <Text

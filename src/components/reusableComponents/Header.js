@@ -71,7 +71,7 @@ const Header = ({
       <TouchableOpacity onPress={toggleModal}>
         <Image
           source={menu}
-          style={[globalStyles.logoImage, {marginLeft: 5}]}
+          style={[globalStyles.logoImage, {width:20,height:20,marginLeft: 5}]}
         />
       </TouchableOpacity>
     );

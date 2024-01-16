@@ -36,7 +36,7 @@ const StartUp = ({navigation}) => {
     },
 
     {
-      label: 'Driver Login',
+      label: 'Employee Login',
       linearGradientColor1: '#A4A270',
       linearGradientColor2: '#5A3C76',
       navigateScreen: 'LoginScreen',

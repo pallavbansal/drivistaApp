@@ -15,6 +15,7 @@ import {useAuthServiceHook} from '../services/hooks/auth/useAuthServiceHook';
 import Spinner from '../components/reusableComponents/Spinner';
 import Space from '../components/reusableComponents/Space';
 
+
 const Login = ({navigation}) => {
   const {
     loading,
@@ -41,7 +42,7 @@ const Login = ({navigation}) => {
     password: 'Password',
     authFooterText: 'Do not have an account?',
     linkText: 'Register',
-    navigateScreen: 'OwnerHomeScreen',
+    navigateScreen: 'StartShift',
     footerNavigateScreen: 'RegisterScreen',
     navigateBackScreen:'LoginScreen',
     navigateBackNavigation:()=> navigation.pop(),
@@ -54,11 +55,20 @@ const Login = ({navigation}) => {
         if (response.result === 'verfication_failed') {
           Alert.alert('Please validate fields!');
         } else if (response.result === 'success') {
-          navigation.navigate(screenName);
+          if(response.role === '1')
+          {
+            navigation.navigate('OwnerHomeScreen');
+          }
+          else if(response.role === '2')
+          {
+            navigation.navigate('StartShift');
+          }
+         // navigation.navigate(screenName);
         } else if (response.result === 'failed') {
           Alert.alert('Credentials Invalid');
         } else {
-          navigation.navigate(screenName);
+
+
         }
       } catch (error) {
         console.error('Login error:', error);

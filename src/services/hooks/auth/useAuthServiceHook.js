@@ -24,12 +24,12 @@ export const useAuthServiceHook = () => {
   const [loading, setLoading] = useState(false);
   const [lastName, setLastName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isTrialChecked, setIsTrialChecked] = useState(false);
   const [errors, setErrors] = useState({});
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState("");
-  const [oldPassword, setOldPassword] = useState("");
+  const [password, setPassword] = useState('');
+  const [oldPassword, setOldPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [isFormValid, setIsFormValid] = useState(true);
@@ -89,7 +89,7 @@ export const useAuthServiceHook = () => {
       if (response.data.status_code === 1) {
         console.log('login resounse:', response.data.data);
         dispatch(setUserData(response.data.data));
-        return {result: 'success'};
+        return {result: 'success', role: response.data.data.user.role};
       } else if (response.data.status_code === 2) {
         return {result: 'failed'};
       }
@@ -174,7 +174,7 @@ export const useAuthServiceHook = () => {
     const params = {
       email: email,
     };
-    console.log("before check pass:",params)
+    console.log('before check pass:', params);
     try {
       const response = await forgotPasswordService(params);
 
