@@ -11,24 +11,10 @@ const HeaderContainer = ({
   showBackground=false,
   showPopUp = false,
   handleNavigation,
-  handleBackNavigation
+  handleBackNavigation,
+  navigationPopUpList
 }) => {
-  const navigationPopUpList = [
-    {
-      label: 'profile',
-      navigateScreen: 'ProfileScreen',
 
-    },
-    {
-      label: 'subscription',
-      navigateScreen: 'ReminderScreen',
-    },
-
-    {
-      label: 'logout',
-      navigateScreen: 'logout',
-    },
-  ];
 
   return (
     <View style={containerStyle}>

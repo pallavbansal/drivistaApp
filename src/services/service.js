@@ -69,9 +69,25 @@ export const saveDriverDetailsService = async (params, config) => {
   return await apiConfig.post('driver/add', params, config);
 };
 
-
-
 export const updateDriverDetailsService = async (params, config) => {
   return await apiConfig.post('driver/update', params, config);
 };
 
+//shift
+
+export const startShiftService = async config => {
+  return await apiConfig.post('shift/start', '', config);
+};
+
+export const endShiftService = async config => {
+  return await apiConfig.post('shift/end', '', config);
+};
+
+export const currentShiftService = async config => {
+  return await apiConfig.post('shift/current', '', config);
+};
+
+
+export const startEndBreakShiftService = async config => {
+  return await apiConfig.post('shift/break/start-end', '', config);
+};

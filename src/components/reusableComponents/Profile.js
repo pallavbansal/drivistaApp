@@ -14,7 +14,7 @@ import {
 import {Colors} from '../../constants/colors';
 import vehicle from '../../storage/images/vehicle.png';
 import edit from '../../storage/images/edit.png';
-import HeaderContainer from './Container/HeaderContainer';
+
 import {globalStyles} from '../../constants/globalStyles';
 import InfoCard from './InfoCard';
 import {Fonts} from '../../constants/fonts';

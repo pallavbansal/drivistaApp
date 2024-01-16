@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
     resizeMode: 'cover',
+
     // You can add more styles here as needed
   },
 });

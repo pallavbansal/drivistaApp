@@ -36,11 +36,11 @@ const CustomButton = (props) => {
   }
   function Button2() {
     return (
-      <View style={[styles.button2Style, style || {}]}>
-        <TouchableOpacity onPress={() => onPress()}>
-          <Text style={styles.text2Style}>{props.label}</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity onPress={props.handleNavigation} style={[styles.button2Style, style || {}]}>
+        <View  >
+          <Text style={styles.text2Style}>{props.buttonLabel}</Text>
+        </View>
+      </TouchableOpacity>
     );
   }
 };
@@ -68,9 +68,9 @@ const styles = StyleSheet.create({
 
   },
   button2Style: {
-    height: 40,
-    //width:'100%',
-    borderRadius: 20,
+    height: 50,
+    width:'60%',
+    borderRadius: 10,
     borderColor: '#69ABC3',
     borderWidth: 1,
     backgroundColor: '#FFFFFF',
