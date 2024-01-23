@@ -12,6 +12,8 @@ import {useDriverOnlineServiceHook} from '../services/hooks/auth/useDriverOnline
 import {useSelector} from 'react-redux';
 import Spinner from '../components/reusableComponents/Spinner';
 import { useAuthServiceHook } from '../services/hooks/auth/useAuthServiceHook';
+import { Colors } from '../constants/colors';
+
 
 const Profile = ({route, navigation}) => {
   const {user} = useSelector(state => state.userState);
@@ -132,7 +134,7 @@ const Profile = ({route, navigation}) => {
           <Text
             style={[
               globalStyles.text,
-              {fontSize: Fonts.sizes.medium, fontWeight: 'bold'},
+              {fontSize: 20, fontWeight: 'bold',color:Colors.primary},
             ]}>
             {'Change password ?'}
           </Text>

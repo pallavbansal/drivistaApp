@@ -68,7 +68,7 @@ const Register = ({navigation}) => {
     checkboxText: 'Start your 15 days trial',
     footerNavigateScreen: 'LoginScreen',
     navigateScreen: 'OtpScreen',
-    navigateBackScreen:'LoginScreen',
+    navigateBackScreen: 'LoginScreen',
     handleDirectNavigation: screenName => navigation.pop(),
     handleNavigation: async screenName => {
       console.log('what is screen:', screenName);
@@ -138,7 +138,7 @@ const Register = ({navigation}) => {
     setLoginError({
       ...loginError,
       fullName: errorCheck.fullName,
-      lastName:errorCheck.lastName,
+      lastName: errorCheck.lastName,
       email: errorCheck.email,
       mobileNumber: errorCheck.mobileNumber,
       password: errorCheck.password,
@@ -201,8 +201,11 @@ const Register = ({navigation}) => {
             errors={errors}
             {...labels}
           />
+          <Space />
+          <Space />
           <ButtonContainer {...labels} isFormValid={isFormValid} />
           <FooterContainer {...labels} />
+          <Space />
         </View>
       </ScrollView>
     </View>
@@ -211,7 +214,7 @@ const Register = ({navigation}) => {
 
 const HeadingContainer = memo(({heading}) => (
   <View style={styles.header}>
-    <Heading label={heading} />
+    <Heading label={heading} color={Colors.primary} />
   </View>
 ));
 
@@ -239,6 +242,7 @@ const InputContainer = memo(props => (
       onChangeText={text => props.setEmail(text)}
     />
     <CustomTextInput
+      keyboardType="numeric"
       logoName={phoneLogo}
       errorText={props.loginError.mobileNumber}
       placeholder={props.labels.mobileNumber}
@@ -293,12 +297,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
   },
   headContainer: {
-    flex: 0.1,
+    // flex: 0.1,
   },
   pageLabel: {
     flex: 0.1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
+    marginTop: -20,
   },
   container: {
     flex: 0.9,

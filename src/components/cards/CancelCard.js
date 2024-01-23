@@ -31,10 +31,11 @@ const CancelCard = ({label, description, handleNavigation}) => {
     <View style={styles.centeredView}>
       <View style={styles.modalView}>
         <View style={styles.logoContainer}>
-          <LogoWithLabel label={label} logo={cancel} />
+          <LogoWithLabel label={label} logo={cancel} headsize={20} width={80} height={80} />
         </View>
         <View style={styles.heading}>
-          <Heading label={description} />
+
+          <Text style={[globalStyles.labelHeading, {color: 'grey'}]}>{description}</Text>
         </View>
 
         <View style={styles.mixButtonContainer}>
@@ -42,9 +43,9 @@ const CancelCard = ({label, description, handleNavigation}) => {
             {...props}
             navigateScreen={'OpenMessageModal'}  // its not screen but next action
             handleNavigation={handleNavigation}
-            buttonLabel="yes"
+            buttonLabel="Yes"
           />
-          <ButtonContainer {...props}   navigateScreen={'CancelConfirmationModal'} handleNavigation={handleNavigation} buttonLabel="no" />
+          <ButtonContainer {...props}   navigateScreen={'CancelConfirmationModal'} handleNavigation={handleNavigation} buttonLabel="No" />
         </View>
       </View>
     </View>

@@ -6,6 +6,8 @@ import HeaderContainer from '../../../components/reusableComponents/Container/He
 import CustomButton from '../../../components/reusableComponents/CustomButton';
 import {useVehicleServiceHook} from '../../../services/hooks/vehicle/useVehicleServiceHook';
 import Vehicles from '../../../components/reusableComponents/Profile/Vehicles';
+import {navigationPopUpList} from '../../../constants/navigation';
+import { useAuthServiceHook } from '../../../services/hooks/auth/useAuthServiceHook';
 
 const VehicleDetails = ({route, navigation}) => {
   const {
@@ -17,8 +19,9 @@ const VehicleDetails = ({route, navigation}) => {
     setVehicleName,
     driverName,
     setDriverName,
-    vehicleDetailsEditRequest
+    vehicleDetailsEditRequest,
   } = useVehicleServiceHook();
+  const {logoutRequest} = useAuthServiceHook();
   const {
     headLabel = 'Vehicle Details',
     type = 'Default Type',
@@ -40,8 +43,9 @@ const VehicleDetails = ({route, navigation}) => {
       const response = await vehicleDetailsEditRequest(details.id);
       setLoading(false);
       try {
-         if (response.result === 'success') {
-          Alert.alert('Success');
+        if (response.result === 'success') {
+         // Alert.alert('Success');
+         navigation.pop();
         } else if (response.result === 'failed') {
           Alert.alert(response.message);
         }
@@ -51,21 +55,30 @@ const VehicleDetails = ({route, navigation}) => {
     },
   };
   const labels = {
-    label:'Vehicle Details',
+    label: 'Vehicle Details',
     navigateBackScreen: '',
     handleDirectNavigation: screenName => navigation.pop(),
+  };
+  const handlePopUpNavigation = navigateScreen => {
+    if (navigateScreen === 'logout') {
+      logoutRequest();
+    } else {
+      navigation.navigate(navigateScreen);
+    }
   };
   return (
     <View style={styles.mainContainer}>
       <HeaderContainer
-      labels={labels}
+        labels={labels}
         label={labels.label}
         showBackArrow={true}
         showLabel={true}
         showBackground={true}
-        showPopUp={false}
+        showPopUp={true}
         containerStyle={styles.headContainer}
         handleBackNavigation={labels.handleDirectNavigation}
+        navigationPopUpList={navigationPopUpList}
+        handleNavigation={handlePopUpNavigation}
       />
       <View style={styles.container}>
         <View style={styles.profileContainer}>
@@ -87,15 +100,14 @@ const VehicleDetails = ({route, navigation}) => {
           value={vehicleName}
           onChangeText={text =>setVehicleName(text)}
         /> */}
-        {
-          editable ? (
-            <View style={styles.buttonContainer}>
-            <ButtonContainer {...props} />
-          </View>
-          ):""
-        }
-
       </View>
+      {editable ? (
+        <View style={styles.buttonContainer}>
+          <ButtonContainer {...props} />
+        </View>
+      ) : (
+        ''
+      )}
     </View>
   );
 };
@@ -108,9 +120,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
   },
-  headContainer: {
-    flex: 0.2,
-  },
+  headContainer: {},
   container: {
     flex: 1,
   },
@@ -118,7 +128,8 @@ const styles = StyleSheet.create({
     flex: 0.8,
   },
   buttonContainer: {
-    flex: 0.2,
+    marginBottom: 50,
+    flex: 0.1,
     width: '50%',
     marginLeft: 'auto',
     marginRight: 'auto',

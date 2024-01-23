@@ -29,7 +29,7 @@ const ReminderScreen = ({navigation}) => {
     text1:
       'We hope you were able to spend the last two weeks exploring how E-State can help you save your time and track your employees!',
     text2:
-      'To keep using our features, please subscribe to one of our paid plan.',
+      'Your free trial ends in 3 days.To keep using our features, please subscribe to one of our paid plan.',
     navigateScreen: 'SubscriptionScreen',
     handleNavigation: (screenName, isModal) => {
       if (!isModal) {
@@ -50,31 +50,59 @@ const ReminderScreen = ({navigation}) => {
   return (
     <MainContainer>
       <View style={styles.logoContainer}>
-        <LogoWithLabel logo={reminder} label={props.heading} />
+        <LogoWithLabel logo={reminder} label={props.heading} width={150} height={150}/>
       </View>
       <View style={styles.descriptionContainer}>
         <DescriptionContainer {...props} text={props.text1} />
         <DescriptionContainer {...props} text={props.text2} />
+        {/* <DescriptionContainer {...props} text={props.text2} /> */}
       </View>
       <View style={styles.footerContainer}>
-        <ButtonContainer {...props} />
+        <CustomButton {...props} />
       </View>
     </MainContainer>
   );
 };
-const DescriptionContainer = memo(({heading, text}) => (
-  <View style={styles.header}>
-    <Text
-      style={[
-        globalStyles.text,
-        {fontSize: Fonts.sizes.small, fontWeight: 'bold'},
-      ]}>
-      {heading}
-      {'.'}
-      {text}
-    </Text>
-  </View>
-));
+const DescriptionContainer = memo(({text}) => {
+  const highlightSaveYourTime = 'save your time';
+  const highlightTrackYourEmployees = 'track your employees';
+  const highlightTrialEnd = 'Your free trial ends in 3 days.';
+
+  const parts = text.split(
+    new RegExp(
+      `(${highlightSaveYourTime}|${highlightTrackYourEmployees}|${highlightTrialEnd})`,
+      'gi',
+    ),
+  );
+
+  return (
+    <View style={styles.header}>
+      <Text
+        style={[
+          globalStyles.text,
+          {fontSize: Fonts.sizes.small, fontWeight: 'bold'},
+        ]}>
+        {parts.map((part, index) =>
+          part.toLowerCase() === highlightSaveYourTime ? (
+            <Text key={index} style={{color: '#FB8700'}}>
+              {part}
+            </Text>
+          ) : part.toLowerCase() === highlightTrackYourEmployees ? (
+            <Text key={index} style={{color: '#FB8700'}}>
+              {part}
+            </Text>
+          ) : part.toLowerCase() === highlightTrialEnd ? (
+            <Text key={index} style={{color: '#FB8700'}}>
+              {part}
+            </Text>
+          ) : (
+            <Text key={index}>{part}</Text>
+          ),
+        )}
+      </Text>
+    </View>
+  );
+});
 
 const ButtonContainer = memo(props => (
   <View style={styles.button}>
@@ -92,7 +120,6 @@ const styles = StyleSheet.create({
     padding: 40,
   },
 
-
   logoContainer: {
     flex: 0.4,
     alignItems: 'center',
@@ -102,12 +129,30 @@ const styles = StyleSheet.create({
     flex: 0.2,
     justifyContent: 'space-around',
     alignItems: 'center',
-
   },
   footerContainer: {
     flex: 0.4,
-    justifyContent:'center'
+    justifyContent: 'center',
+    // alignItems: 'center',
+    width: '50%',
+    marginLeft: 60,
   },
+  header: {
+    flexDirection: 'row',
+  },
+
+  // buttonContainer: {
+  //   width: 300,
+  // },
+  // button:{
+  //   flex:1,
+  //   justifyContent:'center',
+  //   alignItems:'center',
+  //   backgroundColor:'red',
+
+  //   // width:'50%'
+
+  // }
 });
 
 export default memo(ReminderScreen);

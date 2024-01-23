@@ -225,6 +225,7 @@ const styles = StyleSheet.create({
     flex: 0.4,
     justifyContent: 'flex-start',
     alignItems: 'center',
+    marginTop:-20
   },
   infoCardContainer: {
     flex: 0.4,

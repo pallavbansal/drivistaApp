@@ -33,10 +33,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+    marginLeft:15
   },
   checkbox: {
-    width: 10,
-    height: 10,
+    width: 15,
+    height: 15,
     borderRadius: 1,
     borderWidth: 1,
 
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: Fonts.family,
-    fontSize: Fonts.sizes.small,
+    fontSize: 14,
     fontWeight:Fonts.weight.bold,
     marginLeft:10
   },

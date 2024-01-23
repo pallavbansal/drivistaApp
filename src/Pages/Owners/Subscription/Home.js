@@ -25,10 +25,11 @@ const Home = ({navigation}) => {
     subHeading:
       'You currently have 8 registered employees, you can also add and delete more employers.',
     email: 'Email Id',
-    buttonLabel1: 'Add/delete employee',
+    buttonLabel1: 'Add/delete employees',
     buttonLabel2: 'Cancel Subscription',
     linkText: 'Resend OTP',
     navigateScreen: 'SubscriptionDescription',
+    navigateBackNavigation:()=> navigation.pop(),
     handleNavigation: (screenName, isModal) => {
       if (!isModal) {
         // Navigate to the SubscriptionDescription screen
@@ -58,12 +59,11 @@ const Home = ({navigation}) => {
     } else if (nextAction === 'CancelConfirmationModal') {
       setMessageModalVisible(false);
       setIsConfirmationModalVisible(false);
+    } else if (nextAction === 'CancelMessageModal') {
+      setMessageModalVisible(false);
+      setIsConfirmationModalVisible(false);
+      navigation.navigate('OwnerHomeScreen');
     }
-    else if (nextAction === 'CancelMessageModal') {
-        setMessageModalVisible(false);
-        setIsConfirmationModalVisible(false);
-        navigation.navigate('OwnerHomeScreen');
-      }
   };
 
   const MainContainer = ({children}) => (
@@ -92,17 +92,19 @@ const Home = ({navigation}) => {
     <MainContainer>
       <HeaderContainer
         label={'Your Subscription'}
+        labels={props}
         showBackArrow={true}
         showLabel={true}
         showPopUp={true}
         showBackground={true}
         containerStyle={styles.headContainer}
+        handleBackNavigation={props.navigateBackNavigation}
       />
       <View style={styles.container}>
         <View style={styles.logoContainer}>
-          <LogoWithLabel logo={clock} label={props.heading} />
-          <HeadingContainer {...props} />
+          <LogoWithLabel logo={clock} label={props.heading} headsize={18} />
         </View>
+        <HeadingContainer {...props} />
         <ButtonsMixContainer {...props} />
       </View>
     </MainContainer>
@@ -110,7 +112,8 @@ const Home = ({navigation}) => {
 };
 const HeadingContainer = memo(({subHeading}) => (
   <View style={styles.header}>
-    <Heading label={subHeading} />
+
+<Text style={[globalStyles.labelHeading, {fontWeight:'500'}]}>{subHeading}</Text>
   </View>
 ));
 const ButtonsMixContainer = memo(props => (
@@ -140,7 +143,11 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   headContainer: {
-    flex: 0.2,
+    flex: 0.1,
+  },
+  header: {
+    marginVertical: 10,
+    marginBottom: 20,
   },
   container: {
     flex: 0.7,
@@ -154,9 +161,10 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   logoContainer: {
-    flex: 0.5,
+    flex: 0.4,
     justifyContent: 'space-evenly',
     alignItems: 'center',
+    marginTop: -20,
   },
   infoCardContainer: {
     flex: 0.5,

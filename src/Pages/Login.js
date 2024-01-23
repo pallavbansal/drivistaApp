@@ -16,7 +16,8 @@ import Spinner from '../components/reusableComponents/Spinner';
 import Space from '../components/reusableComponents/Space';
 
 
-const Login = ({navigation}) => {
+const Login = ({navigation,route}) => {
+  const {type} = route.params;
   const {
     loading,
     setLoading,
@@ -36,12 +37,12 @@ const Login = ({navigation}) => {
   const labels = {
     label: 'Login',
     heading:
-      'Please enter your valid email address, we will send you a 4-digit code to verify.',
+      '',
     email: 'Email Id',
     buttonLabel: 'Login',
     password: 'Password',
-    authFooterText: 'Do not have an account?',
-    linkText: 'Register',
+    authFooterText: type === "Owner Login"  ? 'Do not have an account?' : "",
+    linkText:type === "Owner Login" ?  'Register': "" ,
     navigateScreen: 'StartShift',
     footerNavigateScreen: 'RegisterScreen',
     navigateBackScreen:'LoginScreen',
@@ -119,7 +120,7 @@ const Login = ({navigation}) => {
         <PageLabel label={labels.label} />
       </View>
       <View style={styles.container}>
-        <HeadingContainer heading={labels.heading} />
+        {/* <HeadingContainer heading={labels.heading} /> */}
         <InputContainer
           labels={labels}
           loginError={loginError}
@@ -131,7 +132,10 @@ const Login = ({navigation}) => {
           setPasswordVisible={setPasswordVisible}
         />
         <Space/>
-        <ForgetPasswordContainer {...labels} />
+        {
+          type === "Owner Login" ? <ForgetPasswordContainer {...labels} /> :""
+        }
+
         <ButtonContainer {...labels} isFormValid={isFormValid} />
         <FooterContainer {...labels} />
       </View>
@@ -196,12 +200,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
   },
   headContainer: {
-    flex: 0.1,
+
   },
   pageLabel: {
     flex: 0.1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
+    marginTop:-20
   },
   container: {
     flex: 0.7,

@@ -27,6 +27,7 @@ import {useSelector} from 'react-redux';
 import StartShift from './src/Pages/Drivers/StartShift';
 import ActionShift from './src/Pages/Drivers/ActionShift';
 import BreakShift from './src/Pages/Drivers/BreakShift';
+import WorkHistoryDetails from './src/Pages/Owners/Driver/WorkHistoryDetails';
 
 const App = () => {
   // Create a navigation stack
@@ -55,18 +56,18 @@ const App = () => {
         {isAuth && user.role === '2' ? (
           <>
             {currentStatus === 'started' ? (
-        <>
-          <Stack.Screen name="ActionShift" component={ActionShift} />
-        </>
-      ) : currentStatus === 'break' ? (
-        <>
-          <Stack.Screen name="BreakShift" component={BreakShift} />
-        </>
-      ) : (
-        <>
-          <Stack.Screen name="StartShift" component={StartShift} />
-        </>
-      )}
+              <>
+                <Stack.Screen name="ActionShift" component={ActionShift} />
+              </>
+            ) : currentStatus === 'break' ? (
+              <>
+                <Stack.Screen name="BreakShift" component={BreakShift} />
+              </>
+            ) : (
+              <>
+                <Stack.Screen name="StartShift" component={StartShift} />
+              </>
+            )}
           </>
         ) : isAuth && user.role === '1' ? (
           <>
@@ -83,6 +84,10 @@ const App = () => {
             <Stack.Screen name="VehicleDetails" component={VehicleDetails} />
             <Stack.Screen name="CalenderScreen" component={CalenderScreen} />
 
+            <Stack.Screen
+              name="WorkHistoryDetails"
+              component={WorkHistoryDetails}
+            />
             <Stack.Screen name="DriverDetails" component={DriverDetails} />
             <Stack.Screen name="ReminderScreen" component={ReminderScreen} />
 

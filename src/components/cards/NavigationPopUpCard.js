@@ -3,14 +3,14 @@ import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {globalStyles} from '../../constants/globalStyles';
 import {Colors} from '../../constants/colors';
 
-const NavigationPopUpCard = ({navigationPopUpList, handleNavigation}) => {
+const NavigationPopUpCard = ({navigationPopUpList, handleNavigation, modalStyle = { height: 90, marginTop: 80 }}) => {
   const handlePress = navigateScreen => {
     handleNavigation(navigateScreen);
   };
 
   return (
     <View style={styles.centeredView}>
-      <View style={styles.modalView}>
+      <View style={[styles.modalView, modalStyle]}>
         {navigationPopUpList.map((item, index) => (
           <Pressable
             key={index}
@@ -18,7 +18,7 @@ const NavigationPopUpCard = ({navigationPopUpList, handleNavigation}) => {
               styles.button,
               {
                 backgroundColor:
-                  item.label === 'profile' ? Colors.headerBg : 'white',
+                  index === 0 ? Colors.headerBg : 'white',
               },
             ]}
             onPress={() => handleNavigation(item.navigateScreen)}>
@@ -26,7 +26,7 @@ const NavigationPopUpCard = ({navigationPopUpList, handleNavigation}) => {
               style={[
                 globalStyles.text,
                 {
-                  color: item.label === 'profile' ? 'white' : Colors.headerBg,
+                  color: index === 0 ? 'white' : Colors.headerBg,
                   fontWeight: 'bold',
                 },
               ]}>
@@ -41,18 +41,21 @@ const NavigationPopUpCard = ({navigationPopUpList, handleNavigation}) => {
 
 const styles = StyleSheet.create({
   centeredView: {
+  flex:1,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 999,
+    zIndex:999,
+
   },
   modalView: {
-    width: '40%',
-    marginTop: -10,
+    width: '30%',
+
     marginRight: 10,
     marginLeft: 'auto',
     backgroundColor: 'white',
-    borderRadius: 10,
-    paddingTop: 10,
+    borderRadius: 5,
+    paddingTop: 5,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -62,10 +65,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+
   },
   button: {
     borderRadius: 20,
-    padding: 10,
+    padding: 5,
     width: '95%',
     alignItems: 'flex-start',
   },

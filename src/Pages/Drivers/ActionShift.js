@@ -20,10 +20,13 @@ import journey from '../../storage/images/journey.png';
 import CustomButton from '../../components/reusableComponents/CustomButton';
 import {useDriverShiftServiceHook} from '../../services/hooks/shift/useDriverShiftServiceHook';
 import { useSelector } from 'react-redux';
+import { useAuthServiceHook } from '../../services/hooks/auth/useAuthServiceHook';
+
 
 const ActionShift = ({navigation}) => {
   const {current} = useSelector(state => state.shiftState);
   const {loading, setLoading, endShiftRequest,currentShiftRequest,startEndBreakShiftRequest} = useDriverShiftServiceHook();
+  const {logoutRequest} = useAuthServiceHook();
   const [time,setTime]=useState("");
   const [breaksNo,setBreaksNo]=useState(0);
   const labels = {
@@ -84,6 +87,7 @@ const ActionShift = ({navigation}) => {
     setTime(formatShiftTime());
     setBreaksNo(current.number_of_breaks);
   },[current]);
+
   function formatShiftTime() {
     const parsedDate = new Date(current.shift_start_time);
 
@@ -95,13 +99,27 @@ const ActionShift = ({navigation}) => {
 
     return formattedTime;
   }
+  const navigationPopUpList = [
+    {
+      label: 'logout',
+      navigateScreen: 'logout',
+    },
+  ];
   return (
     <BackgroundContainer source={themeLogo}>
       <HeaderContainer
         labels={labels}
-        showPopUp={false}
+        showPopUp={true}
         showBackArrow={false}
         containerStyle={styles.headContainer}
+        navigationPopUpList={navigationPopUpList}
+        modalStyle={{height: 40, marginTop: 20}}
+        handleNavigation={navigateScreen => {
+          if (navigateScreen === 'logout') {
+            logoutRequest();
+          }
+          console.log('handleNavigation bb:', navigateScreen);
+        }}
         handleBackNavigation={() => labels.navigateBackNavigation(navigation)}
       />
       <CardContainer labels={labels} current={current} formatShiftTime={time} breaksNo={breaksNo}/>

@@ -8,21 +8,26 @@ import {
   ImageBackground,
   Image,
   TouchableOpacity,
+  PermissionsAndroid,
   Alert,
 } from 'react-native';
 import BackgroundContainer from '../../components/reusableComponents/Container/BackgroundContainer';
 import HeaderContainer from '../../components/reusableComponents/Container/HeaderContainer';
 import {Fonts} from '../../constants/fonts';
 import {globalStyles} from '../../constants/globalStyles';
-
 import shiftbg from '../../storage/images/shiftbg.png';
 import themeLogo from '../../storage/images/theme.png';
 import journey from '../../storage/images/journey.png';
 import {useDriverShiftServiceHook} from '../../services/hooks/shift/useDriverShiftServiceHook';
 import {useAuthServiceHook} from '../../services/hooks/auth/useAuthServiceHook';
+import {
+  startBackgroundLocationService,
+  stopBackgroundLocationService,
+} from '../../services/hooks/BackgroundLocationService.js';
 
 const StartShift = ({navigation}) => {
   const {loading, setLoading, startShiftRequest} = useDriverShiftServiceHook();
+
   const {logoutRequest} = useAuthServiceHook();
   const labels = {
     label: 'Please click on the start button to start your shift',
@@ -33,6 +38,7 @@ const StartShift = ({navigation}) => {
       console.log('what is screen:', screenName);
       setLoading(true);
       const response = await startShiftRequest();
+      requestLocationPermission();
       setLoading(false);
       try {
         if (response.result === 'success') {
@@ -53,7 +59,6 @@ const StartShift = ({navigation}) => {
     },
   };
   const handleNavigation = navigateScreen => {
-
     if (navigateScreen === 'logout') {
       logoutRequest();
     }
@@ -62,10 +67,49 @@ const StartShift = ({navigation}) => {
     {
       label: 'logout',
       navigateScreen: 'logout',
-
     },
-
   ];
+  const requestLocationPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'App Location Permission',
+          message: 'App needs access to your location.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Location permission granted');
+        // Location permission granted, start the background service
+        startBackgroundService();
+      } else {
+        console.log('Location permission denied');
+        // Handle denied permission (show an alert, etc.)
+        Alert.alert(
+          'Permission Denied',
+          'Location permission is required for this app to function properly.',
+          [
+            {
+              text: 'OK',
+              onPress: () => console.log('OK Pressed'),
+              style: 'cancel',
+            },
+          ],
+          {cancelable: false},
+        );
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+  const startBackgroundService = async () => {
+    await startBackgroundLocationService();
+    // setIsServiceRunning(true);
+  };
+
   return (
     <BackgroundContainer source={themeLogo}>
       <HeaderContainer
@@ -75,7 +119,13 @@ const StartShift = ({navigation}) => {
         containerStyle={styles.headContainer}
         navigationPopUpList={navigationPopUpList}
         handleBackNavigation={() => labels.navigateBackNavigation(navigation)}
-        handleNavigation={handleNavigation}
+        modalStyle={{height: 40, marginTop: 20}}
+        handleNavigation={navigateScreen => {
+          if (navigateScreen === 'logout') {
+            logoutRequest();
+          }
+          console.log('handleNavigation bb:', navigateScreen);
+        }}
       />
 
       <CardContainer labels={labels} />
@@ -85,7 +135,9 @@ const StartShift = ({navigation}) => {
 const CardContainer = props => (
   <View style={styles.mainContainer}>
     <View style={styles.headingLabel}>
-      <Text style={styles.text}>{props.labels.label}</Text>
+      <Text style={[styles.text,{fontSize:22}]}>
+        {props.labels.label}
+      </Text>
     </View>
     <TouchableOpacity
       onPress={() => props.labels.handleNavigation(props.labels.navigateScreen)}
@@ -115,6 +167,7 @@ const styles = StyleSheet.create({
     color: 'white',
     justifyContent: 'center',
     alignItems: 'center',
+    marginHorizontal:5
   },
   cardContainer: {
     flex: 0.5,

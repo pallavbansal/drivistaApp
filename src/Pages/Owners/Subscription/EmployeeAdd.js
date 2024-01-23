@@ -20,6 +20,7 @@ const EmployeeAdd = ({navigation}) => {
     buttonLabel: 'Next',
     linkText: 'Resend OTP',
     navigateScreen: 'PaymentDetails',
+    navigateBackNavigation:()=> navigation.pop(),
     handleNavigation: screenName => navigation.navigate(screenName),
   };
 
@@ -31,15 +32,18 @@ const EmployeeAdd = ({navigation}) => {
     <MainContainer>
       <HeaderContainer
         label={'Your Subscription'}
+        labels={props}
         showBackArrow={true}
         showLabel={true}
         showPopUp={true}
         showBackground={true}
         containerStyle={styles.headContainer}
+        handleBackNavigation={props.navigateBackNavigation}
+
       />
       <View style={styles.container}>
         <View style={styles.logoContainer}>
-          <LogoWithLabel logo={bucket} label={props.heading} />
+          <LogoWithLabel logo={bucket} label={props.heading} headsize={18}/>
         </View>
         <CounterContainer />
         <View style={styles.buttonContainer}>
@@ -63,7 +67,7 @@ const CounterContainer = memo(({subHeading}) => (
           globalStyles.text,
           {fontSize: Fonts.sizes.large, fontWeight: 'bold'},
         ]}>
-        {10}
+        {8}
       </Text>
     </View>
     <Image
@@ -89,16 +93,18 @@ const styles = StyleSheet.create({
     flex: 0.2,
   },
   container: {
-    flex: 0.7,
+    flex: 0.8,
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     margin: 10,
     padding: 20,
+    marginTop:-20
 
   },
   buttonContainer: {
     flex: 0.4,
     justifyContent: 'flex-start',
+    marginHorizontal:30
   },
   logoContainer: {
     flex: 0.3,
@@ -112,8 +118,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   counterValueContainer: {
-    width: 50,
-    height: 50,
+    width: 120,
+    height: 60,
     borderRadius: 4,
     backgroundColor: '#ECE5F5',
     justifyContent: 'center',

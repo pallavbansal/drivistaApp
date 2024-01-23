@@ -21,6 +21,7 @@ const SubscriptionDescription = ({navigation}) => {
     subHeading: 'Starting from $5/week /employee.',
     buttonLabel: 'Proceed',
     navigateScreen: 'EmployeeAdd',
+    navigateBackNavigation:()=> navigation.pop(),
     handleNavigation: screenName => navigation.navigate(screenName),
   };
   const data = [
@@ -56,7 +57,7 @@ const SubscriptionDescription = ({navigation}) => {
     },
     {id: 11, description: 'Manage your staff status - ALL LIVE'},
     {
-      id:124,
+      id: 124,
       description:
         'Monitor your staff’s shifts begin and taken break of start & finish time.',
     },
@@ -73,7 +74,7 @@ const SubscriptionDescription = ({navigation}) => {
     },
     {id: 11, description: 'Manage your staff status - ALL LIVE'},
     {
-      id:124,
+      id: 124,
       description:
         'Monitor your staff’s shifts begin and taken break of start & finish time.',
     },
@@ -90,7 +91,7 @@ const SubscriptionDescription = ({navigation}) => {
     },
     {id: 11, description: 'Manage your staff status - ALL LIVE'},
     {
-      id:124,
+      id: 124,
       description:
         'Monitor your staff’s shifts begin and taken break of start & finish time.',
     },
@@ -112,22 +113,25 @@ const SubscriptionDescription = ({navigation}) => {
     <MainContainer>
       <HeaderContainer
         showBackArrow={true}
+        labels={props}
         showBackground={false}
         containerStyle={styles.headContainer}
+        handleBackNavigation={props.navigateBackNavigation}
       />
 
       <View style={styles.container}>
         <LabelContainer {...props} />
-        <ScrollView style={{flex:0.9}}>
-        <View style={styles.descriptionContainer}>
-          {data.map(item => (
-            <BulletContainer key={item.id} {...item} />
-          ))}
-        </View>
+
+        <ScrollView style={{flex: 0.9}}>
+          <View style={styles.descriptionContainer}>
+            {data.map(item => (
+              <BulletContainer key={item.id} {...item} />
+            ))}
+          </View>
         </ScrollView>
+        <Space />
         <ButtonContainer {...props} />
       </View>
-
     </MainContainer>
   );
 };
@@ -136,7 +140,11 @@ const LabelContainer = memo(props => (
     <Text
       style={[
         globalStyles.text,
-        {fontSize: Fonts.sizes.medium, fontWeight: 'bold'},
+        {
+          fontSize: 18,
+          fontWeight: 'bold',
+          color: Colors.primary,
+        },
       ]}>
       {props.heading}
     </Text>
@@ -170,14 +178,15 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
   },
   headContainer: {
-    flex: 0.1,
+    // flex: 0.1,
   },
   container: {
     flex: 0.9,
     flexDirection: 'column',
     justifyContent: 'flex-start',
     paddingHorizontal: 20,
-    marginHorizontal: 20,
+    marginHorizontal: 30,
+
     borderRadius: 5,
     borderWidth: 1,
     borderColor: 'white',
@@ -190,6 +199,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 0.5,
     justifyContent: 'flex-start',
+
   },
   bulletContainer: {
     flexDirection: 'row',
@@ -200,8 +210,8 @@ const styles = StyleSheet.create({
     flex: 0.1,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
+    marginTop:10
   },
-
 
   bullet: {
     width: 8,
@@ -211,6 +221,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
     alignSelf: 'flex-start',
   },
+  button:{
+    marginHorizontal:20
+  }
 });
 
 export default memo(SubscriptionDescription);

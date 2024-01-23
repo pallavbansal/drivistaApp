@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect} from 'react';
-import {View, StyleSheet, Alert} from 'react-native';
+import {View, StyleSheet, Alert,Text} from 'react-native';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import themeLogo from '../storage/images/theme.png';
@@ -12,6 +12,7 @@ import BackgroundContainer from '../components/reusableComponents/Container/Back
 import HeaderContainer from '../components/reusableComponents/Container/HeaderContainer';
 import {useAuthServiceHook} from '../services/hooks/auth/useAuthServiceHook';
 import Spinner from '../components/reusableComponents/Spinner';
+import { globalStyles } from '../constants/globalStyles';
 
 const Otp = ({navigation, route}) => {
   const {id, caseType} = route.params;
@@ -119,9 +120,16 @@ const Otp = ({navigation, route}) => {
           handleBackNavigation={labels.handleDirectNavigation}
         />
         <View style={styles.pageLabel}>
-          <PageLabel label={labels.label} />
+
         </View>
         <View style={styles.container}>
+        <Text
+            style={[
+              globalStyles.labelHeading,
+              {color: 'black', fontWeight: 'bold', fontSize: 20},
+            ]}>
+            {labels.label}
+          </Text>
           <HeadingContainer heading={labels.heading} />
           <OtpInput
             length={4}
@@ -162,7 +170,7 @@ const styles = StyleSheet.create({
     flex: 0.1,
   },
   pageLabel: {
-    flex: 0.2,
+    flex: 0.1,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -180,9 +188,10 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.inputWrapperBg,
   },
   header: {
-    flex: 0.1,
+    flex: 0.2,
     justifyContent: 'center',
     alignItems: 'center',
+
   },
   inputContainer: {
     flex: 0.3,
@@ -198,6 +207,7 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 0.3,
+    marginTop:15
   },
   actionSection: {
     flex: 0.3,

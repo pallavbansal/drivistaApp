@@ -20,7 +20,7 @@ const StatusCard = ({
   imageLink,
   label,
   textName = 'test',
-  onlinestatus,
+  status,
   editShow,
   deleteShow,
   handleDeleteItem,
@@ -29,7 +29,7 @@ const StatusCard = ({
   return (
     <View style={styles.inputContainer}>
       <View style={styles.inputWrapper}>
-        <View style={styles.labelSection}>
+        <TouchableOpacity style={styles.labelSection} onPress={() => handleNavigation(id)}>
           <Image
             source={imageLink}
             style={[
@@ -37,13 +37,13 @@ const StatusCard = ({
               {height: 25, width: 25, marginRight: 10},
             ]}
           />
-          <Text style={[globalStyles.textInput, styles.bulletText]}>
+          <Text style={[styles.bulletText]}>
             {textName}
           </Text>
-        </View>
+        </TouchableOpacity>
         <View style={styles.actionSection}>
           <View style={styles.actionSection}>
-            {onlinestatus === true && (
+            {status === "started" && (
               <Image source={onlineStatus} style={globalStyles.logoImage} />
             )}
             {editShow === true && (
@@ -100,8 +100,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   bulletText: {
-    fontSize: Fonts.sizes.medium,
-    fontWeight: Fonts.weight.bold,
+    fontSize: 16,
+    fontWeight: 600,
     // textTransform: 'capitalize',
     color: Colors.primary,
   },

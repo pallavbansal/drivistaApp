@@ -1,7 +1,7 @@
 import React, {memo} from 'react';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {globalStyles} from '../../constants/globalStyles';
-import cancel from '../../storage/images/cancel.png';
+import accessDenied from '../../storage/images/accessDenied.png';
 import {Colors} from '../../constants/colors';
 import LogoWithLabel from '../reusableComponents/LogoWithLabel';
 import Heading from '../reusableComponents/Heading';
@@ -24,7 +24,7 @@ const MessageCard = ({label, description, handleNavigation}) => {
     <View style={styles.centeredView}>
       <View style={styles.modalView}>
         <View style={styles.logoContainer}>
-          <LogoWithLabel label={label} logo={cancel} />
+          <LogoWithLabel label={label} logo={accessDenied} headsize={20} width={80} height={80}  />
         </View>
 
         <View style={styles.mixButtonContainer}>
@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
     flex: 0.4,
     flexDirection: 'row',
     alignItems: 'center',
+    marginHorizontal:20
   },
   button: {
     flex: 1, // Each button should take equal space

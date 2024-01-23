@@ -7,6 +7,7 @@ export const Fonts = {
     medium: 14,
     large: 30,
     logoWithLabel:20,
+    textInput:14
     // Add more font sizes here as per your project's requirement
   },
   styles: {

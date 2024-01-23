@@ -29,9 +29,12 @@ const fetchLocationInBackground = async taskDataArguments => {
           enableHighAccuracy: true,
           timeout: 15000,
           maximumAge: 10000,
+          //  timeout: 30000,
+          //  maximumAge: 10000,
           showLocationDialog: true,
           forceRequestLocation: true,
           forceLocationManager: false,
+          showsBackgroundLocationIndicator: true,
         },
       );
       await sleep(delay);
@@ -70,14 +73,13 @@ const startBackgroundLocationService = async () => {
             style: 'cancel',
           },
         ],
-        { cancelable: false },
+        {cancelable: false},
       );
     }
   } catch (err) {
     console.warn(err);
   }
 };
-
 
 // Rest of the code remains unchanged
 
@@ -95,7 +97,6 @@ const requestLocationPermission = async () => {
       delay: 5000, // Adjust the delay as needed
     },
   };
-
 
   try {
     await BackgroundService.start(fetchLocationInBackground, options);
