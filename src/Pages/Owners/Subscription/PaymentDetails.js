@@ -20,6 +20,8 @@ const PaymentDetails = ({navigation}) => {
     email: 'Email Id',
     buttonLabel: 'Subscribe',
     navigateScreen: 'SuccessScreen',
+   navigateBackScreen:'LoginScreen',
+    navigateBackNavigation:()=> navigation.pop(),
     handleNavigation: screenName => navigation.navigate(screenName),
   };
 
@@ -31,18 +33,21 @@ const PaymentDetails = ({navigation}) => {
     <MainContainer>
       <HeaderContainer
         label={props.label}
+        labels={props}
         showBackArrow={true}
         showLabel={true}
         showPopUp={true}
         showBackground={true}
         containerStyle={styles.headContainer}
+        handleBackNavigation={props.navigateBackNavigation}
       />
       <View style={styles.container}>
         <View style={styles.logoContainer}>
-          <LogoWithLabel logo={wallet} label={props.heading} />
+          <LogoWithLabel logo={wallet} label={props.heading} headsize={20} width={100} height={100}/>
         </View>
         <PaymentDetailsContainer />
         <View style={styles.buttonContainer}>
+          <Space/>
           <ButtonContainer {...props} />
         </View>
       </View>
@@ -57,7 +62,7 @@ const PaymentDetailsContainer = memo(({subHeading}) => (
           globalStyles.text,
           {fontSize: Fonts.sizes.large, fontWeight: 'bold'},
         ]}>
-        {'$ 18.48'}
+        {'$18.48'}
       </Text>
     </View>
     <View style={styles.amountDetailsContainer}>
@@ -86,7 +91,7 @@ const ButtonContainer = memo(props => (
     <Text
         style={[
           globalStyles.text,
-          {fontSize: Fonts.sizes.small,alignSelf:'center'},
+          {fontSize: Fonts.sizes.small,textAlign:'center'},
         ]}>
         {'Pay securely and save card to set-up recurring to payment '}
       </Text>
@@ -100,10 +105,10 @@ const styles = StyleSheet.create({
     // backgroundColor: Colors.primary,
   },
   headContainer: {
-    flex: 0.2,
+
   },
   container: {
-    flex: 0.8,
+    flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     margin: 10,
@@ -111,12 +116,12 @@ const styles = StyleSheet.create({
 
   },
   buttonContainer: {
-    flex: 0.4,
+    flex: 0.2,
     justifyContent: 'center',
 
   },
   logoContainer: {
-    flex: 0.3,
+    flex: 0.1,
     justifyContent: 'space-evenly',
     alignItems: 'center',
 

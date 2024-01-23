@@ -9,8 +9,8 @@ const BreakInfoCard = ({textName, time}) => {
   return (
 
       <View style={styles.wrapper}>
-        <Text    style={[globalStyles.text, { fontWeight: 'bold'}]}>{textName}</Text>
-        <Text    style={[globalStyles.text]}>{time}</Text>
+        <Text    style={[globalStyles.text, { fontWeight: 'bold',color:Colors.primary}]}>{textName}{': '}</Text>
+        <Text    style={[globalStyles.text,{fontWeight:'bold',color:Colors.primary}]}>{time}</Text>
 
       </View>
 
@@ -22,8 +22,9 @@ const styles = StyleSheet.create({
   wrapper: {
 
     flexDirection: 'row',
-     justifyContent:'space-between',
+    //  justifyContent:'space-between',
     flex:1,
+
   },
 });
 

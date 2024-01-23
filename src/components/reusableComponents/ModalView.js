@@ -44,8 +44,10 @@ const ModalView = ({
 
 const styles = StyleSheet.create({
   centeredView: {
+
     justifyContent: 'center',
     alignItems: 'center',
+
   },
   modalOverlay: {
     flex: 1,

@@ -35,7 +35,6 @@ const Vehicles = ({
 }) => {
   console.log('vehicle data hry:', details);
 
-
   console.log('check for editable:', editable);
   const textInputRef = useRef(null);
   const handleInputPress = () => {
@@ -63,7 +62,9 @@ const Vehicles = ({
   return (
     <MainContainer>
       <View style={styles.profileContainer}>
-        <TouchableOpacity style={styles.actionContainer} onPress={()=>setEditable(!editable)}>
+        <TouchableOpacity
+          style={styles.actionContainer}
+          onPress={() => setEditable(!editable)}>
           {!editable ? (
             <View style={{flexDirection: 'row'}}>
               <Text style={globalStyles.text}>{'Edit'}</Text>
@@ -73,7 +74,7 @@ const Vehicles = ({
               />
             </View>
           ) : (
-                    ""
+            ''
             //  <View style={[styles.buttonStyle]}>
             //   <Text
             //     style={[
@@ -109,61 +110,73 @@ const MainContainer = ({children}) => (
 );
 const LogoHeaderContainer = memo(props => (
   <View style={styles.logoContainer}>
-    <View style={{flex: 0.5}}>
+    <View>
       <Image
         source={vehicle}
-        style={[globalStyles.logoImage, {width: 100, height: 100}]}
+        style={[globalStyles.logoImage, {width: 180, height: 180}]}
       />
     </View>
   </View>
 ));
-
 const ProfileInfoContainer = memo(props => (
-  <View>
+  <>
     <View style={styles.wrapper}>
-      <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
-        {'Vehicle Number'}
-      </Text>
-      {props.editable ? (
-        <TextInput
-          style={[styles.input, styles.text]}
-          value={props.vehicleNumber}
-          onChangeText={text => props.setVehicleNumber(text)}
-        />
-      ) : (
-        <Text style={styles.text}>: {props.vehicleNumber}</Text>
-      )}
+      <View style={styles.textLabelWrapper}>
+        <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
+          {'Vehicle Number'}
+        </Text>
+      </View>
+      <View style={styles.inputWrapper}>
+        {props.editable ? (
+          <TextInput
+            style={[styles.input, styles.text]}
+            value={props.vehicleNumber}
+            onChangeText={text => props.setVehicleNumber(text)}
+          />
+        ) : (
+          <Text style={styles.text}>: {props.vehicleNumber}</Text>
+        )}
+      </View>
     </View>
     <View style={styles.wrapper}>
-      <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
-        {'Vehicle Name'}
-      </Text>
-      {props.editable ? (
-        <TextInput
-          style={[styles.input, styles.text]}
-          value={props.vehicleName}
-          onChangeText={text => props.setVehicleName(text)}
-        />
-      ) : (
-        <Text style={styles.text}>: {props.vehicleName}</Text>
-      )}
+      <View style={styles.textLabelWrapper}>
+        <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
+          {'Vehicle Name'}
+        </Text>
+      </View>
+      <View style={styles.inputWrapper}>
+        {props.editable ? (
+          <TextInput
+            style={[styles.input, styles.text]}
+            value={props.vehicleName}
+            onChangeText={text => props.setVehicleName(text)}
+          />
+        ) : (
+          <Text style={styles.text}>: {props.vehicleName}</Text>
+        )}
+      </View>
     </View>
     <View style={styles.wrapper}>
-      <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
-        {'Driver Name'}
-      </Text>
-      {props.editable ? (
-        <TextInput
-          style={[styles.input, styles.text]}
-          value={props.driverName}
-          onChangeText={text => props.setDriverName(text)}
-        />
-      ) : (
-        <Text style={styles.text}>: {props.driverName}</Text>
-      )}
+      <View style={styles.textLabelWrapper}>
+        <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
+          {'Driver Name'}
+        </Text>
+      </View>
+      <View style={styles.inputWrapper}>
+        {props.editable ? (
+          <TextInput
+            style={[styles.input, styles.text]}
+            value={props.driverName}
+            onChangeText={text => props.setDriverName(text)}
+          />
+        ) : (
+          <Text style={styles.text}>: {props.driverName}</Text>
+        )}
+      </View>
     </View>
-  </View>
+  </>
 ));
+
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
@@ -182,19 +195,22 @@ const styles = StyleSheet.create({
   },
   actionContainer: {
     flex: 0.1,
-    margin: 5,
+    marginHorizontal: 5,
     justifyContent: 'flex-end',
+    alignItems: 'flex-start',
     flexDirection: 'row',
   },
   logoContainer: {
-    flex: 0.4,
+    flex: 0.5,
     justifyContent: 'flex-start',
     alignItems: 'center',
+    marginTop: -40,
   },
   infoCardContainer: {
-    flex: 0.4,
+    flex: 0.5,
     justifyContent: 'flex-start',
-    alignItems: 'center',
+    marginLeft:40,
+
   },
   footerContainer: {
     flex: 0.1,
@@ -211,11 +227,12 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flexDirection: 'row',
-    justifyContent: 'center',
+
     alignItems: 'center',
     borderRadius: 10,
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 0,
+    // backgroundColor:'red'
   },
   input: {
     borderWidth: 1,
@@ -224,6 +241,8 @@ const styles = StyleSheet.create({
     padding: 5,
     width: '50%',
     marginHorizontal: 5,
+    marginVertical:2
+
   },
   initialSection: {
     height: 40,
@@ -255,6 +274,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Verdana',
     fontSize: 9,
     fontStyle: 'italic',
+  },
+  textLabelWrapper: {
+    flex: 0.4,
+  },
+  inputWrapper: {
+    flex: 0.6,
   },
 });
 

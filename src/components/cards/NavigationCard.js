@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {globalStyles} from '../../constants/globalStyles';
-import { Fonts } from '../../constants/fonts';
+import {Fonts} from '../../constants/fonts';
 
 const NavigationCard = ({
   label,
@@ -16,6 +16,7 @@ const NavigationCard = ({
   cardStyle,
   navigateScreen,
   handleNavigation,
+  imageBackground,
   logoImage,
   cardLogo,
 }) => {
@@ -25,38 +26,40 @@ const NavigationCard = ({
     }
   };
 
+  const labelParts = label.split(' ');
+
   return (
     <TouchableOpacity style={cardStyle} onPress={handleCardPress}>
-      <ImageBackground source={bgImage} style={styles.imageBackground}>
-        <View style={styles.container}>
-          <View style={styles.logoSection}>
-            <Image
-              source={logoImage}
-              style={[globalStyles.logoImage, cardLogo]}
-            />
+      <View style={styles.imageContainer}>
+        <ImageBackground source={bgImage} style={imageBackground}>
+          <View style={styles.container}>
+            <View style={styles.logoSection}>
+              <Image
+                source={logoImage}
+                style={[globalStyles.logoImage, cardLogo]}
+              />
+            </View>
+            <View style={styles.labelSection}>
+              {labelParts.map((part, index) => (
+                <Text
+                  key={index}
+                  style={[
+                    globalStyles.text,
+                    styles.labelText,
+                    {color: 'white', fontWeight: 'bold', fontSize: 18},
+                  ]}>
+                  {index > 0 ? '' : ''} {part}
+                </Text>
+              ))}
+            </View>
           </View>
-          <View style={styles.labelSection}>
-            <Text
-              style={[
-                globalStyles.text,
-                {color: 'white', fontWeight: 'bold', fontSize: 20},
-              ]}>
-              {label}
-            </Text>
-          </View>
-        </View>
-      </ImageBackground>
+        </ImageBackground>
+      </View>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-
-  imageBackground: {
-    flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'flex-end',
-  },
   container: {
     flex: 1,
     flexDirection: 'row',
@@ -64,6 +67,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 10,
     backgroundColor: 'transparent', // Optional: use a transparent background for the inner content
+     borderRadius:12
+  },
+  imageContainer: {
+    flex:1,
+    // Apply border radius to the container
+   // Ensure border radius is applied correctly
+  //  marginLeft: -20, // Apply the negative margin here
   },
   logoSection: {
     flex: 0.5,

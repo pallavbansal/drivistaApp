@@ -4,7 +4,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Modal,
-  TextInput,
+  Image,
   Alert,
 } from 'react-native';
 import {Colors} from '../../../constants/colors';
@@ -13,12 +13,19 @@ import StatusCard from '../../../components/cards/StatusCard';
 import HeaderContainer from '../../../components/reusableComponents/Container/HeaderContainer';
 import FooterContainer from '../../../components/reusableComponents/Container/FooterContainer';
 import vehicleLogo from '../../../storage/images/car.png';
+import userLogo from '../../../storage/images/user.png';
+import {navigationPopUpList} from '../../../constants/navigation';
+import cancelImage from '../../../storage/images/cancel.png';
 import BreakDetailsCard from '../../../components/cards/BreakDetailsCard';
 import {useVehicleServiceHook} from '../../../services/hooks/vehicle/useVehicleServiceHook';
 import {useSelector} from 'react-redux';
 import showDeleteConfirmation from '../../../components/reusableComponents/showDeleteConfirmation';
 import AddItemCard from '../../../components/cards/AddItemCard';
 import {Text} from 'react-native';
+import CustomTextInput from '../../../components/reusableComponents/CustomTextInput';
+import {globalStyles} from '../../../constants/globalStyles';
+import Space from '../../../components/reusableComponents/Space';
+import { useAuthServiceHook } from '../../../services/hooks/auth/useAuthServiceHook';
 
 const Home = ({navigation}) => {
   const {
@@ -32,6 +39,7 @@ const Home = ({navigation}) => {
     setDriverName,
     saveVehicleRequest,
   } = useVehicleServiceHook();
+  const {logoutRequest} = useAuthServiceHook();
   const [modalVisible, setModalVisible] = useState(false);
   const {vehicle} = useSelector(state => state.vehicleState);
   const [vehicleData, setVehicleData] = useState([]);
@@ -86,7 +94,6 @@ const Home = ({navigation}) => {
     return vehicleData.map((item, index) => (
       <View>
         <View key={item.id}>
-
           <StatusCard
             imageLink={vehicleLogo}
             textName={item.vehicle_name}
@@ -104,20 +111,26 @@ const Home = ({navigation}) => {
     navigateBackScreen: '',
     handleDirectNavigation: screenName => navigation.pop(),
   };
+  const handlePopUpNavigation = navigateScreen => {
+    if (navigateScreen === 'logout') {
+      logoutRequest();
+    } else {
+      navigation.navigate(navigateScreen);
+    }
+  };
   return (
     <View style={styles.mainContainer}>
       <HeaderContainer
         labels={labels}
-        showPopUp={false}
+        showPopUp={true}
         showBackArrow={true}
         showLabel={true}
         showBackground={true}
         label={'Your Vehicles'}
         containerStyle={styles.headContainer}
-        handleNavigation={navigateScreen => {
-          navigation.navigate(navigateScreen);
-        }}
+        handleNavigation={handlePopUpNavigation}
         handleBackNavigation={labels.handleDirectNavigation}
+        navigationPopUpList={navigationPopUpList}
       />
       <AddItemCard label="Add Vehicle" handleAddItem={handleAddItem} />
       <View style={styles.cardContainer}>{renderCards(vehicleData)}</View>
@@ -148,34 +161,40 @@ const ModalContainer = memo(props => (
     }}>
     <View style={styles.modalContainer}>
       <View style={styles.modalContent}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Vehicle Name"
-          value={props.vehicleName}
-          onChangeText={text => props.setVehicleName(text)}
+        <TouchableOpacity
+          style={styles.cancelSection}
+          onPress={() => props.setModalVisible(false)}>
+          <Image source={cancelImage} style={[globalStyles.logoImage]} />
+        </TouchableOpacity>
+        <CustomTextInput
+          logoName={userLogo}
+          // errorText={'props.loginError.fullName'}
+          placeholder={'Enter Vehicle Name'}
+          onChangeText={text => {
+            props.setVehicleName(text);
+          }}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Vehicle Number"
-          value={props.vehicleNumber}
-          onChangeText={text => props.setVehicleNumber(text)}
+        <CustomTextInput
+          logoName={userLogo}
+          // errorText={'props.loginError.fullName'}
+          placeholder={'Enter Vehicle Number'}
+          onChangeText={text => {
+            props.setVehicleNumber(text);
+          }}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Driver Name"
-          value={props.driverName}
+        <CustomTextInput
+          logoName={userLogo}
+          // errorText={'props.loginError.fullName'}
+          placeholder={'Enter Driver Name'}
           onChangeText={text => props.setDriverName(text)}
         />
+
+        <Space />
         <View style={styles.modalButtons}>
           <TouchableOpacity
             style={styles.saveButton}
             onPress={() => props.handleVehicleRequest()}>
             <Text style={styles.buttonText}>Save</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={props.handleClose}
-            style={styles.closeButton}>
-            <Text style={styles.buttonText}>Close</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -188,9 +207,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.containerBg,
   },
-  headContainer: {
-    flex: 0.2,
-  },
+  headContainer: {},
   cardContainer: {
     flex: 0.7,
   },
@@ -208,15 +225,17 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   modalContent: {
-    backgroundColor: Colors.breakInfoContainerBg,
+    backgroundColor: '#Fbfbf9',
     marginHorizontal: 20,
-    padding: 20,
+    padding: 10,
     borderRadius: 10,
-    alignItems: 'center',
+    //alignItems: 'center',
+
+    width: '100%',
   },
   input: {
     borderWidth: 1,
-    borderColor: Colors.inputBorder,
+    borderColor: 'grey',
     borderRadius: 5,
     width: 250,
     height: 40,
@@ -226,7 +245,6 @@ const styles = StyleSheet.create({
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    width: '100%',
   },
   saveButton: {
     backgroundColor: Colors.primary,
@@ -243,6 +261,9 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  cancelSection: {
+    alignItems: 'flex-end',
   },
 });
 

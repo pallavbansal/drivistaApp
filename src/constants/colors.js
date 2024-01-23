@@ -3,7 +3,7 @@ export const Colors = {
   secondary: '#FF5722',
   text: '#333',
   inputWrapperBg: '#fff',
-  placeholder: '#999', // Add your placeholder color here
+  placeholder: 'grey', // Add your placeholder color here
   headerBg:'#412160',
   containerBg:'#ffffff',
   inputBoxBg:'white',

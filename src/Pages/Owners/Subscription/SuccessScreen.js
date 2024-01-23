@@ -25,7 +25,7 @@ const SuccessScreen = ({navigation}) => {
     <MainContainer>
       <View style={styles.container}>
         <View style={styles.logoContainer}>
-          <LogoWithLabel logo={success} label={props.heading} />
+          <LogoWithLabel logo={success} label={props.heading} headsize={35} />
         </View>
 
         <View style={styles.buttonContainer}>
@@ -48,27 +48,30 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     flexDirection: 'column',
+    marginHorizontal:20
     // backgroundColor: Colors.primary,
   },
 
   container: {
-    flex: 0.8,
+    flex: 0.9,
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     margin: 10,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: 'white',
+    // borderRadius: 5,
+    // borderWidth: 1,
+    // borderColor: 'white',
     padding: 20,
+
 
   },
   buttonContainer: {
     flex: 0.3,
     justifyContent: 'center',
+    marginHorizontal:20
 
   },
   logoContainer: {
-    flex: 0.7,
+    flex: 0.9,
     justifyContent: 'center',
     alignItems: 'center',
 

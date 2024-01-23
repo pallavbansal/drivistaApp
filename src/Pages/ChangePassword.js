@@ -15,6 +15,7 @@ import Space from '../components/reusableComponents/Space';
 import HeaderContainer from '../components/reusableComponents/Container/HeaderContainer';
 import {useAuthServiceHook} from '../services/hooks/auth/useAuthServiceHook';
 import Spinner from '../components/reusableComponents/Spinner';
+import { globalStyles } from '../constants/globalStyles';
 
 const ChangePassword = ({navigation, route}) => {
   const {caseType, id, verification_uid} = route.params;
@@ -131,11 +132,12 @@ const ChangePassword = ({navigation, route}) => {
           containerStyle={styles.headContainer}
           handleBackNavigation={labels.handleDirectNavigation}
         />
-        <View style={styles.pageLabel}>
+        {/* <View style={styles.pageLabel}>
           <PageLabel label={labels.label} />
-        </View>
+        </View> */}
         <View style={styles.container}>
           {/* <InputContainer email={props.oldPassword} password={props.password} /> */}
+          <Text style={[globalStyles.labelHeading, {color: Colors.primary,fontSize:20,fontWeight:'bold'}]}>{"Change Password"}</Text>
           <InputContainer
             loginError={loginError}
             labels={labels}
@@ -226,7 +228,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headContainer: {
-    flex: 0.1,
+    flex: 0.2,
   },
   pageLabel: {
     flex: 0.2,
@@ -267,6 +269,7 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 0.2,
+    marginHorizontal:40
     // justifyContent:'center'
   },
   actionSection: {

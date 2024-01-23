@@ -44,8 +44,8 @@ const StartUp = ({navigation}) => {
       bgImage:shade3
     },
   ];
-  const handleNavigation = navigateScreen => {
-    navigation.navigate(navigateScreen);
+  const handleNavigation = (navigateScreen,item) => {
+    navigation.navigate(navigateScreen, { type: item.label});
   };
   const MainContainer = ({children}) => (
     <View style={styles.mainContainer}>{children}</View>
@@ -72,8 +72,9 @@ const StartUp = ({navigation}) => {
               key={index}
               {...item}
               cardLogo={styles.cardLogo}
+              imageBackground={styles.imageBackground}
               cardStyle={styles.card}
-              handleNavigation={handleNavigation}
+              handleNavigation={() => handleNavigation(item.navigateScreen, item)}
             />
           ))}
         </CardContainer>
@@ -109,10 +110,19 @@ const styles = StyleSheet.create({
     width: '60%',
     marginLeft: 'auto',
     marginRight: 'auto',
+
+
   },
   cardLogo: {
-    height: 60,
-    width: 60,
+    height: 80,
+    width: 80,
+  },
+  imageBackground: {
+    flex: 1,
+     borderRadius: 12, // Add border radius here
+    overflow:'hidden',
+    justifyContent: 'flex-end',
+
   },
 });
 

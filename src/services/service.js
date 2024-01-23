@@ -43,6 +43,10 @@ export const updateUserProfileService = async (params, config) => {
   return await apiConfig.post('profile/me/edit', params, config);
 };
 
+export const fetchOnlineDriversService = async config => {
+  return await apiConfig.post('driver/online', '', config);
+};
+
 export const fetchVehicleListService = async config => {
   return await apiConfig.post('vehicles/fetch-vehicle-by-user', '', config);
 };
@@ -87,7 +91,11 @@ export const currentShiftService = async config => {
   return await apiConfig.post('shift/current', '', config);
 };
 
-
 export const startEndBreakShiftService = async config => {
   return await apiConfig.post('shift/break/start-end', '', config);
+};
+
+
+export const workHistoryDetailsService = async (params, config) => {
+  return await apiConfig.post('driver/shift-details', params, config);
 };

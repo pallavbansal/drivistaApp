@@ -4,7 +4,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Modal,
-  TextInput,
+  Image,
   Alert,
 } from 'react-native';
 import {Colors} from '../../../constants/colors';
@@ -12,11 +12,20 @@ import StatusCard from '../../../components/cards/StatusCard';
 import HeaderContainer from '../../../components/reusableComponents/Container/HeaderContainer';
 import FooterContainer from '../../../components/reusableComponents/Container/FooterContainer';
 import userLogo from '../../../storage/images/user.png';
+import emailLogo from '../../../storage/images/email.png';
+import phoneLogo from '../../../storage/images/phone.png';
+import lockLogo from '../../../storage/images/lock.png';
+import cancelImage from '../../../storage/images/cancel.png';
 import {useSelector} from 'react-redux';
 import showDeleteConfirmation from '../../../components/reusableComponents/showDeleteConfirmation';
 import AddItemCard from '../../../components/cards/AddItemCard';
 import {Text} from 'react-native';
 import {useDriverServiceHook} from '../../../services/hooks/driver/useDriverServiceHook';
+import Space from '../../../components/reusableComponents/Space';
+import CustomTextInput from '../../../components/reusableComponents/CustomTextInput';
+import {globalStyles} from '../../../constants/globalStyles';
+import {useAuthServiceHook} from '../../../services/hooks/auth/useAuthServiceHook';
+import {navigationPopUpList} from '../../../constants/navigation';
 
 const Home = ({navigation}) => {
   const {
@@ -34,6 +43,7 @@ const Home = ({navigation}) => {
     password,
     setPasssword,
   } = useDriverServiceHook();
+  const {logoutRequest} = useAuthServiceHook();
   const [modalVisible, setModalVisible] = useState(false);
   const {drivers} = useSelector(state => state.driverState);
   const [driversData, setDriversData] = useState([]);
@@ -71,7 +81,11 @@ const Home = ({navigation}) => {
       Alert.alert('Fields Input length sould be atleast three !');
     } else {
       const response = await saveDriverRequest();
-      handleClose();
+      if (response.result === 'failed') {
+        Alert.alert(response.message);
+      } else {
+        handleClose();
+      }
     }
   };
   const handleAddItem = () => {
@@ -107,20 +121,26 @@ const Home = ({navigation}) => {
     navigateBackScreen: '',
     handleDirectNavigation: screenName => navigation.pop(),
   };
+  const handlePopUpNavigation = navigateScreen => {
+    if (navigateScreen === 'logout') {
+      logoutRequest();
+    } else {
+      navigation.navigate(navigateScreen);
+    }
+  };
   return (
     <View style={styles.mainContainer}>
       <HeaderContainer
         labels={labels}
-        showPopUp={false}
+        showPopUp={true}
         showBackArrow={true}
         showLabel={true}
         showBackground={true}
         label={'Your Employees'}
         containerStyle={styles.headContainer}
-        handleNavigation={navigateScreen => {
-          navigation.navigate(navigateScreen);
-        }}
+        handleNavigation={handlePopUpNavigation}
         handleBackNavigation={labels.handleDirectNavigation}
+        navigationPopUpList={navigationPopUpList}
       />
       <AddItemCard label="Add Employee" handleAddItem={handleAddItem} />
       <View style={styles.cardContainer}>{renderCards(driversData)}</View>
@@ -144,7 +164,6 @@ const Home = ({navigation}) => {
     </View>
   );
 };
-
 const ModalContainer = memo(props => (
   <Modal
     animationType="slide"
@@ -155,46 +174,54 @@ const ModalContainer = memo(props => (
     }}>
     <View style={styles.modalContainer}>
       <View style={styles.modalContent}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter First Name"
-          value={props.firstName}
-          onChangeText={text => props.setFirstName(text)}
+        <TouchableOpacity
+          style={styles.cancelSection}
+          onPress={() => props.setModalVisible(false)}>
+          <Image source={cancelImage} style={[globalStyles.logoImage]} />
+        </TouchableOpacity>
+        <CustomTextInput
+          logoName={userLogo}
+          // errorText={'props.loginError.fullName'}
+          placeholder={'Enter First Name'}
+          onChangeText={text => {
+            props.setFirstName(text);
+          }}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Last Number"
-          value={props.lastName}
+
+        <CustomTextInput
+          logoName={userLogo}
+          // errorText={'props.loginError.fullName'}
+          placeholder={'Enter Last Name'}
           onChangeText={text => props.setLastName(text)}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Email Id"
-          value={props.email}
-          onChangeText={text => props.setEmail(text)}
+        <CustomTextInput
+          logoName={emailLogo}
+          // errorText={'props.loginError.fullName'}
+          placeholder={'Enter Email '}
+          onChangeText={text => {
+            props.setEmail(text);
+          }}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Password"
-          value={props.password}
+        <CustomTextInput
+          logoName={phoneLogo}
+          // errorText={'props.loginError.fullName'}
+          placeholder={'Enter Password'}
           onChangeText={text => props.setPasssword(text)}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Mobile Number"
-          value={props.mobileNumber}
-          onChangeText={text => props.setMobileNumber(text)}
+        <CustomTextInput
+          logoName={lockLogo}
+          // errorText={'props.loginError.fullName'}
+          placeholder={'Enter Mobile '}
+          onChangeText={text => {
+            props.setMobileNumber(text);
+          }}
         />
+        <Space />
         <View style={styles.modalButtons}>
           <TouchableOpacity
             style={styles.saveButton}
             onPress={() => props.handleDriverRequest()}>
             <Text style={styles.buttonText}>Save</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={props.handleClose}
-            style={styles.closeButton}>
-            <Text style={styles.buttonText}>Close</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -202,16 +229,73 @@ const ModalContainer = memo(props => (
   </Modal>
 ));
 
+// const ModalContainer = memo(props => (
+//   <Modal
+//     animationType="slide"
+//     transparent={true}
+//     visible={props.modalVisible}
+//     onRequestClose={() => {
+//       props.setModalVisible(false);
+//     }}>
+//     <View style={styles.modalContainer}>
+//       <View style={styles.modalContent}>
+//         <TextInput
+//           style={styles.input}
+//           placeholder="Enter First Name"
+//           value={props.firstName}
+//           onChangeText={text => props.setFirstName(text)}
+//         />
+//         <TextInput
+//           style={styles.input}
+//           placeholder="Enter Last Number"
+//           value={props.lastName}
+//           onChangeText={text => props.setLastName(text)}
+//         />
+//         <TextInput
+//           style={styles.input}
+//           placeholder="Enter Email Id"
+//           value={props.email}
+//           onChangeText={text => props.setEmail(text)}
+//         />
+//         <TextInput
+//           style={styles.input}
+//           placeholder="Enter Password"
+//           value={props.password}
+//           onChangeText={text => props.setPasssword(text)}
+//         />
+//         <TextInput
+//           style={styles.input}
+//           placeholder="Enter Mobile Number"
+//           value={props.mobileNumber}
+//           onChangeText={text => props.setMobileNumber(text)}
+//         />
+//         <View style={styles.modalButtons}>
+//           <TouchableOpacity
+//             style={styles.saveButton}
+//             onPress={() => props.handleDriverRequest()}>
+//             <Text style={styles.buttonText}>Save</Text>
+//           </TouchableOpacity>
+//           <TouchableOpacity
+//             onPress={props.handleClose}
+//             style={styles.closeButton}>
+//             <Text style={styles.buttonText}>Close</Text>
+//           </TouchableOpacity>
+//         </View>
+//       </View>
+//     </View>
+//   </Modal>
+// ));
+
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: Colors.containerBg,
   },
   headContainer: {
-    flex: 0.2,
+    flex: 0.1,
   },
   cardContainer: {
-    flex: 0.7,
+    flex: 0.9,
   },
   statusCardContainer: {
     height: 200,
@@ -227,11 +311,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   modalContent: {
-    backgroundColor: Colors.breakInfoContainerBg,
+    backgroundColor: '#Fbfbf9',
     marginHorizontal: 20,
-    padding: 20,
+    padding: 10,
     borderRadius: 10,
-    alignItems: 'center',
+    //alignItems: 'center',
+
+    width: '100%',
   },
   input: {
     borderWidth: 1,
@@ -242,10 +328,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 20,
   },
+
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    width: '100%',
   },
   saveButton: {
     backgroundColor: Colors.primary,
@@ -262,6 +348,9 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
+  },
+  cancelSection: {
+    alignItems: 'flex-end',
   },
 });
 

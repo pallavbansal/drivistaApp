@@ -118,85 +118,104 @@ const MainContainer = ({children}) => (
 );
 const LogoHeaderContainer = memo(props => (
   <View style={styles.logoContainer}>
-    <View style={{flex: 0.5}}>
-      <Image
-        source={driving}
-        style={[globalStyles.logoImage, {width: 100, height: 100}]}
-      />
-    </View>
+    <Image
+      source={driving}
+      style={[globalStyles.logoImage, {width: 180, height: 180}]}
+    />
   </View>
 ));
 
 const ProfileInfoContainer = memo(props => (
-  <View>
+  <>
     <View style={styles.wrapper}>
-      <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
-        {'Employee Name'}
-      </Text>
-      {props.editable ? (
-        <TextInput
-          style={[styles.input, styles.text]}
-          value={props.firstName}
-          onChangeText={text => props.setFirstName(text)}
-        />
-      ) : (
-        <Text style={styles.text}>: {props.firstName}</Text>
-      )}
+      <View style={styles.textLabelWrapper}>
+        <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
+          {'Employee Name'}
+        </Text>
+      </View>
+      <View style={styles.inputWrapper}>
+        {props.editable ? (
+          <TextInput
+            style={[styles.input]}
+            value={props.firstName}
+            onChangeText={text => props.setFirstName(text)}
+          />
+        ) : (
+          <Text style={styles.text}>: {props.firstName}</Text>
+        )}
+      </View>
     </View>
     <View style={styles.wrapper}>
-      <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
-        {'Phone No'}
-      </Text>
-      {props.editable ? (
-        <TextInput
-          style={[styles.input, styles.text]}
-          value={props.mobileNumber}
-          onChangeText={text => props.setMobileNumber(text)}
-        />
-      ) : (
-        <Text style={styles.text}>: {props.mobileNumber}</Text>
-      )}
+      <View style={styles.textLabelWrapper}>
+        <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
+          {'Phone No'}
+        </Text>
+      </View>
+      <View style={styles.inputWrapper}>
+        {props.editable ? (
+          <TextInput
+            style={[styles.input, styles.text]}
+            value={props.mobileNumber}
+            onChangeText={text => props.setMobileNumber(text)}
+          />
+        ) : (
+          <Text style={styles.text}>: {props.mobileNumber}</Text>
+        )}
+      </View>
     </View>
     <View style={styles.wrapper}>
-      <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
-        {'Email Id'}
-      </Text>
-      {props.editable ? (
-        <TextInput
-          style={[styles.input, styles.text]}
-          value={props.email}
-          onChangeText={text => props.setEmail(text)}
-        />
-      ) : (
-        <Text style={styles.text}>: {props.email}</Text>
-      )}
+      <View style={styles.textLabelWrapper}>
+        <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
+          {'Email Id'}
+        </Text>
+      </View>
+      <View style={styles.inputWrapper}>
+        {props.editable ? (
+          <TextInput
+            style={[styles.input, styles.text]}
+            value={props.email}
+            onChangeText={text => props.setEmail(text)}
+          />
+        ) : (
+          <Text style={styles.text}>: {props.email}</Text>
+        )}
+      </View>
     </View>
     <View style={styles.wrapper}>
-      <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
-        {'Password'}
-      </Text>
-      {props.editable ? (
-        <TextInput
-          style={[styles.input, styles.text]}
-          value={props.password}
-          onChangeText={text => props.setPasssword(text)}
-        />
-      ) : (
-        <Text style={styles.text}>: {props.password}</Text>
-      )}
+      <View style={styles.textLabelWrapper}>
+        <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
+          {'Password'}
+        </Text>
+      </View>
+      <View style={styles.inputWrapper}>
+        {props.editable ? (
+          <TextInput
+            style={[styles.input, styles.text]}
+            value={props.password}
+            onChangeText={text => props.setPasssword(text)}
+          />
+        ) : (
+          <Text style={styles.text}>: {props.password}</Text>
+        )}
+      </View>
     </View>
+
     <TouchableOpacity
-      onPress={()=>props.handleCalender(props.details.id)}
+      onPress={() => props.handleCalender(props.details.id)}
       style={styles.wrapper}>
-      <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
-        {'Work History:'}
-      </Text>
-      <Image
-        source={calender}
-        style={[globalStyles.logoImage, {width: 20, height: 20}]}
-      />
+      <View style={styles.textLabelWrapper}>
+        <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
+          {'Work History:'}
+        </Text>
+      </View>
+      <View style={styles.inputWrapper}>
+        <Image
+          source={calender}
+          style={[globalStyles.logoImage, {width: 20, height: 20}]}
+        />
+      </View>
     </TouchableOpacity>
-  </View>
+  </>
 ));
 const styles = StyleSheet.create({
   mainContainer: {
@@ -208,27 +227,32 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-evenly',
-    margin: 10,
+    marginHorizontal: 10,
     // borderRadius: 1,
     // borderWidth: 0.5,
     // borderColor: 'white',
     elevation: 1,
+    //  backgroundColor:'red',
   },
   actionContainer: {
     flex: 0.1,
-    margin: 5,
+    marginHorizontal: 5,
     justifyContent: 'flex-end',
+    alignItems: 'center',
     flexDirection: 'row',
   },
   logoContainer: {
     flex: 0.4,
     justifyContent: 'flex-start',
     alignItems: 'center',
+
+    marginTop: -20,
   },
   infoCardContainer: {
     flex: 0.4,
     justifyContent: 'flex-start',
     alignItems: 'center',
+    marginHorizontal: 10,
   },
   footerContainer: {
     flex: 0.1,
@@ -250,14 +274,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 10,
     paddingVertical: 5,
+    // backgroundColor:'red'
   },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 10,
     padding: 5,
-    width: '50%',
     marginHorizontal: 5,
+
   },
   initialSection: {
     height: 40,
@@ -289,6 +314,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Verdana',
     fontSize: 9,
     fontStyle: 'italic',
+  },
+  textLabelWrapper: {
+    flex: 0.3,
+  },
+  inputWrapper: {
+    flex: 0.7,
   },
 });
 

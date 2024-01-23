@@ -27,7 +27,7 @@ const CustomButton = (props) => {
           onPress={()=>props.handleNavigation(props.navigateScreen,isModal)}>
           <Text
             // eslint-disable-next-line react-native/no-inline-styles
-            style={[globalStyles.text, {color: 'white', fontWeight: 'bold'}]}>
+            style={[globalStyles.buttonText, {color: 'white', fontWeight: 'bold'}]}>
             {props.buttonLabel}
           </Text>
         </TouchableOpacity>
@@ -47,7 +47,7 @@ const CustomButton = (props) => {
 
 const styles = StyleSheet.create({
   buttonStyle: {
-    height: 45,
+    height: 40,
     //width:'100%',
     borderRadius: 20,
     backgroundColor: '#412160',
