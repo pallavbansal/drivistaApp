@@ -2,6 +2,7 @@
 import React from 'react';
 import {View, TouchableOpacity, StyleSheet, Text} from 'react-native';
 import {globalStyles} from '../../constants/globalStyles';
+import { Colors } from '../../constants/colors';
 
 const CustomButton = (props) => {
   const {onPress = () => console.log('Pressed'), style,isModal=false,disabled=false} = props;
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   text2Style: {
-    color: '#666666',
+    color: Colors.primary,
     fontWeight: '700',
   },
 });

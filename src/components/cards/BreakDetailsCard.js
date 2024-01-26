@@ -11,12 +11,23 @@ import InfoCard from '../reusableComponents/InfoCard';
 import BreakInfoCard from '../reusableComponents/BreakInfoCard';
 import location from '../../storage/images/location.png';
 import {globalStyles} from '../../constants/globalStyles';
-import { Colors } from '../../constants/colors';
+import {Colors} from '../../constants/colors';
 
-const BreakDetailsCard = ({ label, breakData, navigateScreen, handleNavigation }) => {
-  const formatTime = (rawTime) => {
+const BreakDetailsCard = ({
+  label,
+  breakData,
+  navigateScreen,
+  handleNavigation,
+}) => {
+  const formatTime = rawTime => {
     const formattedTime = new Date(rawTime);
-    return formattedTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+    return formattedTime
+      .toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+      })
+      .toLowerCase();
   };
 
   const handleCardPress = () => {
@@ -38,7 +49,9 @@ const BreakDetailsCard = ({ label, breakData, navigateScreen, handleNavigation }
           <BreakInfoCard
             key={index}
             textName={`Break ${index + 1}`}
-            time={`${formatTime(breakItem.start_time)} - ${formatTime(breakItem.end_time)}   |   ${breakItem.duration_minutes}`}
+            time={`${formatTime(breakItem.start_time)} - ${formatTime(
+              breakItem.end_time,
+            )}   |   ${breakItem.duration_minutes}mins`}
           />
         ))}
       </View>
@@ -49,7 +62,7 @@ const BreakDetailsCard = ({ label, breakData, navigateScreen, handleNavigation }
         <View style={styles.buttonStyle}>
           <Image
             source={location}
-            style={[globalStyles.logo, { width: 15, height: 15, marginRight: 5 }]}
+            style={[globalStyles.logo, {width: 15, height: 15, marginRight: 5}]}
           />
           <Text style={[styles.buttonText]}>Current Location</Text>
         </View>
@@ -63,8 +76,9 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 20,
     borderRadius: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     backgroundColor: Colors.breakInfoContainerBg,
+    padding:20
   },
   breakContainer: {
     flex: 1,

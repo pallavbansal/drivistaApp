@@ -22,6 +22,7 @@ export const useDriverServiceHook = () => {
   const dispatch = useDispatch();
 
   const fetchDriverListRequest = async () => {
+    setLoading(true);
     const config = {
       headers: {Authorization: `Bearer ${token}`},
     };
@@ -30,14 +31,10 @@ export const useDriverServiceHook = () => {
       const response = await fetchDriverListService(config);
       console.log('response fetchDriverListRequest:', response.data.data.users);
       dispatch(setDriversData(response.data.data.users));
-      //   if (response.data.status_code === 1) {
-      //     console.log('login resounse:', response.data.data);
-      //     dispatch(setUserData(response.data.data));
-      //     return {result: 'success'};
-      //   } else if (response.data.status_code === 2) {
-      //     return {result: 'failed'};
-      //   }
+
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.log('fetchVehicleListRequest:', error.response);
       // dispatch(logoutUser());
       //  return {result: 'unauthenticated.'};

@@ -107,6 +107,10 @@ export const useDriverShiftServiceHook = () => {
     }
   };
 
+  const sendLocationToServer = async (longitude, latitude) => {
+    console.log('sendLocationToServer mmm', longitude);
+  };
+
   return {
     loading,
     setLoading,
@@ -124,5 +128,6 @@ export const useDriverShiftServiceHook = () => {
     endShiftRequest,
     currentShiftRequest,
     startEndBreakShiftRequest,
+    sendLocationToServer,
   };
 };

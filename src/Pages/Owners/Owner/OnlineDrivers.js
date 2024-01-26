@@ -10,9 +10,12 @@ import BreakDetailsCard from '../../../components/cards/BreakDetailsCard';
 import {useDriverOnlineServiceHook} from '../../../services/hooks/auth/useDriverOnlineServiceHook';
 import {useAuthServiceHook} from '../../../services/hooks/auth/useAuthServiceHook';
 import {navigationPopUpList} from '../../../constants/navigation';
+import NotFound from '../../../components/reusableComponents/NotFound';
+import Spinner from '../../../components/reusableComponents/Spinner';
 
 const OnlineDrivers = ({navigation}) => {
-  const {fetchOnlineDriversRequest} = useDriverOnlineServiceHook();
+  const {loading, setLoading, fetchOnlineDriversRequest} =
+    useDriverOnlineServiceHook();
   const {logoutRequest} = useAuthServiceHook();
   const [data, setData] = useState([]);
   //  const [editable, setEditable] = useState(false);
@@ -26,11 +29,12 @@ const OnlineDrivers = ({navigation}) => {
         const response = await fetchOnlineDriversRequest();
         console.log('response fetchOnlineDriversRequest:', response.data);
         setData(response.data);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching online drivers:', error);
       }
     };
-
+    setLoading(true);
     fetchData();
   }, []);
 
@@ -57,6 +61,7 @@ const OnlineDrivers = ({navigation}) => {
             imageLink={userLogo}
             textName={item.first_name}
             {...item}
+            handleNavigation={id => handleCardClick(index)}
           />
         </TouchableOpacity>
 
@@ -71,9 +76,15 @@ const OnlineDrivers = ({navigation}) => {
       </View>
     ));
   };
-
+  const renderSpinner = () => {
+    if (loading) {
+      return <Spinner />;
+    }
+    return null;
+  };
   return (
     <View style={styles.mainContainer}>
+      {renderSpinner()}
       <HeaderContainer
         labels={labels}
         showPopUp={true}
@@ -89,7 +100,14 @@ const OnlineDrivers = ({navigation}) => {
         handlePopUpNavigation={handlePopUpNavigation}
         navigationPopUpList={navigationPopUpList}
       />
-      <View style={styles.cardContainer}>{renderCards()}</View>
+
+      {data.length > 0 && !loading ? (
+        <View style={styles.cardContainer}>{renderCards()}</View>
+      ) : !loading ? (
+        <NotFound />
+      ) : (
+        ''
+      )}
       <FooterContainer containerStyle={styles.footerContainer} />
     </View>
   );
@@ -105,9 +123,11 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     flex: 0.7,
+
   },
   statusCardContainer: {
     height: 200,
+
   },
   footerContainer: {
     flex: 0.2,

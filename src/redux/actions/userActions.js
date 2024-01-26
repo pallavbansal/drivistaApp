@@ -6,7 +6,7 @@ import {
   SET_VEHICLE_DATA,
   SET_DRIVERS_DATA,
   SET_CURRENT_SHIFT_DATA,
-  SET_INCREMENT_TIMER
+  SET_INCREMENT_TIMER,
 } from '../constants/ActionTypes';
 export function setUserData(data) {
   return {
@@ -49,12 +49,22 @@ export function setCurrentShiftData(data) {
     data: data,
   };
 }
-export function setIncrementTimer() {
-  return {
-    type: SET_INCREMENT_TIMER,
 
-  };
-}
+export const setIncrementTimer = value => ({
+  type: SET_INCREMENT_TIMER,
+  payload: value,
+});
+export const resetIncrementTimer = value => ({
+  type: 'RESET_INCREMENT_TIMER',
+  payload: value,
+});
+export const setStartBreakTime= value => ({
+  type: 'SET_START_BREAK_TIME',
+  payload: value,
+});
+
+
+
 
 export function setRegisterUserData(data) {
   return {

@@ -15,6 +15,7 @@ import userLogo from '../../../storage/images/user.png';
 import emailLogo from '../../../storage/images/email.png';
 import phoneLogo from '../../../storage/images/phone.png';
 import lockLogo from '../../../storage/images/lock.png';
+import notfound from '../../../storage/images/notfound.jpg';
 import cancelImage from '../../../storage/images/cancel.png';
 import {useSelector} from 'react-redux';
 import showDeleteConfirmation from '../../../components/reusableComponents/showDeleteConfirmation';
@@ -26,9 +27,13 @@ import CustomTextInput from '../../../components/reusableComponents/CustomTextIn
 import {globalStyles} from '../../../constants/globalStyles';
 import {useAuthServiceHook} from '../../../services/hooks/auth/useAuthServiceHook';
 import {navigationPopUpList} from '../../../constants/navigation';
+import NotFound from '../../../components/reusableComponents/NotFound';
+import Spinner from '../../../components/reusableComponents/Spinner';
 
 const Home = ({navigation}) => {
   const {
+    loading,
+    setLoading,
     fetchDriverListRequest,
     deleteDriverRequest,
     saveDriverRequest,
@@ -128,8 +133,15 @@ const Home = ({navigation}) => {
       navigation.navigate(navigateScreen);
     }
   };
+  const renderSpinner = () => {
+    if (loading) {
+      return <Spinner />;
+    }
+    return null;
+  };
   return (
     <View style={styles.mainContainer}>
+      {renderSpinner()}
       <HeaderContainer
         labels={labels}
         showPopUp={true}
@@ -143,7 +155,15 @@ const Home = ({navigation}) => {
         navigationPopUpList={navigationPopUpList}
       />
       <AddItemCard label="Add Employee" handleAddItem={handleAddItem} />
-      <View style={styles.cardContainer}>{renderCards(driversData)}</View>
+
+      {driversData.length > 0 ? (
+        <View style={styles.cardContainer}>{renderCards(driversData)}</View>
+      ) : !loading ? (
+        <NotFound />
+      ) : (
+        ''
+      )}
+
       <FooterContainer containerStyle={styles.footerContainer} />
       <ModalContainer
         firstName={firstName}
@@ -303,6 +323,7 @@ const styles = StyleSheet.create({
   footerContainer: {
     flex: 0.2,
   },
+
   modalContainer: {
     flex: 1,
     justifyContent: 'center',

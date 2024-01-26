@@ -20,9 +20,9 @@ const BreakInfoCard = ({textName, time}) => {
 const styles = StyleSheet.create({
 
   wrapper: {
-
     flexDirection: 'row',
     //  justifyContent:'space-between',
+    marginVertical:2,
     flex:1,
 
   },

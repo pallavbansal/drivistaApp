@@ -30,6 +30,7 @@ export const useVehicleServiceHook = () => {
   const dispatch = useDispatch();
 
   const fetchVehicleListRequest = async () => {
+    setLoading(true);
     const config = {
       headers: {Authorization: `Bearer ${token}`},
     };
@@ -40,6 +41,7 @@ export const useVehicleServiceHook = () => {
         'response fetchVehicleListRequest:',
         response.data.data.vehicles,
       );
+      setLoading(false);
       dispatch(setVehicleData(response.data.data.vehicles));
       //   if (response.data.status_code === 1) {
       //     console.log('login resounse:', response.data.data);
