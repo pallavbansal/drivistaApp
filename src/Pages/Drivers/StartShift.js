@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
-import React, {memo} from 'react';
+import React, {memo,useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -24,6 +24,8 @@ import {
   startBackgroundLocationService,
   stopBackgroundLocationService,
 } from '../../services/hooks/BackgroundLocationService.js';
+import {promptForEnableLocationIfNeeded} from 'react-native-android-location-enabler';
+import Spinner from '../../components/reusableComponents/Spinner';
 
 const StartShift = ({navigation}) => {
   const {loading, setLoading, startShiftRequest} = useDriverShiftServiceHook();
@@ -37,8 +39,9 @@ const StartShift = ({navigation}) => {
     handleNavigation: async screenName => {
       console.log('what is screen:', screenName);
       setLoading(true);
-      const response = await startShiftRequest();
       requestLocationPermission();
+      const response = await startShiftRequest();
+
       setLoading(false);
       try {
         if (response.result === 'success') {
@@ -69,6 +72,7 @@ const StartShift = ({navigation}) => {
       navigateScreen: 'logout',
     },
   ];
+
   const requestLocationPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -83,8 +87,27 @@ const StartShift = ({navigation}) => {
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('Location permission granted');
+        const enableResult =await promptForEnableLocationIfNeeded({
+          title: 'Enable Location',
+          text: 'This app requires location access to function properly.',
+          positiveButtonText: 'Enable',
+          negativeButtonText: 'Cancel',
+        });
+
+        if (enableResult === 'enabled') {
+          console.log('Location has been enabled.');
+          startBackgroundService();
+
+          // Location is now enabled, perform additional actions if needed
+        }
+        else {
+          console.log('User denied enabling location.');
+          startBackgroundService();
+          // Handle the case where the user denied enabling location
+        }
+
         // Location permission granted, start the background service
-        startBackgroundService();
+
       } else {
         console.log('Location permission denied');
         // Handle denied permission (show an alert, etc.)
@@ -102,16 +125,25 @@ const StartShift = ({navigation}) => {
         );
       }
     } catch (err) {
-      console.warn(err);
+     // console.warn(err);
+     requestLocationPermission();
+      console.log('User selected "No Thanks". Handle accordingly.');
     }
   };
+
   const startBackgroundService = async () => {
     await startBackgroundLocationService();
     // setIsServiceRunning(true);
   };
-
+  const renderSpinner = () => {
+    if (loading) {
+      return <Spinner />;
+    }
+    return null;
+  };
   return (
     <BackgroundContainer source={themeLogo}>
+      {renderSpinner()}
       <HeaderContainer
         labels={labels}
         showPopUp={true}

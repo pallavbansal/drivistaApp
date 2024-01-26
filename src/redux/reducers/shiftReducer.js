@@ -6,7 +6,8 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const initialState = {
   current: [],
-  time: 0,
+  timer: 0,
+  startBreakTime:""
 };
 
 export const shiftReducer = (state = initialState, action) => {
@@ -18,18 +19,31 @@ export const shiftReducer = (state = initialState, action) => {
         current: action.data,
       };
     case SET_INCREMENT_TIMER:
-      console.log('hey SET_INCREMENT_TIMER :', state.time);
-      try {
-        // Save the updated timer value to AsyncStorage
-        //AsyncStorage.setItem('timerValue', String(state.time));
-      } catch (error) {
-        console.error('Error saving timer value to AsyncStorage:', error);
-      }
+      const newTimerValue = state.timer + 1;
+      console.log('hey SET_INCREMENT_TIMER :', action.payload);
 
       return {
         ...state,
-        time: state.time + 1,
+        timer: newTimerValue,
       };
+    case 'RESET_INCREMENT_TIMER':
+      console.log('hey RESET_INCREMENT_TIMER :', action.payload);
+
+      return {
+        ...state,
+        timer: 0,
+      };
+
+      case 'SET_START_BREAK_TIME':
+      console.log('hey SET_START_BREAK_TIME :', action.payload);
+
+      return {
+        ...state,
+        timer:0,
+        startBreakTime: action.payload,
+      };
+
+
 
     default:
       return state;

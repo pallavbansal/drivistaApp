@@ -25,10 +25,14 @@ import {Text} from 'react-native';
 import CustomTextInput from '../../../components/reusableComponents/CustomTextInput';
 import {globalStyles} from '../../../constants/globalStyles';
 import Space from '../../../components/reusableComponents/Space';
-import { useAuthServiceHook } from '../../../services/hooks/auth/useAuthServiceHook';
+import {useAuthServiceHook} from '../../../services/hooks/auth/useAuthServiceHook';
+import NotFound from '../../../components/reusableComponents/NotFound';
+import Spinner from '../../../components/reusableComponents/Spinner';
 
 const Home = ({navigation}) => {
   const {
+    loading,
+    setLoading,
     fetchVehicleListRequest,
     deleteVehicleRequest,
     vehicleName,
@@ -49,7 +53,9 @@ const Home = ({navigation}) => {
   }, [vehicle]);
 
   useEffect(() => {
-    fetchVehicleListRequest();
+
+    const res = fetchVehicleListRequest();
+
   }, []);
 
   const handleNavigation = item => {
@@ -118,8 +124,15 @@ const Home = ({navigation}) => {
       navigation.navigate(navigateScreen);
     }
   };
+  const renderSpinner = () => {
+    if (loading) {
+      return <Spinner />;
+    }
+    return null;
+  };
   return (
     <View style={styles.mainContainer}>
+      {renderSpinner()}
       <HeaderContainer
         labels={labels}
         showPopUp={true}
@@ -133,7 +146,14 @@ const Home = ({navigation}) => {
         navigationPopUpList={navigationPopUpList}
       />
       <AddItemCard label="Add Vehicle" handleAddItem={handleAddItem} />
-      <View style={styles.cardContainer}>{renderCards(vehicleData)}</View>
+
+      {vehicleData.length > 0 && !loading ? (
+        <View style={styles.cardContainer}>{renderCards(vehicleData)}</View>
+      ) : !loading ? (
+        <NotFound />
+      ) : (
+        ''
+      )}
       <FooterContainer containerStyle={styles.footerContainer} />
       <ModalContainer
         vehicleName={vehicleName}

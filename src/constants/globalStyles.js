@@ -55,6 +55,11 @@ export const globalStyles = StyleSheet.create({
     height: 20,
 
   },
+  notFoundImage: {
+    width: 250,
+    height: 250,
+
+  },
   errorText: {
     color: 'red',
     fontSize: Fonts.sizes.small,
