@@ -9,10 +9,11 @@ import {globalStyles} from '../../../constants/globalStyles';
 import InfoCard from '../../../components/reusableComponents/InfoCard';
 import Heading from '../../../components/reusableComponents/Heading';
 import CustomButton from '../../../components/reusableComponents/CustomButton';
-import {fonts} from 'react-native-elements/dist/config';
+import {navigationPopUpList} from '../../../constants/navigation';
 import {Fonts} from '../../../constants/fonts';
 import Space from '../../../components/reusableComponents/Space';
-import {color} from 'react-native-elements/dist/helpers';
+import { useAuthServiceHook } from '../../../services/hooks/auth/useAuthServiceHook';
+
 
 const SubscriptionDescription = ({navigation}) => {
   const props = {
@@ -20,10 +21,11 @@ const SubscriptionDescription = ({navigation}) => {
     heading: 'Subcribe & unlock features',
     subHeading: 'Starting from $5/week /employee.',
     buttonLabel: 'Proceed',
-    navigateScreen: 'EmployeeAdd',
+    navigateScreen: 'PaymentDetails',
     navigateBackNavigation:()=> navigation.pop(),
     handleNavigation: screenName => navigation.navigate(screenName),
   };
+  const {logoutRequest} = useAuthServiceHook();
   const data = [
     {id: 1, description: 'Manage your staff status - ALL LIVE'},
     {
@@ -117,6 +119,7 @@ const SubscriptionDescription = ({navigation}) => {
         showBackground={false}
         containerStyle={styles.headContainer}
         handleBackNavigation={props.navigateBackNavigation}
+
       />
 
       <View style={styles.container}>

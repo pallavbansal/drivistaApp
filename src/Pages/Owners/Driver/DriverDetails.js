@@ -1,22 +1,26 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect, useState} from 'react';
-import {View, StyleSheet, Alert} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import HeaderContainer from '../../../components/reusableComponents/Container/HeaderContainer';
 import CustomButton from '../../../components/reusableComponents/CustomButton';
 import {useDriverServiceHook} from '../../../services/hooks/driver/useDriverServiceHook';
 import Drivers from '../../../components/reusableComponents/Profile/Drivers';
-import Space from '../../../components/reusableComponents/Space';
+
 import {useAuthServiceHook} from '../../../services/hooks/auth/useAuthServiceHook';
 import {navigationPopUpList} from '../../../constants/navigation';
+import Alert from '../../../components/reusableComponents/Alert';
 
 const DriverDetails = ({route, navigation}) => {
   const {
     setLoading,
-    loading,
-    fetchDriverListRequest,
-    deleteDriverRequest,
-    saveDriverRequest,
+    alertVisible,
+    setAlertVisible,
+    alertMessage,
+    setAlertMessage,
+    showAlert,
+    closeAlert,
+    handleOK,
     email,
     setEmail,
     mobileNumber,
@@ -45,7 +49,7 @@ const DriverDetails = ({route, navigation}) => {
   }, [details]);
 
   const handleCalender = id => {
-    navigation.navigate('CalenderScreen',{id:details.id});
+    navigation.navigate('CalenderScreen', {id: details.id});
   };
 
   const props = {
@@ -58,13 +62,12 @@ const DriverDetails = ({route, navigation}) => {
       setLoading(false);
       try {
         if (response.result === 'success') {
-        //  Alert.alert('Success');
-        navigation.pop();
+          navigation.pop();
         } else if (response.result === 'failed') {
-          Alert.alert(response.message);
+          showAlert(response.message);
         }
       } catch (error) {
-        console.error('Login error:', error);
+        showAlert('No internet Connection!');
       }
     },
   };
@@ -129,6 +132,12 @@ const DriverDetails = ({route, navigation}) => {
       ) : (
         ''
       )}
+      <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={closeAlert}
+        onOK={handleOK}
+      />
     </View>
   );
 };

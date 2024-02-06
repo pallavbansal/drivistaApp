@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect, useState} from 'react';
-import {View, StyleSheet, Image, Text, TouchableOpacity,Alert} from 'react-native';
+import {View, StyleSheet, Image, Text, TouchableOpacity} from 'react-native';
 //import {OwnerProfilComponent} from '../components/reusableComponents/Profile/Owner';
 import Owner from '../components/reusableComponents/Profile/Owner';
 import FooterContainer from '../components/reusableComponents/Container/FooterContainer';
@@ -13,6 +13,7 @@ import {useSelector} from 'react-redux';
 import Spinner from '../components/reusableComponents/Spinner';
 import { useAuthServiceHook } from '../services/hooks/auth/useAuthServiceHook';
 import { Colors } from '../constants/colors';
+import Alert from '../components/reusableComponents/Alert';
 
 
 const Profile = ({route, navigation}) => {
@@ -32,6 +33,13 @@ const Profile = ({route, navigation}) => {
     firstName,
     lastName,
     setLastName,
+    alertVisible,
+    setAlertVisible,
+    alertMessage,
+    setAlertMessage,
+    showAlert,
+    closeAlert,
+    handleOK,
     updateUserProfileRequest,
 
   } = useDriverOnlineServiceHook();
@@ -42,16 +50,19 @@ const Profile = ({route, navigation}) => {
 
   const handleUpdateUserProfileRequest=async ()=>{
     setLoading(true);
-    const response = await updateUserProfileRequest();
-    if(response.result === "failed")
-    { setEditable(true);
-      Alert.alert(response.message)
+    try{
+      const response = await updateUserProfileRequest();
+      if(response.result === "failed")
+      { setEditable(true);
+        showAlert(response.message)
+      }
+      setLoading(false);
     }
-    else if(response.result === "unauthenticated")
-    {
-      logoutRequest();
+    catch{
+   showAlert("No Internet Connection!")
+
     }
-    setLoading(false);
+ setLoading(false);
   }
   useEffect(() => {
     setEmail(user.email);
@@ -140,6 +151,12 @@ const Profile = ({route, navigation}) => {
           </Text>
         </TouchableOpacity>
       </View>
+      <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={closeAlert}
+        onOK={handleOK}
+      />
     </View>
   );
 };

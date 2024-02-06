@@ -17,6 +17,7 @@ import {
   changePasswordService,
   changeProfilePasswordService,
 } from '../../service';
+import {Alert} from 'react-native';
 export const useAuthServiceHook = () => {
   const navigation = useNavigation();
   const {user, token} = useSelector(state => state.userState);
@@ -35,7 +36,19 @@ export const useAuthServiceHook = () => {
   const [isFormValid, setIsFormValid] = useState(true);
   const [loginError, setLoginError] = useState({email: '', password: ''});
   const [otp, setOtp] = useState(new Array(4).fill(''));
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
   const dispatch = useDispatch();
+  const showAlert = message => {
+    setAlertMessage(message);
+    setAlertVisible(true);
+  };
+  const closeAlert = () => {
+    setAlertVisible(false);
+  };
+  const handleOK = () => {
+    closeAlert();
+  };
   const validateEmailAndPassword = (email, password) => {
     return email && password.length > 5;
   };
@@ -86,6 +99,7 @@ export const useAuthServiceHook = () => {
 
     try {
       const response = await loginService(validation);
+      console.log('vvv login:', response);
       if (response.data.status_code === 1) {
         console.log('login resounse:', response.data.data);
         dispatch(setUserData(response.data.data));
@@ -94,8 +108,14 @@ export const useAuthServiceHook = () => {
         return {result: 'failed'};
       }
     } catch (error) {
-      return {result: 'failed'};
-      console.log('vvv:', error.response);
+     // console.log('vvv:', error.message);
+      //  Alert.alert('No internet connection!');
+
+      // if (error.message === 'No internet connection') {
+      //   console.log('internet connection issue:');
+      // }
+    //   return {result: 'failed'};
+      //  console.log('vvv:', error.response);
       //  console.log(error.response);
     }
   };
@@ -132,8 +152,8 @@ export const useAuthServiceHook = () => {
         return {result: 'failed', message: response.data.message};
       }
     } catch (error) {
-      console.log('vvv:', error.response);
-      return {result: 'failed'};
+     // console.log('vvv:', error.response);
+      //return {result: 'failed'};
       //   console.log('vvv:', error.response);
       //  console.log(error.response);
     }
@@ -150,7 +170,7 @@ export const useAuthServiceHook = () => {
       id: id,
       otp: parseInt(otp.join(''), 10),
     };
-
+    console.log('verify otp before:', params);
     try {
       const response = await registerVerifyService(params);
       console.log('verify otp here:', response.data);
@@ -320,8 +340,15 @@ export const useAuthServiceHook = () => {
     logoutRequest,
     loginError,
     setLoginError,
+    alertVisible,
+    setAlertVisible,
+    alertMessage,
+    setAlertMessage,
     registrationRequest,
     otpVerifyRequest,
+    showAlert,
+    closeAlert,
+    handleOK,
     otpForgotPassVerifyRequest,
     changePasswordRequest,
     changePasswordProfileRequest,

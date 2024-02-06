@@ -4,7 +4,7 @@ import {
   SET_LOGIN_USER_DATA,
   SET_REGISTER_USER_DATA,
   SET_USER_PROFILE_DATA,
-  SET_NEW_VEHICLE_DATA
+  SET_NEW_VEHICLE_DATA,
 } from '../constants/ActionTypes';
 const initialState = {
   user: {},
@@ -23,8 +23,7 @@ export const userReducer = (state = initialState, action) => {
         isAuth: true,
       };
 
-
-      case SET_USER_PROFILE_DATA:
+    case SET_USER_PROFILE_DATA:
       console.log('hey userReducer :', action.data.user);
       return {
         ...state,
@@ -46,7 +45,7 @@ export const userReducer = (state = initialState, action) => {
       return {
         ...state,
         user: {},
-        token:'',
+        token: '',
         isAuth: false,
       };
 

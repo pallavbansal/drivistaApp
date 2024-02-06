@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect} from 'react';
-import {View, StyleSheet, Alert,Text} from 'react-native';
+import {View, StyleSheet,Text} from 'react-native';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import themeLogo from '../storage/images/theme.png';
@@ -13,6 +13,7 @@ import HeaderContainer from '../components/reusableComponents/Container/HeaderCo
 import {useAuthServiceHook} from '../services/hooks/auth/useAuthServiceHook';
 import Spinner from '../components/reusableComponents/Spinner';
 import { globalStyles } from '../constants/globalStyles';
+import Alert from '../components/reusableComponents/Alert';
 
 const Otp = ({navigation, route}) => {
   const {id, caseType} = route.params;
@@ -24,6 +25,11 @@ const Otp = ({navigation, route}) => {
     setLoading,
     otp,
     setOtp,
+    alertVisible,
+    alertMessage,
+    showAlert,
+    closeAlert,
+    handleOK,
     otpVerifyRequest,
     otpForgotPassVerifyRequest,
   } = useAuthServiceHook();
@@ -48,7 +54,7 @@ const Otp = ({navigation, route}) => {
             // navigation.navigate(screenName);
           } else if (response.result === 'failed') {
             console.log('otp screwn:', response.message);
-            Alert.alert(response.message);
+            showAlert(response.message);
           }
           // else{
           //   navigation.navigate(screenName);
@@ -72,7 +78,7 @@ const Otp = ({navigation, route}) => {
             });
           } else if (response.result === 'failed') {
             console.log('otp screwn:', response.message);
-            Alert.alert(response.message);
+            showAlert(response.message);
           }
           // else{
           //   navigation.navigate(screenName);
@@ -140,6 +146,12 @@ const Otp = ({navigation, route}) => {
           <ButtonContainer {...labels} isFormValid={isFormValid} />
         </View>
       </View>
+      <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={closeAlert}
+        onOK={handleOK}
+      />
     </BackgroundContainer>
   );
 };

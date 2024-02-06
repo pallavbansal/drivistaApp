@@ -65,7 +65,7 @@ const Home = ({navigation}) => {
     <BackgroundContainer source={themeLogo}>
       <HeaderContainer
         showPopUp={true}
-        showBackArrow={true}
+        showBackArrow={false}
         showBackground={false}
         containerStyle={styles.headContainer}
         handleNavigation={handleNavigation}

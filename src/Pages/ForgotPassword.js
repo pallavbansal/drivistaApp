@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect,useState} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, Alert} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import CustomTextInput from '../components/reusableComponents/CustomTextInput';
@@ -16,6 +16,7 @@ import {useAuthServiceHook} from '../services/hooks/auth/useAuthServiceHook';
 import {Fonts} from '../constants/fonts';
 import {globalStyles} from '../constants/globalStyles';
 import Space from '../components/reusableComponents/Space';
+import Alert from '../components/reusableComponents/Alert';
 
 const ForgotPassword = ({navigation}) => {
   const {
@@ -27,6 +28,11 @@ const ForgotPassword = ({navigation}) => {
     setLoginError,
     setIsFormValid,
     setLoading,
+    alertVisible,
+    alertMessage,
+    showAlert,
+    closeAlert,
+    handleOK,
     forgotPasswordRequest,
   } = useAuthServiceHook();
   const [showResend,setShowResend]=useState("");
@@ -57,7 +63,7 @@ const ForgotPassword = ({navigation}) => {
           });
         } else if (response.result === 'failed') {
           setShowResend(true);
-          Alert.alert(response.message);
+          showAlert(response.message);
         } else {
           navigation.navigate(screenName);
         }
@@ -119,6 +125,12 @@ const ForgotPassword = ({navigation}) => {
           <FooterContainer {...labels} isFormValid={isFormValid} showResend={showResend} />
         </View>
       </View>
+      <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={closeAlert}
+        onOK={handleOK}
+      />
     </BackgroundContainer>
   );
 };

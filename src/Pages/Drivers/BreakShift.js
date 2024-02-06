@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Text,
   ImageBackground,
-  Alert,
   TouchableOpacity,
 } from 'react-native';
 import moment from 'moment';
@@ -22,16 +21,29 @@ import journey from '../../storage/images/journey.png';
 import CustomButton from '../../components/reusableComponents/CustomButton';
 import {useDriverShiftServiceHook} from '../../services/hooks/shift/useDriverShiftServiceHook';
 import {useDispatch, useSelector} from 'react-redux';
-import {resetIncrementTimer, setIncrementTimer, setStartBreakTime} from '../../redux/actions/userActions';
+import {
+  resetIncrementTimer,
+  setIncrementTimer,
+  setStartBreakTime,
+} from '../../redux/actions/userActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useAuthServiceHook} from '../../services/hooks/auth/useAuthServiceHook';
 import Spinner from '../../components/reusableComponents/Spinner';
+import Alert from '../../components/reusableComponents/Alert';
 
 const BreakShift = ({navigation}) => {
-  const {loading, setLoading, startEndBreakShiftRequest} =
-    useDriverShiftServiceHook();
+  const {
+    loading,
+    setLoading,
+    showAlert,
+    closeAlert,
+    handleOK,
+    alertVisible,
+    alertMessage,
+    startEndBreakShiftRequest,
+  } = useDriverShiftServiceHook();
   const {logoutRequest} = useAuthServiceHook();
-  const {timer,startBreakTime} = useSelector(state => state.shiftState);
+  const {timer, startBreakTime} = useSelector(state => state.shiftState);
   // const timer = useSelector((state) => state.user.timer);
   const dispatch = useDispatch();
   const labels = {
@@ -52,12 +64,12 @@ const BreakShift = ({navigation}) => {
       const response = await startEndBreakShiftRequest();
       setLoading(false);
       dispatch(resetIncrementTimer(0));
-      dispatch(setIncrementTimer(""));
+      dispatch(setIncrementTimer(''));
       try {
         if (response.result === 'success') {
           navigation.navigate('ActionShift');
         } else if (response.result === 'failed') {
-          Alert.alert(response.message);
+          showAlert(response.message);
         } else {
           navigation.navigate(screenName);
         }
@@ -66,35 +78,40 @@ const BreakShift = ({navigation}) => {
       }
     },
   };
-//  const [timer, setTimer] = useState(0);
-const [time, setTime] = useState(0);
+  //  const [timer, setTimer] = useState(0);
+  const [time, setTime] = useState(0);
 
-useEffect(()=>{
-  const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
-  const startTime=startBreakTime;
-  // console.log("why ??:",timer," ",timer+1);
-  // dispatch(setIncrementTimer(timer + 1));
-  const diffInSeconds = moment(currentTime, 'YYYY-MM-DD HH:mm:ss').diff(moment(startTime, 'YYYY-MM-DD HH:mm:ss'), 'seconds');
-  setTime(diffInSeconds);
-},[timer])
-// Function to update the timer
-const updateTimer = () => {
-  const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
-  const startTime=startBreakTime;
-  // console.log("why ??:",timer," ",timer+1);
-  // dispatch(setIncrementTimer(timer + 1));
-  const diffInSeconds = moment(currentTime, 'YYYY-MM-DD HH:mm:ss').diff(moment(startTime, 'YYYY-MM-DD HH:mm:ss'), 'seconds');
+  useEffect(() => {
+    const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+    const startTime = startBreakTime;
+    // console.log("why ??:",timer," ",timer+1);
+    // dispatch(setIncrementTimer(timer + 1));
+    const diffInSeconds = moment(currentTime, 'YYYY-MM-DD HH:mm:ss').diff(
+      moment(startTime, 'YYYY-MM-DD HH:mm:ss'),
+      'seconds',
+    );
+    setTime(diffInSeconds);
+  }, [timer]);
+  // Function to update the timer
+  const updateTimer = () => {
+    const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+    const startTime = startBreakTime;
+    // console.log("why ??:",timer," ",timer+1);
+    // dispatch(setIncrementTimer(timer + 1));
+    const diffInSeconds = moment(currentTime, 'YYYY-MM-DD HH:mm:ss').diff(
+      moment(startTime, 'YYYY-MM-DD HH:mm:ss'),
+      'seconds',
+    );
 
-  console.log("why ??:", diffInSeconds);
+    console.log('why ??:', diffInSeconds);
 
-  dispatch(setIncrementTimer(diffInSeconds));
+    dispatch(setIncrementTimer(diffInSeconds));
 
-  //AsyncStorage.setItem('timerValue', String(timer + 1));
-
-};
+    //AsyncStorage.setItem('timerValue', String(timer + 1));
+  };
 
   const startServices = () => {
-  //  startBackgroundLocationService(); // Start background location service
+    //  startBackgroundLocationService(); // Start background location service
     // Schedule the timer update function to run every second
     const timerInterval = BackgroundTimer.setInterval(updateTimer, 1000);
     // Save the interval ID to clear it later
@@ -103,7 +120,7 @@ const updateTimer = () => {
 
   // Stop the background location service and clear the timer interval
   const stopServices = timerInterval => {
-   // stopBackgroundLocationService(); // Stop background location service
+    // stopBackgroundLocationService(); // Stop background location service
     BackgroundTimer.clearInterval(timerInterval); // Clear the timer interval
   };
 
@@ -162,6 +179,12 @@ const updateTimer = () => {
         }}
       />
       <CardContainer labels={labels} formatTime={formatTime} time={time} />
+      <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={closeAlert}
+        onOK={handleOK}
+      />
     </BackgroundContainer>
   );
 };

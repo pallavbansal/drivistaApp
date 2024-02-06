@@ -50,11 +50,7 @@ const WorkHistory = ({
     if (editable) {
       // setLoading(true);
       updateUserProfileRequest();
-      // if(response.result === "failed")
-      // {
-      //   Alert.alert("Something went wrong!")
-      // }
-      // setLoading(false);
+
     }
 
     // if (textInputRef.current) {

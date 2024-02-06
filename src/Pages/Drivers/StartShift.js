@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
-import React, {memo,useEffect} from 'react';
+import React, {memo, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -9,7 +9,6 @@ import {
   Image,
   TouchableOpacity,
   PermissionsAndroid,
-  Alert,
 } from 'react-native';
 import BackgroundContainer from '../../components/reusableComponents/Container/BackgroundContainer';
 import HeaderContainer from '../../components/reusableComponents/Container/HeaderContainer';
@@ -26,10 +25,21 @@ import {
 } from '../../services/hooks/BackgroundLocationService.js';
 import {promptForEnableLocationIfNeeded} from 'react-native-android-location-enabler';
 import Spinner from '../../components/reusableComponents/Spinner';
+import Alert from '../../components/reusableComponents/Alert';
+import { useSelector } from 'react-redux';
 
 const StartShift = ({navigation}) => {
-  const {loading, setLoading, startShiftRequest} = useDriverShiftServiceHook();
-
+  const {
+    loading,
+    setLoading,
+    showAlert,
+    closeAlert,
+    handleOK,
+    alertVisible,
+    alertMessage,
+    startShiftRequest,
+  } = useDriverShiftServiceHook();
+  const {token} = useSelector(state => state.userState);
   const {logoutRequest} = useAuthServiceHook();
   const labels = {
     label: 'Please click on the start button to start your shift',
@@ -45,14 +55,14 @@ const StartShift = ({navigation}) => {
       setLoading(false);
       try {
         if (response.result === 'success') {
-          console.log('response bb:', response.id);
+          console.log('response bb:', response);
           navigation.navigate(screenName);
           // navigation.navigate(screenName, {
           //   caseType: 'register',
           //   id: response.id,
           // });
         } else if (response.result === 'failed') {
-          Alert.alert(response.message);
+          showAlert(response.message);
         } else {
           navigation.navigate(screenName);
         }
@@ -87,7 +97,7 @@ const StartShift = ({navigation}) => {
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('Location permission granted');
-        const enableResult =await promptForEnableLocationIfNeeded({
+        const enableResult = await promptForEnableLocationIfNeeded({
           title: 'Enable Location',
           text: 'This app requires location access to function properly.',
           positiveButtonText: 'Enable',
@@ -99,19 +109,17 @@ const StartShift = ({navigation}) => {
           startBackgroundService();
 
           // Location is now enabled, perform additional actions if needed
-        }
-        else {
+        } else {
           console.log('User denied enabling location.');
           startBackgroundService();
           // Handle the case where the user denied enabling location
         }
 
         // Location permission granted, start the background service
-
       } else {
         console.log('Location permission denied');
         // Handle denied permission (show an alert, etc.)
-        Alert.alert(
+        showAlert(
           'Permission Denied',
           'Location permission is required for this app to function properly.',
           [
@@ -125,14 +133,14 @@ const StartShift = ({navigation}) => {
         );
       }
     } catch (err) {
-     // console.warn(err);
-     requestLocationPermission();
+      // console.warn(err);
+      requestLocationPermission();
       console.log('User selected "No Thanks". Handle accordingly.');
     }
   };
 
   const startBackgroundService = async () => {
-    await startBackgroundLocationService();
+    await startBackgroundLocationService(token);
     // setIsServiceRunning(true);
   };
   const renderSpinner = () => {
@@ -161,15 +169,19 @@ const StartShift = ({navigation}) => {
       />
 
       <CardContainer labels={labels} />
+      <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={closeAlert}
+        onOK={handleOK}
+      />
     </BackgroundContainer>
   );
 };
 const CardContainer = props => (
   <View style={styles.mainContainer}>
     <View style={styles.headingLabel}>
-      <Text style={[styles.text,{fontSize:22}]}>
-        {props.labels.label}
-      </Text>
+      <Text style={[styles.text, {fontSize: 22}]}>{props.labels.label}</Text>
     </View>
     <TouchableOpacity
       onPress={() => props.labels.handleNavigation(props.labels.navigateScreen)}
@@ -199,7 +211,7 @@ const styles = StyleSheet.create({
     color: 'white',
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal:5
+    marginHorizontal: 5,
   },
   cardContainer: {
     flex: 0.5,

@@ -9,27 +9,31 @@ import {globalStyles} from '../../../constants/globalStyles';
 import InfoCard from '../../../components/reusableComponents/InfoCard';
 import Heading from '../../../components/reusableComponents/Heading';
 import CustomButton from '../../../components/reusableComponents/CustomButton';
-import {fonts} from 'react-native-elements/dist/config';
-import {Fonts} from '../../../constants/fonts';
+import {navigationPopUpList} from '../../../constants/navigation';
 import Space from '../../../components/reusableComponents/Space';
 import LogoWithLabel from '../../../components/reusableComponents/LogoWithLabel';
 import ModalView from '../../../components/reusableComponents/ModalView';
+import {useAuthServiceHook} from '../../../services/hooks/auth/useAuthServiceHook';
+import { useSelector } from 'react-redux';
 
 const Home = ({navigation}) => {
+  const {subscription} = useSelector(state => state.subscriptionState);
+  const {logoutRequest} = useAuthServiceHook();
   const [isConfirmationModalVisible, setIsConfirmationModalVisible] =
     useState(false);
   const [isMessageModalVisible, setMessageModalVisible] = useState(false);
+  const heading = `${subscription.total_drivers} Registered Employee.`;
+  const subheading = `You currently have ${subscription.total_drivers} registered employees, you can also add and delete more employers.`;
   const props = {
     label: 'Forgot Password',
-    heading: '8 Registered Employee',
-    subHeading:
-      'You currently have 8 registered employees, you can also add and delete more employers.',
+    heading:heading,
+    subHeading:subheading,
     email: 'Email Id',
     buttonLabel1: 'Add/delete employees',
     buttonLabel2: 'Cancel Subscription',
     linkText: 'Resend OTP',
     navigateScreen: 'SubscriptionDescription',
-    navigateBackNavigation:()=> navigation.pop(),
+    navigateBackNavigation: () => navigation.pop(),
     handleNavigation: (screenName, isModal) => {
       if (!isModal) {
         // Navigate to the SubscriptionDescription screen
@@ -65,7 +69,17 @@ const Home = ({navigation}) => {
       navigation.navigate('OwnerHomeScreen');
     }
   };
-
+  const handlePopUpNavigation = navigateScreen => {
+    if (navigateScreen === 'logout') {
+      logoutRequest();
+    } else {
+      navigation.navigate(navigateScreen);
+    }
+  };
+  const labels = {
+    navigateBackScreen: '',
+    handleDirectNavigation: screenName => navigation.pop(),
+  };
   const MainContainer = ({children}) => (
     <View style={styles.mainContainer}>
       {children}
@@ -99,7 +113,10 @@ const Home = ({navigation}) => {
         showBackground={true}
         containerStyle={styles.headContainer}
         handleBackNavigation={props.navigateBackNavigation}
+        handleNavigation={handlePopUpNavigation}
+        navigationPopUpList={navigationPopUpList}
       />
+
       <View style={styles.container}>
         <View style={styles.logoContainer}>
           <LogoWithLabel logo={clock} label={props.heading} headsize={18} />
@@ -112,8 +129,9 @@ const Home = ({navigation}) => {
 };
 const HeadingContainer = memo(({subHeading}) => (
   <View style={styles.header}>
-
-<Text style={[globalStyles.labelHeading, {fontWeight:'500'}]}>{subHeading}</Text>
+    <Text style={[globalStyles.labelHeading, {fontWeight: '500'}]}>
+      {subHeading}
+    </Text>
   </View>
 ));
 const ButtonsMixContainer = memo(props => (

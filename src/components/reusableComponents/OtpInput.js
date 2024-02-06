@@ -25,6 +25,8 @@ const OtpInput = ({ length, onComplete, setOtp, otp }) => {
       {otp.map((value, index) => (
         <TextInput
           key={index}
+          color="black"
+          placeholderTextColor={'black'}
           ref={inputRefs[index]}
           style={styles.input}
           maxLength={1}

@@ -1,12 +1,5 @@
 import React, {useEffect, useState, memo} from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Modal,
-  Image,
-  Alert,
-} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Modal, Image} from 'react-native';
 import {Colors} from '../../../constants/colors';
 import StatusCard from '../../../components/cards/StatusCard';
 import HeaderContainer from '../../../components/reusableComponents/Container/HeaderContainer';
@@ -29,6 +22,7 @@ import {useAuthServiceHook} from '../../../services/hooks/auth/useAuthServiceHoo
 import {navigationPopUpList} from '../../../constants/navigation';
 import NotFound from '../../../components/reusableComponents/NotFound';
 import Spinner from '../../../components/reusableComponents/Spinner';
+import Alert from '../../../components/reusableComponents/Alert';
 
 const Home = ({navigation}) => {
   const {
@@ -47,6 +41,17 @@ const Home = ({navigation}) => {
     setMobileNumber,
     password,
     setPasssword,
+    alertVisible,
+    setAlertVisible,
+    alertMessage,
+    setAlertMessage,
+    showAlert,
+    closeAlert,
+    handleOK,
+    loginError,
+    isFormValid,
+    setIsFormValid,
+    setLoginError,
   } = useDriverServiceHook();
   const {logoutRequest} = useAuthServiceHook();
   const [modalVisible, setModalVisible] = useState(false);
@@ -71,26 +76,71 @@ const Home = ({navigation}) => {
     });
   };
 
+  const checkFormValidity = () => {
+    const isFirstNameValid = firstName.length >= 3;
+    const isLastNameValid = lastName.length >= 3;
+    const isMobileNumberValid = mobileNumber.length >= 10;
+    const isPasswordValid = password.length > 5; // Ensure password length is greater than 6
+    const emailValidationRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isEmailValid = emailValidationRegex.test(email);
+
+    const errorCheck = {
+      fullName:
+        !isFirstNameValid && firstName !== ''
+          ? 'First Name length should be atleast 3'
+          : '',
+      lastName:
+        !isLastNameValid && lastName !== ''
+          ? 'Last Name length should be atleast 3'
+          : '',
+      email:
+        !isEmailValid && email !== '' ? 'Email should contain @ and .com' : '',
+      mobileNumber:
+        !isMobileNumberValid && mobileNumber !== ''
+          ? 'Mobile Number should be atleast 10 letters'
+          : '',
+      password:
+        !isPasswordValid && password !== ''
+          ? 'Password should be of atleast length six '
+          : '',
+    };
+    const isValid =
+      isFirstNameValid &&
+      isLastNameValid &&
+      isEmailValid &&
+      isMobileNumberValid &&
+      isPasswordValid;
+    setLoginError({
+      ...loginError,
+      firstName: errorCheck.firstName,
+      lastName: errorCheck.lastName,
+      email: errorCheck.email,
+      mobileNumber: errorCheck.mobileNumber,
+      password: errorCheck.password,
+    });
+
+    setIsFormValid(!isValid);
+  };
+
+  useEffect(() => {
+    checkFormValidity(); // Check validity on input change
+  }, [firstName, lastName, mobileNumber, password, email]);
+
   const actions = {
     editShow: true,
     deleteShow: true,
   };
   const handleDriverRequest = async () => {
-    if (
-      firstName.length < 3 ||
-      lastName.length < 3 ||
-      email.length < 3 ||
-      password < 6 ||
-      mobileNumber.length < 10
-    ) {
-      Alert.alert('Fields Input length sould be atleast three !');
+    setLoading(true);
+    const response = await saveDriverRequest();
+
+    if (response.result === 'failed') {
+      // showAlert(response.message);
+      setLoading(false);
     } else {
-      const response = await saveDriverRequest();
-      if (response.result === 'failed') {
-        Alert.alert(response.message);
-      } else {
-        handleClose();
-      }
+      //  showAlert('Success');
+      setLoading(false);
+      handleClose();
     }
   };
   const handleAddItem = () => {
@@ -101,8 +151,10 @@ const Home = ({navigation}) => {
     setFirstName(''); // Reset the input field on modal close
     setLastName('');
     setEmail('');
+    setPasssword('');
+    setMobileNumber('');
   };
-  const handleDeleteItem = id => {
+  const handleDeleteItem = async id => {
     showDeleteConfirmation(id, deleteDriverRequest);
   };
   const renderCards = vehicleData => {
@@ -156,7 +208,7 @@ const Home = ({navigation}) => {
       />
       <AddItemCard label="Add Employee" handleAddItem={handleAddItem} />
 
-      {driversData.length > 0 ? (
+      {driversData.length > 0 && !loading ? (
         <View style={styles.cardContainer}>{renderCards(driversData)}</View>
       ) : !loading ? (
         <NotFound />
@@ -180,6 +232,14 @@ const Home = ({navigation}) => {
         setMobileNumber={setMobileNumber}
         handleDriverRequest={handleDriverRequest}
         handleClose={handleClose}
+        loginError={loginError}
+        isFormValid={isFormValid}
+      />
+      <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={closeAlert}
+        onOK={handleOK}
       />
     </View>
   );
@@ -201,7 +261,9 @@ const ModalContainer = memo(props => (
         </TouchableOpacity>
         <CustomTextInput
           logoName={userLogo}
-          // errorText={'props.loginError.fullName'}
+          errorText={
+            props.firstName.length > 0 ? props.loginError.firstName : ''
+          }
           placeholder={'Enter First Name'}
           onChangeText={text => {
             props.setFirstName(text);
@@ -210,27 +272,31 @@ const ModalContainer = memo(props => (
 
         <CustomTextInput
           logoName={userLogo}
-          // errorText={'props.loginError.fullName'}
+          errorText={props.lastName.length > 0 ? props.loginError.lastName : ''}
           placeholder={'Enter Last Name'}
           onChangeText={text => props.setLastName(text)}
         />
         <CustomTextInput
           logoName={emailLogo}
-          // errorText={'props.loginError.fullName'}
+          errorText={props.email.length > 0 ? props.loginError.email : ''}
           placeholder={'Enter Email '}
           onChangeText={text => {
             props.setEmail(text);
           }}
         />
         <CustomTextInput
-          logoName={phoneLogo}
-          // errorText={'props.loginError.fullName'}
+          logoName={lockLogo}
+          errorText={props.password.length > 0 ? props.loginError.password : ''}
           placeholder={'Enter Password'}
           onChangeText={text => props.setPasssword(text)}
         />
         <CustomTextInput
-          logoName={lockLogo}
-          // errorText={'props.loginError.fullName'}
+          logoName={phoneLogo}
+          errorText={
+            props.mobileNumber.length > 0 ? props.loginError.mobileNumber : ''
+          }
+          keyboardType="numeric"
+          type="number"
           placeholder={'Enter Mobile '}
           onChangeText={text => {
             props.setMobileNumber(text);
@@ -239,8 +305,9 @@ const ModalContainer = memo(props => (
         <Space />
         <View style={styles.modalButtons}>
           <TouchableOpacity
-            style={styles.saveButton}
-            onPress={() => props.handleDriverRequest()}>
+            onPress={() => props.handleDriverRequest()}
+            style={[styles.saveButton, props.isFormValid && {opacity: 0.8}]}
+            disabled={props.isFormValid}>
             <Text style={styles.buttonText}>Save</Text>
           </TouchableOpacity>
         </View>
@@ -248,63 +315,6 @@ const ModalContainer = memo(props => (
     </View>
   </Modal>
 ));
-
-// const ModalContainer = memo(props => (
-//   <Modal
-//     animationType="slide"
-//     transparent={true}
-//     visible={props.modalVisible}
-//     onRequestClose={() => {
-//       props.setModalVisible(false);
-//     }}>
-//     <View style={styles.modalContainer}>
-//       <View style={styles.modalContent}>
-//         <TextInput
-//           style={styles.input}
-//           placeholder="Enter First Name"
-//           value={props.firstName}
-//           onChangeText={text => props.setFirstName(text)}
-//         />
-//         <TextInput
-//           style={styles.input}
-//           placeholder="Enter Last Number"
-//           value={props.lastName}
-//           onChangeText={text => props.setLastName(text)}
-//         />
-//         <TextInput
-//           style={styles.input}
-//           placeholder="Enter Email Id"
-//           value={props.email}
-//           onChangeText={text => props.setEmail(text)}
-//         />
-//         <TextInput
-//           style={styles.input}
-//           placeholder="Enter Password"
-//           value={props.password}
-//           onChangeText={text => props.setPasssword(text)}
-//         />
-//         <TextInput
-//           style={styles.input}
-//           placeholder="Enter Mobile Number"
-//           value={props.mobileNumber}
-//           onChangeText={text => props.setMobileNumber(text)}
-//         />
-//         <View style={styles.modalButtons}>
-//           <TouchableOpacity
-//             style={styles.saveButton}
-//             onPress={() => props.handleDriverRequest()}>
-//             <Text style={styles.buttonText}>Save</Text>
-//           </TouchableOpacity>
-//           <TouchableOpacity
-//             onPress={props.handleClose}
-//             style={styles.closeButton}>
-//             <Text style={styles.buttonText}>Close</Text>
-//           </TouchableOpacity>
-//         </View>
-//       </View>
-//     </View>
-//   </Modal>
-// ));
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -336,6 +346,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     padding: 10,
     borderRadius: 10,
+    marginTop: 20,
     //alignItems: 'center',
 
     width: '100%',

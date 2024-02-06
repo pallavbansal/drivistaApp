@@ -21,6 +21,18 @@ export const useDriverOnlineServiceHook = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const showAlert = message => {
+    setAlertMessage(message);
+    setAlertVisible(true);
+  };
+  const closeAlert = () => {
+    setAlertVisible(false);
+  };
+  const handleOK = () => {
+    closeAlert();
+  };
   const dispatch = useDispatch();
 
   const fetchProfileRequest = async () => {
@@ -55,6 +67,7 @@ export const useDriverOnlineServiceHook = () => {
       first_name: firstName,
       last_name: lastName,
       mobile_number: mobileNumber,
+
     };
     console.log('fetchProfileRequest:', params);
     try {
@@ -68,7 +81,7 @@ export const useDriverOnlineServiceHook = () => {
         return {result: 'failed'};
       }
     } catch (error) {
-      dispatch(logoutUser());
+      // dispatch(logoutUser());
 
       // return {result: 'unauthenticated.'};
       console.log('updateUserProfileRequest:', error.response);
@@ -82,7 +95,6 @@ export const useDriverOnlineServiceHook = () => {
     };
     try {
       const response = await fetchOnlineDriversService(config);
-
 
       if (response.data.status_code === 1) {
         //      dispatch(setUserProfileData(response.data.data));
@@ -110,6 +122,13 @@ export const useDriverOnlineServiceHook = () => {
     lastName,
     setLastName,
     setMobileNumber,
+    alertVisible,
+    setAlertVisible,
+    alertMessage,
+    setAlertMessage,
+    showAlert,
+    closeAlert,
+    handleOK,
     fetchProfileRequest,
     updateUserProfileRequest,
     fetchOnlineDriversRequest,

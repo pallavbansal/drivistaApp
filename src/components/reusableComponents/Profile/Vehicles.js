@@ -129,6 +129,8 @@ const ProfileInfoContainer = memo(props => (
       <View style={styles.inputWrapper}>
         {props.editable ? (
           <TextInput
+          color="black"
+          placeholderTextColor="black"
             style={[styles.input, styles.text]}
             value={props.vehicleNumber}
             onChangeText={text => props.setVehicleNumber(text)}
@@ -147,6 +149,8 @@ const ProfileInfoContainer = memo(props => (
       <View style={styles.inputWrapper}>
         {props.editable ? (
           <TextInput
+          color="black"
+          placeholderTextColor="black"
             style={[styles.input, styles.text]}
             value={props.vehicleName}
             onChangeText={text => props.setVehicleName(text)}
@@ -165,6 +169,8 @@ const ProfileInfoContainer = memo(props => (
       <View style={styles.inputWrapper}>
         {props.editable ? (
           <TextInput
+          color="black"
+          placeholderTextColor="black"
             style={[styles.input, styles.text]}
             value={props.driverName}
             onChangeText={text => props.setDriverName(text)}

@@ -38,28 +38,6 @@ const Drivers = ({
   console.log('vehicle data hry:', details);
 
   console.log('check for editable:', editable);
-  const textInputRef = useRef(null);
-  const handleInputPress = () => {
-    textInputRef.current.focus();
-  };
-
-  const handlePress = async () => {
-    setEditable(!editable);
-
-    if (editable) {
-      // setLoading(true);
-      updateUserProfileRequest();
-      // if(response.result === "failed")
-      // {
-      //   Alert.alert("Something went wrong!")
-      // }
-      // setLoading(false);
-    }
-
-    // if (textInputRef.current) {
-    //   textInputRef.current.focus();
-    // }
-  };
 
   return (
     <MainContainer>
@@ -136,6 +114,8 @@ const ProfileInfoContainer = memo(props => (
       <View style={styles.inputWrapper}>
         {props.editable ? (
           <TextInput
+            color="black"
+            placeholderTextColor="black"
             style={[styles.input]}
             value={props.firstName}
             onChangeText={text => props.setFirstName(text)}
@@ -154,6 +134,10 @@ const ProfileInfoContainer = memo(props => (
       <View style={styles.inputWrapper}>
         {props.editable ? (
           <TextInput
+            color="black"
+            placeholderTextColor={'black'}
+            keyboardType="numeric"
+            maxLength={10}
             style={[styles.input, styles.text]}
             value={props.mobileNumber}
             onChangeText={text => props.setMobileNumber(text)}
@@ -170,35 +154,37 @@ const ProfileInfoContainer = memo(props => (
         </Text>
       </View>
       <View style={styles.inputWrapper}>
-        {props.editable ? (
-          <TextInput
-            style={[styles.input, styles.text]}
-            value={props.email}
-            onChangeText={text => props.setEmail(text)}
-          />
-        ) : (
-          <Text style={styles.text}>: {props.email}</Text>
-        )}
+        <Text style={styles.text}>: {props.email}</Text>
       </View>
     </View>
-    <View style={styles.wrapper}>
-      <View style={styles.textLabelWrapper}>
-        <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
-          {'Password'}
-        </Text>
-      </View>
-      <View style={styles.inputWrapper}>
-        {props.editable ? (
-          <TextInput
-            style={[styles.input, styles.text]}
-            value={props.password}
-            onChangeText={text => props.setPasssword(text)}
-          />
-        ) : (
-          <Text style={styles.text}>: {props.password}</Text>
-        )}
-      </View>
-    </View>
+    {
+      props.editable ?
+      (
+        <View style={styles.wrapper}>
+
+        <View style={styles.textLabelWrapper}>
+              <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
+              {'Password'}
+            </Text>
+            </View>
+
+          <View style={styles.inputWrapper}>
+            {props.editable ? (
+              <TextInput
+                color="black"
+                placeholderTextColor="black"
+                style={[styles.input, styles.text]}
+                value={props.password}
+                onChangeText={text => props.setPasssword(text)}
+              />
+            ) : (""
+              // <Text style={styles.text}>: {props.password}</Text>
+            )}
+          </View>
+        </View>
+      ):""
+    }
+
 
     <TouchableOpacity
       onPress={() => props.handleCalender(props.details.id)}
@@ -282,7 +268,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 5,
     marginHorizontal: 5,
-
   },
   initialSection: {
     height: 40,

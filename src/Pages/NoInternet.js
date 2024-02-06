@@ -1,25 +1,43 @@
-import React, {memo} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import {View, StyleSheet, Image, Text} from 'react-native';
-import internetConnectionFail from '../../storage/images/internetConnectionFail.png'
-
-
+import noInternet from '../storage/images/noInternet.png';
+import LogoWithLabel from '../components/reusableComponents/LogoWithLabel';
+import CustomButton from '../components/reusableComponents/CustomButton';
+import {globalStyles} from '../constants/globalStyles';
+import {Fonts} from '../constants/fonts';
 import {useSelector} from 'react-redux';
-import LogoWithLabel from './LogoWithLabel';
-import CustomButton from './CustomButton';
-import { globalStyles } from '../../constants/globalStyles';
-import { Fonts } from '../../constants/fonts';
+import NetInfo from '@react-native-community/netinfo';
 
-const NotFound = ({navigation, navigateScreen}) => {
+const NoInternet = ({navigation, navigateScreen}) => {
+  const [isConnected, setIsConnected] = useState(null);
   const {isAuth} = useSelector(state => state.userState);
+
+  useEffect(() => {
+    const checkConnection = async () => {
+      const state = await NetInfo.fetch();
+      setIsConnected(state.isConnected);
+    };
+
+    checkConnection();
+  }, []);
+
   const props = {
     label: 'Total Payment',
-    heading: 'No Data Available',
+    heading: '  Whoops!',
     subheading:
-      'There is no data to show you right now.',
+      'No internet connection is found. Check your connection or try again.',
     buttonLabel: 'Refresh',
     navigateScreen: 'SubscriptionScreen',
-    handleNavigation: () =>
-      navigation.navigate(isAuth ? 'OwnerHomeScreen' : 'StartUp'),
+    handleNavigation: async () => {
+      const state = await NetInfo.fetch();
+      if (state.isConnected) {
+        // Internet connection is available, navigate to the desired screen
+        navigation.goBack();
+      //  navigation.navigate(isAuth ? 'OwnerHomeScreen' : 'OwnerHomeScreen');
+      } else {
+        // Still no internet connection, do nothing or display a message
+      }
+    },
   };
 
   const MainContainer = ({children}) => (
@@ -31,7 +49,7 @@ const NotFound = ({navigation, navigateScreen}) => {
       <View style={styles.container}>
         <View style={styles.logoContainer}>
           <LogoWithLabel
-            logo={internetConnectionFail}
+            logo={noInternet}
             label={props.heading}
             headsize={20}
           />
@@ -41,7 +59,7 @@ const NotFound = ({navigation, navigateScreen}) => {
               {
                 color: 'grey',
                 fontWeight: '500',
-                fontSize: 14,
+                fontSize: Fonts.sizes.small,
                 textAlign: 'center',
                 marginTop: 10,
               },
@@ -50,13 +68,19 @@ const NotFound = ({navigation, navigateScreen}) => {
           </Text>
         </View>
 
-
+        <View style={styles.buttonContainer}>
+          <ButtonContainer {...props} />
+        </View>
       </View>
     </MainContainer>
   );
 };
 
-
+const ButtonContainer = memo(props => (
+  <View style={styles.button}>
+    <CustomButton {...props} />
+  </View>
+));
 
 const styles = StyleSheet.create({
   mainContainer: {
@@ -88,4 +112,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(NotFound);
+export default memo(NoInternet);

@@ -2,6 +2,7 @@ import {createAPIConfig} from './config/apiConfig';
 
 const apiConfig = createAPIConfig();
 
+// Example enhanced error handling
 export const loginService = async params => {
   console.log('login user:', params);
   return await apiConfig.post('auth/login', params);
@@ -13,7 +14,7 @@ export const registerService = async params => {
 };
 
 export const registerVerifyService = async params => {
-  console.log('register user:', params);
+  console.log('register user registerVerifyService:', params);
   return await apiConfig.post('auth/register/verify', params);
 };
 
@@ -95,7 +96,19 @@ export const startEndBreakShiftService = async config => {
   return await apiConfig.post('shift/break/start-end', '', config);
 };
 
-
 export const workHistoryDetailsService = async (params, config) => {
   return await apiConfig.post('driver/shift-details', params, config);
 };
+
+export const fetchSubscriptionDataService = async config => {
+  return await apiConfig.post('subscription/details', '', config);
+};
+
+export const checkoutSessionService = async config => {
+  return await apiConfig.post('payment/create-session', '', config);
+};
+
+
+
+
+//
