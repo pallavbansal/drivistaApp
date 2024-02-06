@@ -37,10 +37,13 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.family,
     fontSize: Fonts.sizes.small,
     fontStyle: Fonts.styles.regular,
+    fontWeight:'bold',
+    opacity:0.7
   },
+
   navigationLinkText: {
-    fontSize: Fonts.sizes.medium,
-    fontWeight:Fonts.weight.bold,
+    fontSize: 16,
+    fontWeight: Fonts.weight.bold,
     color: Colors.primary,
   },
 });

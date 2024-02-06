@@ -83,6 +83,8 @@ export default function UploadComp() {
         <View>
           <TextInput
               multiline
+              color="black"
+              placeholderTextColor={'black'}
               numberOfLines={8}
               placeholder="What's on your mind ?"
               style={{
@@ -98,6 +100,8 @@ export default function UploadComp() {
         </View>
         <View style={{marginVertical:10}}>
           <TextInput
+           color="black"
+           placeholderTextColor={'black'}
               placeholder="Make your trend- Add #tags"
               style={{
               fontSize: 16,

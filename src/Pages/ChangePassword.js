@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect} from 'react';
-import {View, StyleSheet, Text, Alert} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import CustomTextInput from '../components/reusableComponents/CustomTextInput';
@@ -15,6 +15,8 @@ import Space from '../components/reusableComponents/Space';
 import HeaderContainer from '../components/reusableComponents/Container/HeaderContainer';
 import {useAuthServiceHook} from '../services/hooks/auth/useAuthServiceHook';
 import Spinner from '../components/reusableComponents/Spinner';
+import { globalStyles } from '../constants/globalStyles';
+import Alert from '../components/reusableComponents/Alert';
 
 const ChangePassword = ({navigation, route}) => {
   const {caseType, id, verification_uid} = route.params;
@@ -35,6 +37,11 @@ const ChangePassword = ({navigation, route}) => {
     setIsFormValid,
     confirmPasswordVisible,
     setConfirmPasswordVisible,
+    alertVisible,
+    alertMessage,
+    showAlert,
+    closeAlert,
+    handleOK,
     changePasswordRequest,
     changePasswordProfileRequest,
   } = useAuthServiceHook();
@@ -57,7 +64,7 @@ const ChangePassword = ({navigation, route}) => {
           if (response.result === 'success') {
             navigation.navigate('LoginScreen');
           } else if (response.result === 'failed') {
-            Alert.alert(response.message);
+            showAlert(response.message);
           }
         } catch (error) {
           console.error('Login error:', error);
@@ -69,7 +76,7 @@ const ChangePassword = ({navigation, route}) => {
           if (response.result === 'success') {
             navigation.navigate('ProfileScreen');
           } else if (response.result === 'failed') {
-            Alert.alert(response.message);
+            showAlert(response.message);
           }
         } catch (error) {
           console.error('Login error:', error);
@@ -131,11 +138,12 @@ const ChangePassword = ({navigation, route}) => {
           containerStyle={styles.headContainer}
           handleBackNavigation={labels.handleDirectNavigation}
         />
-        <View style={styles.pageLabel}>
+        {/* <View style={styles.pageLabel}>
           <PageLabel label={labels.label} />
-        </View>
+        </View> */}
         <View style={styles.container}>
           {/* <InputContainer email={props.oldPassword} password={props.password} /> */}
+          <Text style={[globalStyles.labelHeading, {color: Colors.primary,fontSize:20,fontWeight:'bold'}]}>{"Change Password"}</Text>
           <InputContainer
             loginError={loginError}
             labels={labels}
@@ -156,6 +164,12 @@ const ChangePassword = ({navigation, route}) => {
           <ButtonContainer isFormValid={isFormValid} {...labels} />
         </View>
       </View>
+      <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={closeAlert}
+        onOK={handleOK}
+      />
     </BackgroundContainer>
   );
 };
@@ -226,7 +240,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headContainer: {
-    flex: 0.1,
+    flex: 0.2,
   },
   pageLabel: {
     flex: 0.2,
@@ -267,6 +281,7 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 0.2,
+    marginHorizontal:40
     // justifyContent:'center'
   },
   actionSection: {

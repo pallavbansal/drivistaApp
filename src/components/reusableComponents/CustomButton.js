@@ -2,6 +2,7 @@
 import React from 'react';
 import {View, TouchableOpacity, StyleSheet, Text} from 'react-native';
 import {globalStyles} from '../../constants/globalStyles';
+import { Colors } from '../../constants/colors';
 
 const CustomButton = (props) => {
   const {onPress = () => console.log('Pressed'), style,isModal=false,disabled=false} = props;
@@ -27,7 +28,7 @@ const CustomButton = (props) => {
           onPress={()=>props.handleNavigation(props.navigateScreen,isModal)}>
           <Text
             // eslint-disable-next-line react-native/no-inline-styles
-            style={[globalStyles.text, {color: 'white', fontWeight: 'bold'}]}>
+            style={[globalStyles.buttonText, {color: 'white', fontWeight: 'bold'}]}>
             {props.buttonLabel}
           </Text>
         </TouchableOpacity>
@@ -47,7 +48,7 @@ const CustomButton = (props) => {
 
 const styles = StyleSheet.create({
   buttonStyle: {
-    height: 45,
+    height: 40,
     //width:'100%',
     borderRadius: 20,
     backgroundColor: '#412160',
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   text2Style: {
-    color: '#666666',
+    color: Colors.primary,
     fontWeight: '700',
   },
 });

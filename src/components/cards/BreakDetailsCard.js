@@ -5,13 +5,31 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Image,
 } from 'react-native';
 import InfoCard from '../reusableComponents/InfoCard';
 import BreakInfoCard from '../reusableComponents/BreakInfoCard';
-import CustomButton from '../reusableComponents/CustomButton';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import location from '../../storage/images/location.png';
+import {globalStyles} from '../../constants/globalStyles';
+import {Colors} from '../../constants/colors';
 
-const BreakDetailsCard = ({label, navigateScreen, handleNavigation}) => {
+const BreakDetailsCard = ({
+  label,
+  breakData,
+  navigateScreen,
+  handleNavigation,
+}) => {
+  const formatTime = rawTime => {
+    const formattedTime = new Date(rawTime);
+    return formattedTime
+      .toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+      })
+      .toLowerCase();
+  };
+
   const handleCardPress = () => {
     if (navigateScreen) {
       handleNavigation(navigateScreen);
@@ -26,51 +44,41 @@ const BreakDetailsCard = ({label, navigateScreen, handleNavigation}) => {
           time="12 PM"
           editShow={false}
         />
-        <BreakInfoCard
-          textName={'Break 1'}
-          time={'12:00pm - 12:30pm   |   30mins.'}
-        />
-        <BreakInfoCard
-          textName={'Break 1'}
-          time={'12:00pm - 12:30pm   |   30mins.'}
-        />
-        <BreakInfoCard
-          textName={'Break 1'}
-          time={'12:00pm - 12:30pm   |   30mins.'}
-        />
-        <BreakInfoCard
-          textName={'Break 1'}
-          time={'12:00pm - 12:30pm   |   30mins.'}
-        />
-        <BreakInfoCard
-          textName={'Break 1'}
-          time={'12:00pm - 12:30pm   |   30mins.'}
-        />
-        <BreakInfoCard
-          textName={'Break 1'}
-          time={'12:00pm - 12:30pm   |   30mins.'}
-        />
+
+        {breakData.map((breakItem, index) => (
+          <BreakInfoCard
+            key={index}
+            textName={`Break ${index + 1}`}
+            time={`${formatTime(breakItem.start_time)} - ${formatTime(
+              breakItem.end_time,
+            )}   |   ${breakItem.duration_minutes}mins`}
+          />
+        ))}
       </View>
 
       <TouchableOpacity
         style={styles.footerContainer}
         onPress={handleNavigation}>
         <View style={styles.buttonStyle}>
-          <Text style={styles.buttonText}>Current Location</Text>
+          <Image
+            source={location}
+            style={[globalStyles.logo, {width: 15, height: 15, marginRight: 5}]}
+          />
+          <Text style={[styles.buttonText]}>Current Location</Text>
         </View>
       </TouchableOpacity>
     </ScrollView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
     flex: 1,
     marginHorizontal: 20,
     borderRadius: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     backgroundColor: Colors.breakInfoContainerBg,
+    padding:20
   },
   breakContainer: {
     flex: 1,
@@ -83,10 +91,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   buttonStyle: {
+    flexDirection: 'row',
     height: 30,
-    width: '60%',
+    width: '50%',
     borderRadius: 5,
-    backgroundColor: '#412160',
+    backgroundColor: '#1C8CF3',
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',

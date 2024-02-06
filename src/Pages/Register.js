@@ -3,8 +3,6 @@ import React, {memo, useEffect} from 'react';
 import {
   View,
   StyleSheet,
-  KeyboardAvoidingView,
-  Alert,
   ScrollView,
 } from 'react-native';
 import {Colors} from '../constants/colors';
@@ -23,6 +21,7 @@ import useAuthService from '../hooks/useAuthService';
 import HeaderContainer from '../components/reusableComponents/Container/HeaderContainer';
 import {useAuthServiceHook} from '../services/hooks/auth/useAuthServiceHook';
 import Spinner from '../components/reusableComponents/Spinner';
+import Alert from '../components/reusableComponents/Alert';
 
 const Register = ({navigation}) => {
   const {
@@ -50,6 +49,11 @@ const Register = ({navigation}) => {
     setPasswordVisible,
     confirmPasswordVisible,
     setConfirmPasswordVisible,
+    alertVisible,
+    alertMessage,
+    showAlert,
+    closeAlert,
+    handleOK,
     errors,
     registrationRequest,
   } = useAuthServiceHook();
@@ -68,7 +72,7 @@ const Register = ({navigation}) => {
     checkboxText: 'Start your 15 days trial',
     footerNavigateScreen: 'LoginScreen',
     navigateScreen: 'OtpScreen',
-    navigateBackScreen:'LoginScreen',
+    navigateBackScreen: 'LoginScreen',
     handleDirectNavigation: screenName => navigation.pop(),
     handleNavigation: async screenName => {
       console.log('what is screen:', screenName);
@@ -77,7 +81,7 @@ const Register = ({navigation}) => {
       setLoading(false);
       try {
         if (response === 'verfication_failed') {
-          Alert.alert('Verfication failed');
+          showAlert('Verfication failed');
         } else if (response.result === 'success') {
           console.log('response bb:', response.id);
           navigation.navigate(screenName, {
@@ -85,11 +89,12 @@ const Register = ({navigation}) => {
             id: response.id,
           });
         } else if (response.result === 'failed') {
-          Alert.alert(response.message);
+          showAlert(response.message);
         } else {
           navigation.navigate(screenName);
         }
       } catch (error) {
+        showAlert('No internet connection!');
         console.error('Login error:', error);
       }
     },
@@ -138,7 +143,7 @@ const Register = ({navigation}) => {
     setLoginError({
       ...loginError,
       fullName: errorCheck.fullName,
-      lastName:errorCheck.lastName,
+      lastName: errorCheck.lastName,
       email: errorCheck.email,
       mobileNumber: errorCheck.mobileNumber,
       password: errorCheck.password,
@@ -201,17 +206,26 @@ const Register = ({navigation}) => {
             errors={errors}
             {...labels}
           />
+          <Space />
+          <Space />
           <ButtonContainer {...labels} isFormValid={isFormValid} />
           <FooterContainer {...labels} />
+          <Space />
         </View>
       </ScrollView>
+      <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={closeAlert}
+        onOK={handleOK}
+      />
     </View>
   );
 };
 
 const HeadingContainer = memo(({heading}) => (
   <View style={styles.header}>
-    <Heading label={heading} />
+    <Heading label={heading} color={Colors.primary} />
   </View>
 ));
 
@@ -239,6 +253,8 @@ const InputContainer = memo(props => (
       onChangeText={text => props.setEmail(text)}
     />
     <CustomTextInput
+      keyboardType="numeric"
+      type="number"
       logoName={phoneLogo}
       errorText={props.loginError.mobileNumber}
       placeholder={props.labels.mobileNumber}
@@ -293,12 +309,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
   },
   headContainer: {
-    flex: 0.1,
+    // flex: 0.1,
   },
   pageLabel: {
     flex: 0.1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
+    marginTop: -20,
   },
   container: {
     flex: 0.9,

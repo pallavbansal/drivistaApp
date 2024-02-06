@@ -25,6 +25,7 @@ const Header = ({
   navigationPopUpList,
   handleNavigation,
   handleBackNavigation,
+  modalStyle
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -52,7 +53,10 @@ const Header = ({
         onPress={() => handleBackNavigation(labels.navigateBackScreen)}>
         <Image
           source={left_arrow}
-          style={[globalStyles.logoImage, {width:20,height:20,marginLeft: 5}]}
+          style={[
+            globalStyles.logoImage,
+            {width: 25, height: 25, marginLeft: 5},
+          ]}
         />
       </TouchableOpacity>
     );
@@ -71,7 +75,10 @@ const Header = ({
       <TouchableOpacity onPress={toggleModal}>
         <Image
           source={menu}
-          style={[globalStyles.logoImage, {width:20,height:20,marginLeft: 5}]}
+          style={[
+            globalStyles.logoImage,
+            {width: 25, height: 25, marginLeft: 5, marginTop: 4},
+          ]}
         />
       </TouchableOpacity>
     );
@@ -94,6 +101,7 @@ const Header = ({
       </View>
       {modalVisible && (
         <NavigationPopUpCard
+        modalStyle={modalStyle}
           navigationPopUpList={navigationPopUpList}
           handleNavigation={handlePopUpNavigation}
         />
@@ -106,18 +114,21 @@ const styles = StyleSheet.create({
   wrapper: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     // backgroundColor: Colors.headerBg, // Set the background color if needed
-    paddingVertical: 10,
+    paddingVertical: 15,
   },
   backgroundTransparent: {
     backgroundColor: Colors.headerBg,
   },
   backArrow: {
     flex: 0.3,
+    justifyContent: 'center',
+    marginTop: 2,
   },
   label: {
-    flex: 0.4,
+    flex: 0.5,
+
     alignItems: 'center',
   },
   popUpLogo: {
@@ -125,7 +136,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   headerLabel: {
-    fontSize: Fonts.sizes.medium,
+    fontSize: 18,
     fontWeight: Fonts.weight.bold,
     color: 'white',
   },

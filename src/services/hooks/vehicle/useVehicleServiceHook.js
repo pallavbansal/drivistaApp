@@ -27,9 +27,25 @@ export const useVehicleServiceHook = () => {
   const [vehicleNumber, setVehicleNumber] = useState('');
   const [vehicleName, setVehicleName] = useState('');
   const [driverName, setDriverName] = useState('');
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [isFormValid, setIsFormValid] = useState(true);
+  const [loginError, setLoginError] = useState({email: '', password: ''});
+  const showAlert = message => {
+    setAlertMessage(message);
+    setAlertVisible(true);
+  };
+  const closeAlert = () => {
+    setAlertVisible(false);
+  };
+  const handleOK = () => {
+    closeAlert();
+  };
+
   const dispatch = useDispatch();
 
   const fetchVehicleListRequest = async () => {
+    setLoading(true);
     const config = {
       headers: {Authorization: `Bearer ${token}`},
     };
@@ -40,20 +56,10 @@ export const useVehicleServiceHook = () => {
         'response fetchVehicleListRequest:',
         response.data.data.vehicles,
       );
+      setLoading(false);
       dispatch(setVehicleData(response.data.data.vehicles));
-      //   if (response.data.status_code === 1) {
-      //     console.log('login resounse:', response.data.data);
-      //     dispatch(setUserData(response.data.data));
-      //     return {result: 'success'};
-      //   } else if (response.data.status_code === 2) {
-      //     return {result: 'failed'};
-      //   }
     } catch (error) {
       console.log('fetchVehicleListRequest:', error.response);
-      // dispatch(logoutUser());
-      //  return {result: 'unauthenticated.'};
-      //console.log('fetchProfileRequest:', error.response);
-      //  console.log(error.response);
     }
   };
 
@@ -70,19 +76,9 @@ export const useVehicleServiceHook = () => {
       const response = await deleteVehicleService(params, config);
       console.log('response profile:', response.data.data.vehicles);
       dispatch(setVehicleData(response.data.data.vehicles));
-      //   if (response.data.status_code === 1) {
-      //     console.log('login resounse:', response.data.data);
-      //     dispatch(setUserData(response.data.data));
-      //     return {result: 'success'};
-      //   } else if (response.data.status_code === 2) {
-      //     return {result: 'failed'};
-      //   }
     } catch (error) {
+      showAlert('No Internet Connection!');
       console.log('fetchVehicleListRequest:', error.response);
-      // dispatch(logoutUser());
-      //  return {result: 'unauthenticated.'};
-      //console.log('fetchProfileRequest:', error.response);
-      //  console.log(error.response);
     }
   };
 
@@ -91,11 +87,14 @@ export const useVehicleServiceHook = () => {
       headers: {Authorization: `Bearer ${token}`},
     };
     if (
-      driverName.length < 3||
+      driverName.length < 3 ||
       vehicleName.length < 3 ||
       vehicleNumber.length < 3
     ) {
-      return {result: 'failed', message: 'Fields Input length sould be atleast three !'};
+      return {
+        result: 'failed',
+        message: 'Fields Input length sould be atleast three !',
+      };
     }
     const params = {
       vehicle_id: id,
@@ -137,8 +136,8 @@ export const useVehicleServiceHook = () => {
       const response = await saveVehicleDetailsService(params, config);
       console.log('after saveVehicleRequest profile:', response.data.data);
       const res = await fetchVehicleListRequest();
-
     } catch (error) {
+      showAlert('No Internet Connection!');
       console.log('saveVehicleRequest:', error.response);
     }
   };
@@ -160,6 +159,17 @@ export const useVehicleServiceHook = () => {
     setVehicleName,
     driverName,
     setDriverName,
+    alertVisible,
+    setAlertVisible,
+    alertMessage,
+    setAlertMessage,
+    showAlert,
+    closeAlert,
+    handleOK,
+    setLoginError,
+    loginError,
+    isFormValid,
+    setIsFormValid,
     fetchVehicleListRequest,
     deleteVehicleRequest,
     vehicleDetailsEditRequest,

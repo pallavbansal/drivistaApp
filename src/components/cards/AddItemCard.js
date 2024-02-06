@@ -31,7 +31,7 @@ const AddItemCard = ({
           <TouchableOpacity onPress={handleAddItem}>
                 <Image
                   source={addNew}
-                  style={[globalStyles.logoImage, {height: 20, width: 20,marginLeft:5}]}
+                  style={[globalStyles.logoImage, {height: 25, width: 25,marginLeft:5}]}
                 />
               </TouchableOpacity>
           </View>
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   bulletText: {
-    fontSize: Fonts.sizes.medium,
+    fontSize: 16,
     fontWeight: Fonts.weight.bold,
     // textTransform: 'capitalize',
     opacity:0.4,

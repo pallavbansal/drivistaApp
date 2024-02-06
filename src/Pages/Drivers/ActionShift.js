@@ -6,9 +6,11 @@ import {
   StyleSheet,
   Text,
   ImageBackground,
-  Alert,
   TouchableOpacity,
+  PermissionsAndroid,
+  Platform,
 } from 'react-native';
+import moment from 'moment';
 import BackgroundContainer from '../../components/reusableComponents/Container/BackgroundContainer';
 import HeaderContainer from '../../components/reusableComponents/Container/HeaderContainer';
 import {Fonts} from '../../constants/fonts';
@@ -19,13 +21,40 @@ import themeLogo from '../../storage/images/theme.png';
 import journey from '../../storage/images/journey.png';
 import CustomButton from '../../components/reusableComponents/CustomButton';
 import {useDriverShiftServiceHook} from '../../services/hooks/shift/useDriverShiftServiceHook';
-import { useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {useAuthServiceHook} from '../../services/hooks/auth/useAuthServiceHook';
+import {
+  setIncrementTimer,
+  setStartBreakTime,
+} from '../../redux/actions/userActions';
+import {
+  startBackgroundLocationService,
+  stopBackgroundLocationService,
+} from '../../services/hooks/BackgroundLocationService';
+import {isLocationEnabled} from 'react-native-android-location-enabler';
+import {promptForEnableLocationIfNeeded} from 'react-native-android-location-enabler';
+import Spinner from '../../components/reusableComponents/Spinner';
+import Alert from '../../components/reusableComponents/Alert';
 
 const ActionShift = ({navigation}) => {
   const {current} = useSelector(state => state.shiftState);
-  const {loading, setLoading, endShiftRequest,currentShiftRequest,startEndBreakShiftRequest} = useDriverShiftServiceHook();
-  const [time,setTime]=useState("");
-  const [breaksNo,setBreaksNo]=useState(0);
+  const {
+    loading,
+    setLoading,
+    showAlert,
+    closeAlert,
+    handleOK,
+    alertVisible,
+    alertMessage,
+    endShiftRequest,
+    currentShiftRequest,
+    startEndBreakShiftRequest,
+  } = useDriverShiftServiceHook();
+  const {logoutRequest} = useAuthServiceHook();
+  const [time, setTime] = useState('');
+  const [breaksNo, setBreaksNo] = useState(0);
+  const [promptOpen, setPromptOpen] = useState(false);
+  const dispatch = useDispatch();
   const labels = {
     label: 'Take a break',
     heading:
@@ -43,12 +72,14 @@ const ActionShift = ({navigation}) => {
       console.log('what is screen:', screenName);
       setLoading(true);
       const response = await endShiftRequest();
+
       setLoading(false);
       try {
         if (response.result === 'success') {
+          stopBackgroundService();
           navigation.navigate('StartShift');
         } else if (response.result === 'failed') {
-          Alert.alert(response.message);
+          showAlert(response.message);
         } else {
           navigation.navigate(screenName);
         }
@@ -59,13 +90,17 @@ const ActionShift = ({navigation}) => {
     handleBreakNavigation: async screenName => {
       console.log('what is screen:', screenName);
       setLoading(true);
+      const startBreakTime = moment().format('YYYY-MM-DD HH:mm:ss');
+      dispatch(setStartBreakTime(startBreakTime));
       const response = await startEndBreakShiftRequest();
+
+      dispatch(setIncrementTimer(0));
       setLoading(false);
       try {
         if (response.result === 'success') {
           navigation.navigate('BreakShift');
         } else if (response.result === 'failed') {
-          Alert.alert(response.message);
+          showAlert(response.message);
         } else {
           navigation.navigate(screenName);
         }
@@ -73,17 +108,101 @@ const ActionShift = ({navigation}) => {
         console.error('Login error:', error);
       }
     },
-   // handleBreakNavigation: () => navigation.navigate('BreakShift'),
+    // handleBreakNavigation: () => navigation.navigate('BreakShift'),
+  };
+  const startBackgroundService = async () => {
+    await startBackgroundLocationService();
+    // setIsServiceRunning(true);
+  };
+  const requestLocationPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'App Location Permission',
+          message: 'App needs access to your location.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Location permission granted');
+        const enableResult = await promptForEnableLocationIfNeeded({
+          title: 'Enable Location',
+          text: 'This app requires location access to function properly.',
+          positiveButtonText: 'Enable',
+          negativeButtonText: 'Cancel',
+        });
+
+        if (enableResult === 'enabled') {
+          console.log('Location has been enabled.');
+          startBackgroundService();
+
+          // Location is now enabled, perform additional actions if needed
+        } else {
+          console.log('User denied enabling location.');
+          startBackgroundService();
+          // Handle the case where the user denied enabling location
+        }
+
+        // Location permission granted, start the background service
+      } else {
+        console.log('Location permission denied');
+        // Handle denied permission (show an alert, etc.)
+        Alert.alert(
+          'Permission Denied',
+          'Location permission is required for this app to function properly.',
+          [
+            {
+              text: 'OK',
+              onPress: () => console.log('OK Pressed'),
+              style: 'cancel',
+            },
+          ],
+          {cancelable: false},
+        );
+      }
+    } catch (err) {
+      // console.warn(err);
+      //  requestLocationPermission();
+
+      console.log('User selected "No Thanks". Handle accordingly.');
+    }
   };
 
-  useEffect(()=>{
-    currentShiftRequest();
-  },[]);
+  async function handleCheckPressed() {
+    if (Platform.OS === 'android') {
+      const checkEnabled = await isLocationEnabled();
+      console.log('checkEnabled', checkEnabled);
+      if (!checkEnabled && !promptOpen) {
+        requestLocationPermission();
+      }
+    }
+  }
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      // handleCheckPressed();
+    }, 1000);
 
-  useEffect(()=>{
+    // Clean up the interval when the component is unmounted
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const stopBackgroundService = async () => {
+    await stopBackgroundLocationService();
+    // setIsServiceRunning(true);
+  };
+
+  useEffect(() => {
+    currentShiftRequest();
+  }, []);
+
+  useEffect(() => {
     setTime(formatShiftTime());
     setBreaksNo(current.number_of_breaks);
-  },[current]);
+  }, [current]);
+
   function formatShiftTime() {
     const parsedDate = new Date(current.shift_start_time);
 
@@ -91,20 +210,56 @@ const ActionShift = ({navigation}) => {
     const minutes = parsedDate.getMinutes();
 
     // Format the time
-    const formattedTime = `${hours % 12 || 12}:${minutes < 10 ? '0' : ''}${minutes} ${hours < 12 ? 'AM' : 'PM'}`;
+    const formattedTime = `${hours % 12 || 12}:${
+      minutes < 10 ? '0' : ''
+    }${minutes} ${hours < 12 ? 'AM' : 'PM'}`;
 
     return formattedTime;
   }
+  const navigationPopUpList = [
+    {
+      label: 'logout',
+      navigateScreen: 'logout',
+    },
+  ];
+  const renderSpinner = () => {
+    if (loading) {
+      return <Spinner />;
+    }
+    return null;
+  };
   return (
     <BackgroundContainer source={themeLogo}>
+      {renderSpinner()}
       <HeaderContainer
         labels={labels}
-        showPopUp={false}
+        showPopUp={true}
         showBackArrow={false}
         containerStyle={styles.headContainer}
+        navigationPopUpList={navigationPopUpList}
+        modalStyle={{height: 40, marginTop: 20}}
+        handleNavigation={navigateScreen => {
+          if (navigateScreen === 'logout') {
+
+            // labels.handleEndShiftNavigation(labels.navigateScreen);
+            logoutRequest();
+          }
+          console.log('handleNavigation bb:', navigateScreen);
+        }}
         handleBackNavigation={() => labels.navigateBackNavigation(navigation)}
       />
-      <CardContainer labels={labels} current={current} formatShiftTime={time} breaksNo={breaksNo}/>
+      <CardContainer
+        labels={labels}
+        current={current}
+        formatShiftTime={time}
+        breaksNo={breaksNo}
+      />
+      <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={closeAlert}
+        onOK={handleOK}
+      />
     </BackgroundContainer>
   );
 };
@@ -119,7 +274,10 @@ const CardContainer = props => (
     <View style={styles.mainContainer}>
       <View style={styles.headingLabel}>
         <Text style={styles.textHead}>{props.formatShiftTime}</Text>
-        <Text style={styles.textSubHead}>{'Total breaks : '}{props.breaksNo}</Text>
+        <Text style={styles.textSubHead}>
+          {'Total breaks : '}
+          {props.breaksNo}
+        </Text>
       </View>
       <View style={styles.cardContainer}>
         <View style={{flex: 1}}>

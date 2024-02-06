@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect} from 'react';
-import {View, StyleSheet, Alert} from 'react-native';
+import {View, StyleSheet,Text} from 'react-native';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import themeLogo from '../storage/images/theme.png';
@@ -12,6 +12,8 @@ import BackgroundContainer from '../components/reusableComponents/Container/Back
 import HeaderContainer from '../components/reusableComponents/Container/HeaderContainer';
 import {useAuthServiceHook} from '../services/hooks/auth/useAuthServiceHook';
 import Spinner from '../components/reusableComponents/Spinner';
+import { globalStyles } from '../constants/globalStyles';
+import Alert from '../components/reusableComponents/Alert';
 
 const Otp = ({navigation, route}) => {
   const {id, caseType} = route.params;
@@ -23,6 +25,11 @@ const Otp = ({navigation, route}) => {
     setLoading,
     otp,
     setOtp,
+    alertVisible,
+    alertMessage,
+    showAlert,
+    closeAlert,
+    handleOK,
     otpVerifyRequest,
     otpForgotPassVerifyRequest,
   } = useAuthServiceHook();
@@ -47,7 +54,7 @@ const Otp = ({navigation, route}) => {
             // navigation.navigate(screenName);
           } else if (response.result === 'failed') {
             console.log('otp screwn:', response.message);
-            Alert.alert(response.message);
+            showAlert(response.message);
           }
           // else{
           //   navigation.navigate(screenName);
@@ -71,7 +78,7 @@ const Otp = ({navigation, route}) => {
             });
           } else if (response.result === 'failed') {
             console.log('otp screwn:', response.message);
-            Alert.alert(response.message);
+            showAlert(response.message);
           }
           // else{
           //   navigation.navigate(screenName);
@@ -119,9 +126,16 @@ const Otp = ({navigation, route}) => {
           handleBackNavigation={labels.handleDirectNavigation}
         />
         <View style={styles.pageLabel}>
-          <PageLabel label={labels.label} />
+
         </View>
         <View style={styles.container}>
+        <Text
+            style={[
+              globalStyles.labelHeading,
+              {color: 'black', fontWeight: 'bold', fontSize: 20},
+            ]}>
+            {labels.label}
+          </Text>
           <HeadingContainer heading={labels.heading} />
           <OtpInput
             length={4}
@@ -132,6 +146,12 @@ const Otp = ({navigation, route}) => {
           <ButtonContainer {...labels} isFormValid={isFormValid} />
         </View>
       </View>
+      <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={closeAlert}
+        onOK={handleOK}
+      />
     </BackgroundContainer>
   );
 };
@@ -162,7 +182,7 @@ const styles = StyleSheet.create({
     flex: 0.1,
   },
   pageLabel: {
-    flex: 0.2,
+    flex: 0.1,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -180,9 +200,10 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.inputWrapperBg,
   },
   header: {
-    flex: 0.1,
+    flex: 0.2,
     justifyContent: 'center',
     alignItems: 'center',
+
   },
   inputContainer: {
     flex: 0.3,
@@ -198,6 +219,7 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 0.3,
+    marginTop:15
   },
   actionSection: {
     flex: 0.3,

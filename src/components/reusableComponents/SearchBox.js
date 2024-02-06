@@ -25,6 +25,7 @@ const SearchBox = () => {
       />
       <TextInput
         placeholder="Search"
+        color="black"
         placeholderTextColor="#909090"
         style={{
           width: '94%',

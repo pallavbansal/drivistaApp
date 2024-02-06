@@ -48,11 +48,6 @@ const Owner = ({
     if (editable) {
       // setLoading(true);
       updateUserProfileRequest();
-      // if(response.result === "failed")
-      // {
-      //   Alert.alert("Something went wrong!")
-      // }
-      // setLoading(false);
     }
 
     // if (textInputRef.current) {
@@ -139,6 +134,8 @@ const LogoHeaderContainer = memo(props => (
             //   ref={props.textInputRef}
             // placeholder={"placeholder"}
             // style={[styles.input, styles.text]}
+            color="black"
+            placeholderTextColor="black"
             value={props.firstName}
             onChangeText={text => {
               props.setFirstName(text);
@@ -146,7 +143,8 @@ const LogoHeaderContainer = memo(props => (
             }}
           />
         </TouchableOpacity>
-      ) : (""
+      ) : (
+        ''
         // <Text
         //   style={[
         //     globalStyles.text,
@@ -159,6 +157,8 @@ const LogoHeaderContainer = memo(props => (
       {props.editable ? (
         <TextInput
           // ref={props.textInputRef}
+          color="black"
+          placeholderTextColor={'black'}
           style={[styles.input, styles.text]}
           value={props.lastName}
           onChangeText={text => props.setLastName(text)}
@@ -169,7 +169,7 @@ const LogoHeaderContainer = memo(props => (
             globalStyles.text,
             {fontSize: 25, fontWeight: 'bold', opacity: 0.7},
           ]}>
-           {props.firstName}{' '}{props.lastName}
+          {props.firstName} {props.lastName}
         </Text>
       )}
     </View>
@@ -189,6 +189,7 @@ const ProfileInfoContainer = memo(props => (
       </Text>
       {props.editable ? (
         <TextInput
+          keyboardType="numeric"
           style={[styles.input, styles.text]}
           value={props.mobileNumber}
           onChangeText={text => props.setMobileNumber(text)}
@@ -225,6 +226,7 @@ const styles = StyleSheet.create({
     flex: 0.4,
     justifyContent: 'flex-start',
     alignItems: 'center',
+    marginTop: -20,
   },
   infoCardContainer: {
     flex: 0.4,
@@ -259,7 +261,7 @@ const styles = StyleSheet.create({
     padding: 5,
     width: '50%',
     marginHorizontal: 5,
-    justifyContent:'center'
+    justifyContent: 'center',
   },
   initialSection: {
     height: 40,

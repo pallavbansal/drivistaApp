@@ -9,26 +9,31 @@ import {globalStyles} from '../../../constants/globalStyles';
 import InfoCard from '../../../components/reusableComponents/InfoCard';
 import Heading from '../../../components/reusableComponents/Heading';
 import CustomButton from '../../../components/reusableComponents/CustomButton';
-import {fonts} from 'react-native-elements/dist/config';
-import {Fonts} from '../../../constants/fonts';
+import {navigationPopUpList} from '../../../constants/navigation';
 import Space from '../../../components/reusableComponents/Space';
 import LogoWithLabel from '../../../components/reusableComponents/LogoWithLabel';
 import ModalView from '../../../components/reusableComponents/ModalView';
+import {useAuthServiceHook} from '../../../services/hooks/auth/useAuthServiceHook';
+import { useSelector } from 'react-redux';
 
 const Home = ({navigation}) => {
+  const {subscription} = useSelector(state => state.subscriptionState);
+  const {logoutRequest} = useAuthServiceHook();
   const [isConfirmationModalVisible, setIsConfirmationModalVisible] =
     useState(false);
   const [isMessageModalVisible, setMessageModalVisible] = useState(false);
+  const heading = `${subscription.total_drivers} Registered Employee.`;
+  const subheading = `You currently have ${subscription.total_drivers} registered employees, you can also add and delete more employers.`;
   const props = {
     label: 'Forgot Password',
-    heading: '8 Registered Employee',
-    subHeading:
-      'You currently have 8 registered employees, you can also add and delete more employers.',
+    heading:heading,
+    subHeading:subheading,
     email: 'Email Id',
-    buttonLabel1: 'Add/delete employee',
+    buttonLabel1: 'Add/delete employees',
     buttonLabel2: 'Cancel Subscription',
     linkText: 'Resend OTP',
     navigateScreen: 'SubscriptionDescription',
+    navigateBackNavigation: () => navigation.pop(),
     handleNavigation: (screenName, isModal) => {
       if (!isModal) {
         // Navigate to the SubscriptionDescription screen
@@ -58,14 +63,23 @@ const Home = ({navigation}) => {
     } else if (nextAction === 'CancelConfirmationModal') {
       setMessageModalVisible(false);
       setIsConfirmationModalVisible(false);
+    } else if (nextAction === 'CancelMessageModal') {
+      setMessageModalVisible(false);
+      setIsConfirmationModalVisible(false);
+      navigation.navigate('OwnerHomeScreen');
     }
-    else if (nextAction === 'CancelMessageModal') {
-        setMessageModalVisible(false);
-        setIsConfirmationModalVisible(false);
-        navigation.navigate('OwnerHomeScreen');
-      }
   };
-
+  const handlePopUpNavigation = navigateScreen => {
+    if (navigateScreen === 'logout') {
+      logoutRequest();
+    } else {
+      navigation.navigate(navigateScreen);
+    }
+  };
+  const labels = {
+    navigateBackScreen: '',
+    handleDirectNavigation: screenName => navigation.pop(),
+  };
   const MainContainer = ({children}) => (
     <View style={styles.mainContainer}>
       {children}
@@ -92,17 +106,22 @@ const Home = ({navigation}) => {
     <MainContainer>
       <HeaderContainer
         label={'Your Subscription'}
+        labels={props}
         showBackArrow={true}
         showLabel={true}
         showPopUp={true}
         showBackground={true}
         containerStyle={styles.headContainer}
+        handleBackNavigation={props.navigateBackNavigation}
+        handleNavigation={handlePopUpNavigation}
+        navigationPopUpList={navigationPopUpList}
       />
+
       <View style={styles.container}>
         <View style={styles.logoContainer}>
-          <LogoWithLabel logo={clock} label={props.heading} />
-          <HeadingContainer {...props} />
+          <LogoWithLabel logo={clock} label={props.heading} headsize={18} />
         </View>
+        <HeadingContainer {...props} />
         <ButtonsMixContainer {...props} />
       </View>
     </MainContainer>
@@ -110,7 +129,9 @@ const Home = ({navigation}) => {
 };
 const HeadingContainer = memo(({subHeading}) => (
   <View style={styles.header}>
-    <Heading label={subHeading} />
+    <Text style={[globalStyles.labelHeading, {fontWeight: '500'}]}>
+      {subHeading}
+    </Text>
   </View>
 ));
 const ButtonsMixContainer = memo(props => (
@@ -140,7 +161,11 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   headContainer: {
-    flex: 0.2,
+    flex: 0.1,
+  },
+  header: {
+    marginVertical: 10,
+    marginBottom: 20,
   },
   container: {
     flex: 0.7,
@@ -154,9 +179,10 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   logoContainer: {
-    flex: 0.5,
+    flex: 0.4,
     justifyContent: 'space-evenly',
     alignItems: 'center',
+    marginTop: -20,
   },
   infoCardContainer: {
     flex: 0.5,

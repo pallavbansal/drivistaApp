@@ -23,7 +23,10 @@ const CustomTextInput = ({
   passwordVisible,
   value,
   errorText = '',
+  keyboardType="default",
+  type="text",
   ...rest
+
 }) => {
   const textInputRef = useRef(null);
 
@@ -56,9 +59,12 @@ const CustomTextInput = ({
               secureTextEntry={showPasswordGenIcon ? !passwordVisible : false}
               value={value}
               ref={textInputRef}
-              placeholder={placeholder}
               placeholderTextColor={Colors.placeholder}
-              style={globalStyles.textInput}
+              color='black'
+              keyboardType={keyboardType}
+              placeholder={placeholder}
+              maxLength={type === "number" ? 10 :30}
+              style={[globalStyles.textInput, styles.customTextInput]}
               {...rest}
             />
           </TouchableOpacity>
@@ -98,7 +104,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     height: 40,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     borderWidth: 1,
     borderColor: 'white',
     borderRadius: 10,
@@ -113,7 +119,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'white',
     borderRadius: 10,
-    paddingHorizontal: 10,
+
     backgroundColor: Colors.inputWrapperBg, // Set the background color if needed
   },
   actionSection: {
@@ -134,6 +140,13 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 10,
+  },
+  customTextInput: {
+    flex:1,
+    fontFamily: 'Alata', // Replace with your actual font family
+    fontWeight: '400',
+    marginBottom:-1,
+
   },
 });
 

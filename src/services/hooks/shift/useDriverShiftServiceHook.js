@@ -18,9 +18,19 @@ export const useDriverShiftServiceHook = () => {
   const [lastName, setLastName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [password, setPasssword] = useState('');
-
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
   const dispatch = useDispatch();
-
+  const showAlert = message => {
+    setAlertMessage(message);
+    setAlertVisible(true);
+  };
+  const closeAlert = () => {
+    setAlertVisible(false);
+  };
+  const handleOK = () => {
+    closeAlert();
+  };
   const startShiftRequest = async () => {
     const config = {
       headers: {Authorization: `Bearer ${token}`},
@@ -107,6 +117,10 @@ export const useDriverShiftServiceHook = () => {
     }
   };
 
+  const sendLocationToServer = async (longitude, latitude) => {
+    console.log('sendLocationToServer mmm', longitude);
+  };
+
   return {
     loading,
     setLoading,
@@ -121,8 +135,16 @@ export const useDriverShiftServiceHook = () => {
     password,
     setPasssword,
     startShiftRequest,
+    showAlert,
+    closeAlert,
+    handleOK,
+    alertVisible,
+    setAlertVisible,
+    alertMessage,
+    setAlertMessage,
     endShiftRequest,
     currentShiftRequest,
     startEndBreakShiftRequest,
+    sendLocationToServer,
   };
 };

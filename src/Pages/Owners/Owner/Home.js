@@ -14,20 +14,19 @@ import shade1 from '../../../storage/images/shade1.png';
 import shade2 from '../../../storage/images/shade2.png';
 import shade3 from '../../../storage/images/shade3.png';
 import BackgroundContainer from '../../../components/reusableComponents/Container/BackgroundContainer';
-import { useAuthServiceHook } from '../../../services/hooks/auth/useAuthServiceHook';
+import {useAuthServiceHook} from '../../../services/hooks/auth/useAuthServiceHook';
 import {navigationPopUpList} from '../../../constants/navigation';
 
 const Home = ({navigation}) => {
-  const {logoutRequest} =
-  useAuthServiceHook();
+  const {logoutRequest} = useAuthServiceHook();
   const navigationData = [
     {
-      label: 'Drivers Online',
+      label: 'Employees Online',
       linearGradientColor1: '#A47089',
       linearGradientColor2: '#5A3C76',
       navigateScreen: 'OnlineDrivers',
       logoImage: driverOnline,
-      bgImage:shade1
+      bgImage: shade1,
     },
     {
       label: 'Your Vehicles',
@@ -35,7 +34,7 @@ const Home = ({navigation}) => {
       linearGradientColor2: '#5A3C76',
       navigateScreen: 'VehicleHome',
       logoImage: vehicleLogo,
-      bgImage:shade2
+      bgImage: shade2,
     },
     {
       label: 'Your Employees',
@@ -43,48 +42,15 @@ const Home = ({navigation}) => {
       linearGradientColor2: '#5A3C76',
       navigateScreen: 'DriverHome',
       logoImage: driver,
-      bgImage:shade3
+      bgImage: shade3,
     },
   ];
   const handleNavigation = navigateScreen => {
-    if(navigateScreen === "logout")
-    {
+    if (navigateScreen === 'logout') {
       logoutRequest();
-
+    } else {
+      navigation.navigate(navigateScreen);
     }
-    else{
-    const details = [
-      {
-        label: 'Email',
-        data: 'kabir343@gmail.com',
-      },
-      {
-        label: 'Mobile Number',
-        data: '9867656767',
-      },
-    ];
-
-    const defaultParams = {
-      param1: 'value1',
-      param2: 'value2',
-      // Add more default parameters as needed
-    };
-
-    const profileParams = {
-      headLabel : ' Vehicle Details',
-      type: 'vehicle',
-      details: details,
-      // Add more parameters for 'ProfileScreen' as needed
-
-    };
-
-    const paramsToPass =
-      navigateScreen === 'ProfileScreen'
-        ? {...defaultParams, ...profileParams}
-        : defaultParams;
-
-    navigation.navigate(navigateScreen, paramsToPass);
-  }
   };
 
   const MainContainer = ({children}) => (
@@ -96,30 +62,27 @@ const Home = ({navigation}) => {
   );
 
   return (
-    <BackgroundContainer
-      source={themeLogo}
-    >
-    <MainContainer>
-    <HeaderContainer
-          showPopUp={true}
-          showBackArrow={true}
-          showBackground={false}
-          containerStyle={styles.headContainer}
-          handleNavigation={handleNavigation}
-          navigationPopUpList={navigationPopUpList}
-        />
+    <BackgroundContainer source={themeLogo}>
+      <HeaderContainer
+        showPopUp={true}
+        showBackArrow={false}
+        showBackground={false}
+        containerStyle={styles.headContainer}
+        handleNavigation={handleNavigation}
+        navigationPopUpList={navigationPopUpList}
+      />
       <CardContainer>
         {navigationData.map((item, index) => (
           <NavigationCard
             key={index}
             {...item}
             cardLogo={styles.cardLogo}
+            imageBackground={styles.imageBackground}
             cardStyle={styles.card}
             handleNavigation={handleNavigation}
           />
         ))}
       </CardContainer>
-    </MainContainer>
     </BackgroundContainer>
   );
 };
@@ -128,17 +91,18 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
   },
-  headContainer:{
-   flex:0.2,
+  headContainer: {
+    flex: 0.2,
   },
   cardContainer: {
     flex: 0.8,
-    justifyContent:'flex-start',
-   // backgroundColor:'red'
+
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
   },
   card: {
     flex: 0.25,
-    marginVertical:10,
+    marginVertical: 10,
     width: '60%',
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -147,6 +111,12 @@ const styles = StyleSheet.create({
     height: 150,
     width: 150,
     marginLeft: -50,
+  },
+  imageBackground: {
+    flex: 1,
+    borderRadius: 12, // Add border radius here
+
+    justifyContent: 'flex-end',
   },
 });
 

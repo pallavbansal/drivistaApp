@@ -1,8 +1,9 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
-import React, {memo} from 'react';
-import {View, StyleSheet, Image, Text} from 'react-native';
+import React, {memo, useState} from 'react';
+import {View, StyleSheet, Alert, Text, Linking} from 'react-native';
 import bucket from '../../../storage/images/bucket.png';
+import {WebView} from 'react-native-webview';
 import plus from '../../../storage/images/plus.png';
 import minus from '../../../storage/images/minus.png';
 import wallet from '../../../storage/images/wallet.png';
@@ -12,44 +13,130 @@ import CustomButton from '../../../components/reusableComponents/CustomButton';
 import {Fonts} from '../../../constants/fonts';
 import Space from '../../../components/reusableComponents/Space';
 import LogoWithLabel from '../../../components/reusableComponents/LogoWithLabel';
+import {useStripe} from '@stripe/stripe-react-native';
+import PaymentScreen from './PaymentScreen';
+import {useSubscriptionServiceHook} from '../../../services/hooks/subscription/useSubscriptionServiceHook';
+import {useAuthServiceHook} from '../../../services/hooks/auth/useAuthServiceHook';
+import {navigationPopUpList} from '../../../constants/navigation';
+import {useSelector} from 'react-redux';
 
 const PaymentDetails = ({navigation}) => {
+  const {subscription} = useSelector(state => state.subscriptionState);
+  const {initPaymentSheet, presentPaymentSheet, redirectToCheckout} =
+    useStripe();
+  const {logoutRequest} = useAuthServiceHook();
+  const [webViewVisible, setWebViewVisible] = useState(false);
+  const [checkoutUrl, setCheckoutUrl] = useState('');
+
+  const {loading, setLoading, createCheckoutSession, createOrder} =
+    useSubscriptionServiceHook();
+    const total_payment=subscription.price;
+    const subscription_cost_per_week=subscription.subscription_cost_per_week;
+    const cost_per_driver=subscription.cost_per_driver;
+  const [open, SetOpen] = useState(false);
   const props = {
-    label:'Total Payment',
+    label: 'Total Payment',
     heading: 'Total Payment',
+    total_price:total_payment,
+    subscription_cost_per_week:subscription_cost_per_week,
+    cost_per_driver:cost_per_driver,
     email: 'Email Id',
     buttonLabel: 'Subscribe',
     navigateScreen: 'SuccessScreen',
-    handleNavigation: screenName => navigation.navigate(screenName),
+    navigateBackScreen: 'LoginScreen',
+    navigateBackNavigation: () => navigation.pop(),
+    // handleNavigation: screenName => navigation.navigate(screenName),
+    handleNavigation: async screenName => {
+      onCheckout();
+      SetOpen(true);
+    },
   };
 
+  const onCheckout = async () => {
+    // 1. Create a payment intent
+    const response = await createCheckoutSession();
+
+    if (response.error) {
+      Alert.alert('Something went wrong');
+      return;
+    }
+    if (response) {
+      setCheckoutUrl(response);
+      setWebViewVisible(true);
+    } else {
+      console.error('Invalid URL');
+    }
+    // redirectToCheckout({
+    //   response,
+    // });
+    // 4. If payment ok -> create the order
+    // onCreateOrder();
+  };
+  const handlePopUpNavigation = navigateScreen => {
+    if (navigateScreen === 'logout') {
+      logoutRequest();
+    } else {
+      navigation.navigate(navigateScreen);
+    }
+  };
   const MainContainer = ({children}) => (
     <View style={styles.mainContainer}>{children}</View>
   );
 
   return (
-    <MainContainer>
-      <HeaderContainer
-        label={props.label}
-        showBackArrow={true}
-        showLabel={true}
-        showPopUp={true}
-        showBackground={true}
-        containerStyle={styles.headContainer}
-      />
-      <View style={styles.container}>
-        <View style={styles.logoContainer}>
-          <LogoWithLabel logo={wallet} label={props.heading} />
-        </View>
-        <PaymentDetailsContainer />
-        <View style={styles.buttonContainer}>
-          <ButtonContainer {...props} />
-        </View>
-      </View>
-    </MainContainer>
+    <>
+      {!webViewVisible ? (
+        <MainContainer>
+          <HeaderContainer
+            label={props.label}
+            labels={props}
+            showBackArrow={true}
+            showLabel={true}
+            showPopUp={true}
+            showBackground={true}
+            containerStyle={styles.headContainer}
+            handleBackNavigation={props.navigateBackNavigation}
+            handleNavigation={handlePopUpNavigation}
+            navigationPopUpList={navigationPopUpList}
+          />
+          <View style={styles.container}>
+            <View style={styles.logoContainer}>
+              <LogoWithLabel
+                logo={wallet}
+                label={props.heading}
+                headsize={20}
+                width={100}
+                height={100}
+              />
+            </View>
+            <PaymentDetailsContainer {...props} />
+            <View style={styles.buttonContainer}>
+              <Space />
+              <ButtonContainer {...props} />
+            </View>
+          </View>
+        </MainContainer>
+      ) : (
+        ''
+      )}
+
+      {webViewVisible && (
+        <WebView
+          source={{uri: checkoutUrl}}
+          style={{flex: 1}}
+          onNavigationStateChange={navState => {
+            // Handle navigation state change if needed
+            console.log('oyeeeee', navState);
+          }}
+          onError={error => {
+            console.error('WebView error:', error);
+          }}
+        />
+      )}
+    </>
   );
 };
-const PaymentDetailsContainer = memo(({subHeading}) => (
+const PaymentDetailsContainer = memo(({total_price,subscription_cost_per_week,cost_per_driver}) => (
   <View style={styles.paymentDetailsContainer}>
     <View style={styles.totalAmountContainer}>
       <Text
@@ -57,23 +144,27 @@ const PaymentDetailsContainer = memo(({subHeading}) => (
           globalStyles.text,
           {fontSize: Fonts.sizes.large, fontWeight: 'bold'},
         ]}>
-        {'$ 18.48'}
+        {'$'}{total_price}
       </Text>
     </View>
     <View style={styles.amountDetailsContainer}>
       <Text
         style={[
           globalStyles.text,
-          {fontSize: Fonts.sizes.large, fontWeight: 'bold',alignSelf:'center'},
+          {
+            fontSize: Fonts.sizes.large,
+            fontWeight: 'bold',
+            alignSelf: 'center',
+          },
         ]}>
-        {'$18.5/per week'}
+        {subscription_cost_per_week}
       </Text>
       <Text
         style={[
           globalStyles.text,
           {fontSize: Fonts.sizes.large, fontWeight: 'bold'},
         ]}>
-        {'$2.31/per employee'}
+        {cost_per_driver}
       </Text>
     </View>
   </View>
@@ -84,12 +175,12 @@ const ButtonContainer = memo(props => (
     <CustomButton {...props} />
     <Space />
     <Text
-        style={[
-          globalStyles.text,
-          {fontSize: Fonts.sizes.small,alignSelf:'center'},
-        ]}>
-        {'Pay securely and save card to set-up recurring to payment '}
-      </Text>
+      style={[
+        globalStyles.text,
+        {fontSize: Fonts.sizes.small, textAlign: 'center'},
+      ]}>
+      {'Pay securely and save card to set-up recurring to payment '}
+    </Text>
   </View>
 ));
 
@@ -99,34 +190,29 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     // backgroundColor: Colors.primary,
   },
-  headContainer: {
-    flex: 0.2,
+  payContainer: {
+    flex: 1,
   },
   container: {
-    flex: 0.8,
+    flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     margin: 10,
     padding: 20,
-
   },
   buttonContainer: {
-    flex: 0.4,
+    flex: 0.2,
     justifyContent: 'center',
-
   },
   logoContainer: {
-    flex: 0.3,
+    flex: 0.1,
     justifyContent: 'space-evenly',
     alignItems: 'center',
-
   },
   paymentDetailsContainer: {
     flex: 0.3,
     justifyContent: 'space-evenly',
     alignItems: 'center',
-
-
   },
   totalAmountContainer: {
     flex: 0.7,
@@ -136,7 +222,6 @@ const styles = StyleSheet.create({
   amountDetailsContainer: {
     flex: 0.3,
   },
-
 });
 
 export default memo(PaymentDetails);

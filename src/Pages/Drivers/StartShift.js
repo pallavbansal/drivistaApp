@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
-import React, {memo} from 'react';
+import React, {memo, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -8,21 +8,38 @@ import {
   ImageBackground,
   Image,
   TouchableOpacity,
-  Alert,
+  PermissionsAndroid,
 } from 'react-native';
 import BackgroundContainer from '../../components/reusableComponents/Container/BackgroundContainer';
 import HeaderContainer from '../../components/reusableComponents/Container/HeaderContainer';
 import {Fonts} from '../../constants/fonts';
 import {globalStyles} from '../../constants/globalStyles';
-
 import shiftbg from '../../storage/images/shiftbg.png';
 import themeLogo from '../../storage/images/theme.png';
 import journey from '../../storage/images/journey.png';
 import {useDriverShiftServiceHook} from '../../services/hooks/shift/useDriverShiftServiceHook';
 import {useAuthServiceHook} from '../../services/hooks/auth/useAuthServiceHook';
+import {
+  startBackgroundLocationService,
+  stopBackgroundLocationService,
+} from '../../services/hooks/BackgroundLocationService.js';
+import {promptForEnableLocationIfNeeded} from 'react-native-android-location-enabler';
+import Spinner from '../../components/reusableComponents/Spinner';
+import Alert from '../../components/reusableComponents/Alert';
+import { useSelector } from 'react-redux';
 
 const StartShift = ({navigation}) => {
-  const {loading, setLoading, startShiftRequest} = useDriverShiftServiceHook();
+  const {
+    loading,
+    setLoading,
+    showAlert,
+    closeAlert,
+    handleOK,
+    alertVisible,
+    alertMessage,
+    startShiftRequest,
+  } = useDriverShiftServiceHook();
+  const {token} = useSelector(state => state.userState);
   const {logoutRequest} = useAuthServiceHook();
   const labels = {
     label: 'Please click on the start button to start your shift',
@@ -32,18 +49,20 @@ const StartShift = ({navigation}) => {
     handleNavigation: async screenName => {
       console.log('what is screen:', screenName);
       setLoading(true);
+      requestLocationPermission();
       const response = await startShiftRequest();
+
       setLoading(false);
       try {
         if (response.result === 'success') {
-          console.log('response bb:', response.id);
+          console.log('response bb:', response);
           navigation.navigate(screenName);
           // navigation.navigate(screenName, {
           //   caseType: 'register',
           //   id: response.id,
           // });
         } else if (response.result === 'failed') {
-          Alert.alert(response.message);
+          showAlert(response.message);
         } else {
           navigation.navigate(screenName);
         }
@@ -53,7 +72,6 @@ const StartShift = ({navigation}) => {
     },
   };
   const handleNavigation = navigateScreen => {
-
     if (navigateScreen === 'logout') {
       logoutRequest();
     }
@@ -62,12 +80,78 @@ const StartShift = ({navigation}) => {
     {
       label: 'logout',
       navigateScreen: 'logout',
-
     },
-
   ];
+
+  const requestLocationPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'App Location Permission',
+          message: 'App needs access to your location.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Location permission granted');
+        const enableResult = await promptForEnableLocationIfNeeded({
+          title: 'Enable Location',
+          text: 'This app requires location access to function properly.',
+          positiveButtonText: 'Enable',
+          negativeButtonText: 'Cancel',
+        });
+
+        if (enableResult === 'enabled') {
+          console.log('Location has been enabled.');
+          startBackgroundService();
+
+          // Location is now enabled, perform additional actions if needed
+        } else {
+          console.log('User denied enabling location.');
+          startBackgroundService();
+          // Handle the case where the user denied enabling location
+        }
+
+        // Location permission granted, start the background service
+      } else {
+        console.log('Location permission denied');
+        // Handle denied permission (show an alert, etc.)
+        showAlert(
+          'Permission Denied',
+          'Location permission is required for this app to function properly.',
+          [
+            {
+              text: 'OK',
+              onPress: () => console.log('OK Pressed'),
+              style: 'cancel',
+            },
+          ],
+          {cancelable: false},
+        );
+      }
+    } catch (err) {
+      // console.warn(err);
+      requestLocationPermission();
+      console.log('User selected "No Thanks". Handle accordingly.');
+    }
+  };
+
+  const startBackgroundService = async () => {
+    await startBackgroundLocationService(token);
+    // setIsServiceRunning(true);
+  };
+  const renderSpinner = () => {
+    if (loading) {
+      return <Spinner />;
+    }
+    return null;
+  };
   return (
     <BackgroundContainer source={themeLogo}>
+      {renderSpinner()}
       <HeaderContainer
         labels={labels}
         showPopUp={true}
@@ -75,17 +159,29 @@ const StartShift = ({navigation}) => {
         containerStyle={styles.headContainer}
         navigationPopUpList={navigationPopUpList}
         handleBackNavigation={() => labels.navigateBackNavigation(navigation)}
-        handleNavigation={handleNavigation}
+        modalStyle={{height: 40, marginTop: 20}}
+        handleNavigation={navigateScreen => {
+          if (navigateScreen === 'logout') {
+            logoutRequest();
+          }
+          console.log('handleNavigation bb:', navigateScreen);
+        }}
       />
 
       <CardContainer labels={labels} />
+      <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={closeAlert}
+        onOK={handleOK}
+      />
     </BackgroundContainer>
   );
 };
 const CardContainer = props => (
   <View style={styles.mainContainer}>
     <View style={styles.headingLabel}>
-      <Text style={styles.text}>{props.labels.label}</Text>
+      <Text style={[styles.text, {fontSize: 22}]}>{props.labels.label}</Text>
     </View>
     <TouchableOpacity
       onPress={() => props.labels.handleNavigation(props.labels.navigateScreen)}
@@ -115,6 +211,7 @@ const styles = StyleSheet.create({
     color: 'white',
     justifyContent: 'center',
     alignItems: 'center',
+    marginHorizontal: 5,
   },
   cardContainer: {
     flex: 0.5,

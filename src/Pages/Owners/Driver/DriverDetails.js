@@ -1,19 +1,26 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect, useState} from 'react';
-import {View, StyleSheet, Alert} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import HeaderContainer from '../../../components/reusableComponents/Container/HeaderContainer';
 import CustomButton from '../../../components/reusableComponents/CustomButton';
 import {useDriverServiceHook} from '../../../services/hooks/driver/useDriverServiceHook';
 import Drivers from '../../../components/reusableComponents/Profile/Drivers';
 
+import {useAuthServiceHook} from '../../../services/hooks/auth/useAuthServiceHook';
+import {navigationPopUpList} from '../../../constants/navigation';
+import Alert from '../../../components/reusableComponents/Alert';
+
 const DriverDetails = ({route, navigation}) => {
   const {
     setLoading,
-    loading,
-    fetchDriverListRequest,
-    deleteDriverRequest,
-    saveDriverRequest,
+    alertVisible,
+    setAlertVisible,
+    alertMessage,
+    setAlertMessage,
+    showAlert,
+    closeAlert,
+    handleOK,
     email,
     setEmail,
     mobileNumber,
@@ -26,6 +33,7 @@ const DriverDetails = ({route, navigation}) => {
     setPasssword,
     driverDetailsEditRequest,
   } = useDriverServiceHook();
+  const {logoutRequest} = useAuthServiceHook();
   const {
     headLabel = 'Vehicle Details',
     type = 'Default Type',
@@ -37,13 +45,12 @@ const DriverDetails = ({route, navigation}) => {
     setLastName(details.last_number);
     setEmail(details.email);
     setMobileNumber(details.mobile_number);
-    setPasssword(details.password)
+    setPasssword(details.password);
   }, [details]);
 
-  const handleCalender=(id)=>{
-
-    navigation.navigate('CalenderScreen');
-  }
+  const handleCalender = id => {
+    navigation.navigate('CalenderScreen', {id: details.id});
+  };
 
   const props = {
     buttonLabel: 'Save',
@@ -55,12 +62,12 @@ const DriverDetails = ({route, navigation}) => {
       setLoading(false);
       try {
         if (response.result === 'success') {
-          Alert.alert('Success');
+          navigation.pop();
         } else if (response.result === 'failed') {
-          Alert.alert(response.message);
+          showAlert(response.message);
         }
       } catch (error) {
-        console.error('Login error:', error);
+        showAlert('No internet Connection!');
       }
     },
   };
@@ -69,6 +76,14 @@ const DriverDetails = ({route, navigation}) => {
     navigateBackScreen: '',
     handleDirectNavigation: screenName => navigation.pop(),
   };
+  const handlePopUpNavigation = navigateScreen => {
+    if (navigateScreen === 'logout') {
+      logoutRequest();
+    } else {
+      navigation.navigate(navigateScreen);
+    }
+  };
+
   return (
     <View style={styles.mainContainer}>
       <HeaderContainer
@@ -79,8 +94,9 @@ const DriverDetails = ({route, navigation}) => {
         showBackground={true}
         showPopUp={false}
         containerStyle={styles.headContainer}
+        handleNavigation={handlePopUpNavigation}
         handleBackNavigation={labels.handleDirectNavigation}
-
+        navigationPopUpList={navigationPopUpList}
       />
       <View style={styles.container}>
         <View style={styles.profileContainer}>
@@ -107,14 +123,21 @@ const DriverDetails = ({route, navigation}) => {
           value={vehicleName}
           onChangeText={text =>setVehicleName(text)}
         /> */}
-        {editable ? (
-          <View style={styles.buttonContainer}>
-            <ButtonContainer {...props} />
-          </View>
-        ) : (
-          ''
-        )}
       </View>
+
+      {editable ? (
+        <View style={styles.buttonContainer}>
+          <ButtonContainer {...props} />
+        </View>
+      ) : (
+        ''
+      )}
+      <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={closeAlert}
+        onOK={handleOK}
+      />
     </View>
   );
 };
@@ -127,18 +150,16 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
   },
-  headContainer: {
-    flex: 0.2,
-  },
+  headContainer: {},
   container: {
     flex: 1,
   },
   profileContainer: {
-    flex: 0.8,
+    flex: 0.7,
   },
   buttonContainer: {
-    marginTop:20,
-    flex: 0.2,
+    marginBottom: 50,
+    flex: 0.1,
     width: '50%',
     marginLeft: 'auto',
     marginRight: 'auto',

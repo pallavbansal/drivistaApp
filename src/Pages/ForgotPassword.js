@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
-import React, {memo, useEffect} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, Alert} from 'react-native';
+import React, {memo, useEffect,useState} from 'react';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import CustomTextInput from '../components/reusableComponents/CustomTextInput';
@@ -14,6 +14,9 @@ import BackgroundContainer from '../components/reusableComponents/Container/Back
 import HeaderContainer from '../components/reusableComponents/Container/HeaderContainer';
 import {useAuthServiceHook} from '../services/hooks/auth/useAuthServiceHook';
 import {Fonts} from '../constants/fonts';
+import {globalStyles} from '../constants/globalStyles';
+import Space from '../components/reusableComponents/Space';
+import Alert from '../components/reusableComponents/Alert';
 
 const ForgotPassword = ({navigation}) => {
   const {
@@ -25,12 +28,17 @@ const ForgotPassword = ({navigation}) => {
     setLoginError,
     setIsFormValid,
     setLoading,
+    alertVisible,
+    alertMessage,
+    showAlert,
+    closeAlert,
+    handleOK,
     forgotPasswordRequest,
   } = useAuthServiceHook();
+  const [showResend,setShowResend]=useState("");
   const labels = {
     label: 'Forgot Password',
-    heading:
-      'Please enter your valid email address, we will send you a 4-digit code to verify.',
+    heading: 'Enter the e-mail address associated with your account.',
     email: 'Email Id',
     buttonLabel: 'Send OTP',
     password: 'Password',
@@ -41,9 +49,11 @@ const ForgotPassword = ({navigation}) => {
     navigateBackScreen: 'LoginScreen',
     handleDirectNavigation: screenName => navigation.navigate(screenName),
     handleNavigation: async screenName => {
+
       //   const response = await loginRequest();
       setLoading(true);
       const response = await forgotPasswordRequest();
+
       setLoading(false);
       try {
         if (response.result === 'success') {
@@ -52,11 +62,13 @@ const ForgotPassword = ({navigation}) => {
             id: response.id,
           });
         } else if (response.result === 'failed') {
-          Alert.alert(response.message);
+          setShowResend(true);
+          showAlert(response.message);
         } else {
           navigation.navigate(screenName);
         }
       } catch (error) {
+        setShowResend(true);
         console.error('Login error:', error);
       }
     },
@@ -90,10 +102,16 @@ const ForgotPassword = ({navigation}) => {
           containerStyle={styles.headContainer}
           handleBackNavigation={labels.handleDirectNavigation}
         />
-        <View style={styles.pageLabel}>
-          <PageLabel label={labels.label} />
-        </View>
+        <View style={styles.pageLabel}></View>
         <View style={styles.container}>
+          <Text
+            style={[
+              globalStyles.labelHeading,
+              {color: 'black', fontWeight: 'bold', fontSize: 20},
+            ]}>
+            {labels.label}
+          </Text>
+          <Space />
           <HeadingContainer heading={labels.heading} />
           <InputContainer
             labels={labels}
@@ -104,9 +122,15 @@ const ForgotPassword = ({navigation}) => {
           <ButtonContainer {...labels} isFormValid={isFormValid} />
 
           {/* <ResendButtonContainer {...labels} buttonLabel={labels.linkText} /> */}
-          <FooterContainer {...labels} isFormValid={isFormValid} />
+          <FooterContainer {...labels} isFormValid={isFormValid} showResend={showResend} />
         </View>
       </View>
+      <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={closeAlert}
+        onOK={handleOK}
+      />
     </BackgroundContainer>
   );
 };
@@ -143,12 +167,17 @@ const ResendButtonContainer = memo(props => (
 
 const FooterContainer = memo(props => (
   <TouchableOpacity
-  disabled={ props.isFormValid}
+    disabled={props.isFormValid}
     style={styles.footer}
     onPress={() => {
-      props.handleNavigation(props.navigateScreen)
+      props.handleNavigation(props.navigateScreen);
     }}>
-    <Text style={styles.navigationLinkText}> {props.linkText}</Text>
+      {
+        props.showResend ? (
+          <Text style={styles.navigationLinkText}> {props.linkText}</Text>
+        ):""
+      }
+
   </TouchableOpacity>
 ));
 
@@ -160,7 +189,7 @@ const styles = StyleSheet.create({
     flex: 0.1,
   },
   pageLabel: {
-    flex: 0.2,
+    flex: 0.1,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -183,7 +212,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   inputContainer: {
-    flex: 0.5,
+    flex: 0.3,
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     borderWidth: 1,
@@ -203,7 +232,7 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 0.2,
-    // justifyContent:'center'
+    marginTop: -10,
   },
   resendButton: {
     flex: 0.2,
@@ -222,7 +251,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   navigationLinkText: {
-    fontSize: Fonts.sizes.medium,
+    fontSize: 16,
     fontWeight: Fonts.weight.bold,
     color: Colors.primary,
     textShadowColor: 'rgba(0, 0, 0, 0.1)',

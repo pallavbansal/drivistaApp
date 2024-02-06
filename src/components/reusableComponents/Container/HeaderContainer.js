@@ -12,7 +12,8 @@ const HeaderContainer = ({
   showPopUp = false,
   handleNavigation,
   handleBackNavigation,
-  navigationPopUpList
+  navigationPopUpList,
+  modalStyle
 }) => {
 
 
@@ -28,6 +29,7 @@ const HeaderContainer = ({
         showBackground={showBackground}
         handleNavigation={handleNavigation}
         handleBackNavigation={handleBackNavigation}
+        modalStyle={modalStyle}
       />
     </View>
   );

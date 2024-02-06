@@ -26,10 +26,18 @@ export const globalStyles = StyleSheet.create({
     fontFamily: Fonts.family,
     fontStyle: Fonts.styles.regular,
   },
-  textInput: {
-    fontSize: Fonts.sizes.small,
+  buttonText:{
+    fontSize: 16,
     fontFamily: Fonts.family,
     fontStyle: Fonts.styles.regular,
+  },
+  textInput: {
+    fontSize: Fonts.sizes.textInput,
+    fontFamily: Fonts.family,
+    fontStyle: Fonts.styles.regular,
+    opacity:0.7,
+
+
   },
   inputTextWrap: {
     fontFamily: Fonts.family,
@@ -43,8 +51,13 @@ export const globalStyles = StyleSheet.create({
     fontStyle: Fonts.styles.regular,
   },
   logoImage: {
-    width: 15,
-    height: 15,
+    width: 20,
+    height: 20,
+
+  },
+  notFoundImage: {
+    width: 250,
+    height: 250,
 
   },
   errorText: {
