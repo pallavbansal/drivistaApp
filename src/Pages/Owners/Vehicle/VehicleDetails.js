@@ -1,13 +1,14 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect, useState} from 'react';
-import {View, StyleSheet, Image, Alert, TextInput} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import HeaderContainer from '../../../components/reusableComponents/Container/HeaderContainer';
 import CustomButton from '../../../components/reusableComponents/CustomButton';
 import {useVehicleServiceHook} from '../../../services/hooks/vehicle/useVehicleServiceHook';
 import Vehicles from '../../../components/reusableComponents/Profile/Vehicles';
 import {navigationPopUpList} from '../../../constants/navigation';
 import { useAuthServiceHook } from '../../../services/hooks/auth/useAuthServiceHook';
+import Alert from '../../../components/reusableComponents/Alert';
 
 const VehicleDetails = ({route, navigation}) => {
   const {
@@ -19,6 +20,13 @@ const VehicleDetails = ({route, navigation}) => {
     setVehicleName,
     driverName,
     setDriverName,
+    alertVisible,
+    setAlertVisible,
+    alertMessage,
+    setAlertMessage,
+    showAlert,
+    closeAlert,
+    handleOK,
     vehicleDetailsEditRequest,
   } = useVehicleServiceHook();
   const {logoutRequest} = useAuthServiceHook();
@@ -44,12 +52,12 @@ const VehicleDetails = ({route, navigation}) => {
       setLoading(false);
       try {
         if (response.result === 'success') {
-         // Alert.alert('Success');
          navigation.pop();
         } else if (response.result === 'failed') {
-          Alert.alert(response.message);
+          showAlert(response.message);
         }
       } catch (error) {
+        showAlert('No Internet Connection');
         console.error('Login error:', error);
       }
     },
@@ -94,12 +102,7 @@ const VehicleDetails = ({route, navigation}) => {
             setDriverName={setDriverName}
           />
         </View>
-        {/* <TextInput
-          style={styles.input}
-          placeholder="Enter Vehicle Name"
-          value={vehicleName}
-          onChangeText={text =>setVehicleName(text)}
-        /> */}
+
       </View>
       {editable ? (
         <View style={styles.buttonContainer}>
@@ -108,6 +111,12 @@ const VehicleDetails = ({route, navigation}) => {
       ) : (
         ''
       )}
+        <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={closeAlert}
+        onOK={handleOK}
+      />
     </View>
   );
 };

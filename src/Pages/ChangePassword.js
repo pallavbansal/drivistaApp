@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect} from 'react';
-import {View, StyleSheet, Text, Alert} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import CustomTextInput from '../components/reusableComponents/CustomTextInput';
@@ -16,6 +16,7 @@ import HeaderContainer from '../components/reusableComponents/Container/HeaderCo
 import {useAuthServiceHook} from '../services/hooks/auth/useAuthServiceHook';
 import Spinner from '../components/reusableComponents/Spinner';
 import { globalStyles } from '../constants/globalStyles';
+import Alert from '../components/reusableComponents/Alert';
 
 const ChangePassword = ({navigation, route}) => {
   const {caseType, id, verification_uid} = route.params;
@@ -36,6 +37,11 @@ const ChangePassword = ({navigation, route}) => {
     setIsFormValid,
     confirmPasswordVisible,
     setConfirmPasswordVisible,
+    alertVisible,
+    alertMessage,
+    showAlert,
+    closeAlert,
+    handleOK,
     changePasswordRequest,
     changePasswordProfileRequest,
   } = useAuthServiceHook();
@@ -58,7 +64,7 @@ const ChangePassword = ({navigation, route}) => {
           if (response.result === 'success') {
             navigation.navigate('LoginScreen');
           } else if (response.result === 'failed') {
-            Alert.alert(response.message);
+            showAlert(response.message);
           }
         } catch (error) {
           console.error('Login error:', error);
@@ -70,7 +76,7 @@ const ChangePassword = ({navigation, route}) => {
           if (response.result === 'success') {
             navigation.navigate('ProfileScreen');
           } else if (response.result === 'failed') {
-            Alert.alert(response.message);
+            showAlert(response.message);
           }
         } catch (error) {
           console.error('Login error:', error);
@@ -158,6 +164,12 @@ const ChangePassword = ({navigation, route}) => {
           <ButtonContainer isFormValid={isFormValid} {...labels} />
         </View>
       </View>
+      <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={closeAlert}
+        onOK={handleOK}
+      />
     </BackgroundContainer>
   );
 };

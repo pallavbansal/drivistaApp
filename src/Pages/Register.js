@@ -3,8 +3,6 @@ import React, {memo, useEffect} from 'react';
 import {
   View,
   StyleSheet,
-  KeyboardAvoidingView,
-  Alert,
   ScrollView,
 } from 'react-native';
 import {Colors} from '../constants/colors';
@@ -23,6 +21,7 @@ import useAuthService from '../hooks/useAuthService';
 import HeaderContainer from '../components/reusableComponents/Container/HeaderContainer';
 import {useAuthServiceHook} from '../services/hooks/auth/useAuthServiceHook';
 import Spinner from '../components/reusableComponents/Spinner';
+import Alert from '../components/reusableComponents/Alert';
 
 const Register = ({navigation}) => {
   const {
@@ -50,6 +49,11 @@ const Register = ({navigation}) => {
     setPasswordVisible,
     confirmPasswordVisible,
     setConfirmPasswordVisible,
+    alertVisible,
+    alertMessage,
+    showAlert,
+    closeAlert,
+    handleOK,
     errors,
     registrationRequest,
   } = useAuthServiceHook();
@@ -77,7 +81,7 @@ const Register = ({navigation}) => {
       setLoading(false);
       try {
         if (response === 'verfication_failed') {
-          Alert.alert('Verfication failed');
+          showAlert('Verfication failed');
         } else if (response.result === 'success') {
           console.log('response bb:', response.id);
           navigation.navigate(screenName, {
@@ -85,11 +89,12 @@ const Register = ({navigation}) => {
             id: response.id,
           });
         } else if (response.result === 'failed') {
-          Alert.alert(response.message);
+          showAlert(response.message);
         } else {
           navigation.navigate(screenName);
         }
       } catch (error) {
+        showAlert('No internet connection!');
         console.error('Login error:', error);
       }
     },
@@ -208,6 +213,12 @@ const Register = ({navigation}) => {
           <Space />
         </View>
       </ScrollView>
+      <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={closeAlert}
+        onOK={handleOK}
+      />
     </View>
   );
 };
@@ -243,6 +254,7 @@ const InputContainer = memo(props => (
     />
     <CustomTextInput
       keyboardType="numeric"
+      type="number"
       logoName={phoneLogo}
       errorText={props.loginError.mobileNumber}
       placeholder={props.labels.mobileNumber}

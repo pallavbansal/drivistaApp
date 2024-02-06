@@ -22,12 +22,16 @@ import VehicleDetails from './src/Pages/Owners/Vehicle/VehicleDetails';
 import DriverDetails from './src/Pages/Owners/Driver/DriverDetails';
 import CalenderScreen from './src/Pages/Owners/Driver/Calender';
 import ChangePassword from './src/Pages/ChangePassword';
-
+import NoInternet from './src/Pages/NoInternet';
 import {useSelector} from 'react-redux';
 import StartShift from './src/Pages/Drivers/StartShift';
 import ActionShift from './src/Pages/Drivers/ActionShift';
 import BreakShift from './src/Pages/Drivers/BreakShift';
 import WorkHistoryDetails from './src/Pages/Owners/Driver/WorkHistoryDetails';
+import NetInfo from '@react-native-community/netinfo';
+import {StripeProvider} from '@stripe/stripe-react-native';
+const publishableKey =
+  'pk_test_51OerSaSBV6gdBMXr5xtVLzH9X77xY9VCyJKaVxHroXamfoPBWaDYkXlxsDspRPLYk4AUDTbtSivvwy6q4M26dswq00NG5ueTyb';
 
 const App = () => {
   // Create a navigation stack
@@ -36,6 +40,31 @@ const App = () => {
   console.log('in app js:', current);
   const Stack = createNativeStackNavigator();
   let initialScreen;
+  const [isConnected, setIsConnected] = useState(null);
+  const handleConnectionChange = state => {
+    setIsConnected(state.isConnected);
+  };
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(handleConnectionChange);
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    const checkConnection = async () => {
+      const state = await NetInfo.fetch();
+      setIsConnected(state.isConnected);
+    };
+
+    checkConnection();
+  }, []);
+
+  if (isConnected === null) {
+    return null; // Loading spinner or another loading indicator
+  }
 
   if (user.role === '2' && isAuth && current) {
     initialScreen =
@@ -46,80 +75,98 @@ const App = () => {
 
   console.log('in app:', isAuth);
   const currentStatus = current ? current.current_status : null;
+
+  if (!isConnected) {
+    return (
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+          <Stack.Screen name="NoInternet" component={NoInternet} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
+  }
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName={initialScreen}
-        screenOptions={{
-          headerShown: false,
-        }}>
-        {isAuth && user.role === '2' ? (
-          <>
-            {currentStatus === 'started' ? (
-              <>
-                <Stack.Screen name="ActionShift" component={ActionShift} />
-              </>
-            ) : currentStatus === 'break' ? (
-              <>
-                <Stack.Screen name="BreakShift" component={BreakShift} />
-              </>
-            ) : (
-              <>
-                <Stack.Screen name="StartShift" component={StartShift} />
-              </>
-            )}
-          </>
-        ) : isAuth && user.role === '1' ? (
-          <>
-            <Stack.Screen name="OwnerHomeScreen" component={OwnerHomeScreen} />
-            <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+    <StripeProvider
+      publishableKey={publishableKey}
+      merchantIdentifier="merchant.identifier" // required for Apple Pay
+      urlScheme="your-url-scheme">
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName={initialScreen}
+          screenOptions={{
+            headerShown: false,
+          }}>
+          {isAuth && user.role === '2' ? (
+            <>
+              {currentStatus === 'started' ? (
+                <>
+                  <Stack.Screen name="ActionShift" component={ActionShift} />
+                </>
+              ) : currentStatus === 'break' ? (
+                <>
+                  <Stack.Screen name="BreakShift" component={BreakShift} />
+                </>
+              ) : (
+                <>
+                  <Stack.Screen name="StartShift" component={StartShift} />
+                </>
+              )}
+            </>
+          ) : isAuth && user.role === '1' ? (
+            <>
+              <Stack.Screen
+                name="OwnerHomeScreen"
+                component={OwnerHomeScreen}
+              />
+              <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
 
-            <Stack.Screen name="EmployeeAdd" component={EmployeeAdd} />
-            <Stack.Screen name="PaymentDetails" component={PaymentDetails} />
-            <Stack.Screen name="SuccessScreen" component={SuccessScreen} />
-            <Stack.Screen name="OnlineDrivers" component={OnlineDrivers} />
-            <Stack.Screen name="LocationScreen" component={LocationScreen} />
-            <Stack.Screen name="VehicleHome" component={VehicleHome} />
-            <Stack.Screen name="DriverHome" component={DriverHome} />
-            <Stack.Screen name="VehicleDetails" component={VehicleDetails} />
-            <Stack.Screen name="CalenderScreen" component={CalenderScreen} />
+              <Stack.Screen name="EmployeeAdd" component={EmployeeAdd} />
+              <Stack.Screen name="PaymentDetails" component={PaymentDetails} />
+              <Stack.Screen name="SuccessScreen" component={SuccessScreen} />
+              <Stack.Screen name="OnlineDrivers" component={OnlineDrivers} />
+              <Stack.Screen name="LocationScreen" component={LocationScreen} />
+              <Stack.Screen name="VehicleHome" component={VehicleHome} />
+              <Stack.Screen name="DriverHome" component={DriverHome} />
+              <Stack.Screen name="VehicleDetails" component={VehicleDetails} />
+              <Stack.Screen name="CalenderScreen" component={CalenderScreen} />
 
-            <Stack.Screen
-              name="WorkHistoryDetails"
-              component={WorkHistoryDetails}
-            />
-            <Stack.Screen name="DriverDetails" component={DriverDetails} />
-            <Stack.Screen name="ReminderScreen" component={ReminderScreen} />
+              <Stack.Screen
+                name="WorkHistoryDetails"
+                component={WorkHistoryDetails}
+              />
+              <Stack.Screen name="DriverDetails" component={DriverDetails} />
+              <Stack.Screen name="ReminderScreen" component={ReminderScreen} />
 
-            <Stack.Screen name="StartShift" component={StartShift} />
-            <Stack.Screen name="BreakShift" component={BreakShift} />
-            <Stack.Screen name="ActionShift" component={ActionShift} />
-            <Stack.Screen
-              name="SubscriptionScreen"
-              component={SubscriptionScreen}
-            />
-            <Stack.Screen
-              name="SubscriptionDescription"
-              component={SubscriptionDescription}
-            />
-          </>
-        ) : (
-          <>
-            <Stack.Screen name="StartUp" component={StartUpScreen} />
+              <Stack.Screen name="StartShift" component={StartShift} />
+              <Stack.Screen name="BreakShift" component={BreakShift} />
+              <Stack.Screen name="ActionShift" component={ActionShift} />
+              <Stack.Screen
+                name="SubscriptionScreen"
+                component={SubscriptionScreen}
+              />
+              <Stack.Screen
+                name="SubscriptionDescription"
+                component={SubscriptionDescription}
+              />
+            </>
+          ) : (
+            <>
+              <Stack.Screen name="StartUp" component={StartUpScreen} />
 
-            <Stack.Screen name="LoginScreen" component={LoginScreen} />
-            <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-            <Stack.Screen name="OtpScreen" component={OtpScreen} />
-            <Stack.Screen
-              name="ForgotPasswordScreen"
-              component={ForgotPasswordScreen}
-            />
-          </>
-        )}
+              <Stack.Screen name="LoginScreen" component={LoginScreen} />
+              <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+              <Stack.Screen name="OtpScreen" component={OtpScreen} />
+              <Stack.Screen
+                name="ForgotPasswordScreen"
+                component={ForgotPasswordScreen}
+              />
+            </>
+          )}
 
-        <Stack.Screen name="ChangePassword" component={ChangePassword} />
-      </Stack.Navigator>
-    </NavigationContainer>
+          <Stack.Screen name="ChangePassword" component={ChangePassword} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </StripeProvider>
   );
 };
 

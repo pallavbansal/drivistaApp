@@ -24,6 +24,7 @@ const CustomTextInput = ({
   value,
   errorText = '',
   keyboardType="default",
+  type="text",
   ...rest
 
 }) => {
@@ -58,9 +59,11 @@ const CustomTextInput = ({
               secureTextEntry={showPasswordGenIcon ? !passwordVisible : false}
               value={value}
               ref={textInputRef}
+              placeholderTextColor={Colors.placeholder}
+              color='black'
               keyboardType={keyboardType}
               placeholder={placeholder}
-              placeholderTextColor={Colors.placeholder}
+              maxLength={type === "number" ? 10 :30}
               style={[globalStyles.textInput, styles.customTextInput]}
               {...rest}
             />
@@ -139,9 +142,11 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   customTextInput: {
+    flex:1,
     fontFamily: 'Alata', // Replace with your actual font family
     fontWeight: '400',
-    marginBottom:-1
+    marginBottom:-1,
+
   },
 });
 

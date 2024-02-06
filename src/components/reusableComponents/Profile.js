@@ -134,6 +134,8 @@ const LogoHeaderContainer = memo(props => (
     <View style={{flexDirection: 'row',flex:0.2,justifyContent:'space-evenly',width:'70%'}}>
       {props.editable ? (
         <TextInput
+        color="black"
+        placeholderTextColor={'black'}
           ref={props.textInputRef}
           style={[styles.input, styles.text]}
           value={props.firstName}

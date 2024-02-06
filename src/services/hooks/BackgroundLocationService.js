@@ -5,13 +5,12 @@ import axios from 'axios';
 import baseUrl from '../baseUrl';
 
 const sleep = time => new Promise(resolve => setTimeout(resolve, time));
-const sendLocationToServer = async (latitude, longitude) => {
-
+const sendLocationToServer = async (latitude, longitude, token) => {
   const config = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${'177|oIedc9uvcjSqeK0ocf8q1Cz6JkMJO8arRKFRox6l0618f5b1'}`,
+      Authorization: token,
       // Add any additional headers required for your API
     },
     body: JSON.stringify({
@@ -25,7 +24,7 @@ const sendLocationToServer = async (latitude, longitude) => {
     config,
   );
   try {
-    console.log("oyee:", response);
+
     if (response.ok) {
       const responseData = await response.json();
       console.log('Response Data:', responseData);
@@ -33,14 +32,14 @@ const sendLocationToServer = async (latitude, longitude) => {
     }
     // Handle the response here, such as checking for success or processing the data
   } catch (error) {
- //   console.error('Fetch Error:', error);
+    //   console.error('Fetch Error:', error);
     // Handle any errors that occur during the fetch request
   }
 };
 
-const fetchLocationInBackground = async taskDataArguments => {
+const fetchLocationInBackground = async (taskDataArguments, token) => {
   const {delay} = taskDataArguments;
-
+  console.error('Background Location repeat:', token);
   await new Promise(async resolve => {
     for (let i = 0; BackgroundService.isRunning(); i++) {
       Geolocation.getCurrentPosition(
@@ -49,12 +48,12 @@ const fetchLocationInBackground = async taskDataArguments => {
           const {latitude, longitude} = position.coords;
           console.log('Background Location:', {latitude, longitude});
 
-          sendLocationToServer(latitude, longitude);
+          sendLocationToServer(latitude, longitude, token);
 
           // Send location data to the server or handle it as needed
         },
         error => {
-       //   console.error('Background Location Error:', error);
+          console.error('Background Location Error:', error, ' ', token);
           if (error.code === 2) {
             // const enableResult = promptForEnableLocationIfNeeded({
             //   title: 'Enable Location',
@@ -76,7 +75,7 @@ const fetchLocationInBackground = async taskDataArguments => {
         },
         {
           enableHighAccuracy: true,
-          timeout: 30000,
+          timeout: 60000,
           maximumAge: 10000,
           //  timeout: 30000,
           //  maximumAge: 10000,
@@ -93,7 +92,7 @@ const fetchLocationInBackground = async taskDataArguments => {
 };
 // ... (imports remain unchanged)
 
-const startBackgroundLocationService = async () => {
+const startBackgroundLocationService = async token => {
   try {
     const granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -108,7 +107,7 @@ const startBackgroundLocationService = async () => {
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
       console.log('Location permission granted');
       // Location permission granted, start the background service
-      requestLocationPermission();
+      requestLocationPermission(token);
     } else {
       console.log('Location permission denied');
       // Handle denied permission (show an alert, etc.)
@@ -132,7 +131,7 @@ const startBackgroundLocationService = async () => {
 
 // Rest of the code remains unchanged
 
-const requestLocationPermission = async () => {
+const requestLocationPermission = async token => {
   const options = {
     taskName: 'BackgroundLocationTask',
     taskTitle: 'Background Location Task',
@@ -148,7 +147,10 @@ const requestLocationPermission = async () => {
   };
 
   try {
-    await BackgroundService.start(fetchLocationInBackground, options);
+    await BackgroundService.start(
+      taskData => fetchLocationInBackground(taskData, token),
+      options,
+    );
     console.log('Background location service started successfully!');
   } catch (e) {
     console.error('Failed to start background location service:', e);

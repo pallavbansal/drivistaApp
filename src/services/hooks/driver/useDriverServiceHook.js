@@ -6,7 +6,7 @@ import {
   deleteDriverService,
   saveDriverDetailsService,
   updateDriverDetailsService,
-  workHistoryDetailsService
+  workHistoryDetailsService,
 } from '../../service';
 export const useDriverServiceHook = () => {
   const {token} = useSelector(state => state.userState);
@@ -18,7 +18,20 @@ export const useDriverServiceHook = () => {
   const [lastName, setLastName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [password, setPasssword] = useState('');
-
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [isFormValid, setIsFormValid] = useState(true);
+  const [loginError, setLoginError] = useState({email: '', password: ''});
+  const showAlert = message => {
+    setAlertMessage(message);
+    setAlertVisible(true);
+  };
+  const closeAlert = () => {
+    setAlertVisible(false);
+  };
+  const handleOK = () => {
+    closeAlert();
+  };
   const dispatch = useDispatch();
 
   const fetchDriverListRequest = async () => {
@@ -51,13 +64,16 @@ export const useDriverServiceHook = () => {
     const params = {
       driver_id: id,
     };
-
+    console.log('deleteDriverRequest nn:', config, ' ', params);
     try {
       const response = await deleteDriverService(params, config);
+
       console.log('response profile:', response.data.data.vehicles);
       dispatch(setDriversData(response.data.data.users));
     } catch (error) {
-      console.log('fetchVehicleListRequest:', error.response);
+      // console.log('fetchVehicleListRequest:', error.response);
+      showAlert('Something Went Wrong!');
+      //   throw error;
     }
   };
 
@@ -84,6 +100,7 @@ export const useDriverServiceHook = () => {
         return {result: 'failed', message: response.data.message};
       }
     } catch (error) {
+      showAlert('No internet Connection!');
       console.log('saveDriverRequest:', error.response);
     }
   };
@@ -145,10 +162,7 @@ export const useDriverServiceHook = () => {
       );
 
       if (response.data.status_code === 1) {
-        console.log(
-          'workHistoryDetailsRequest resounse:',
-          response.data.data,
-        );
+        console.log('workHistoryDetailsRequest resounse:', response.data.data);
 
         return {result: 'success', data: response.data.data};
       } else if (response.data.status_code === 2) {
@@ -178,6 +192,17 @@ export const useDriverServiceHook = () => {
     setShiftEndTime,
     fetchDriverListRequest,
     deleteDriverRequest,
+    alertVisible,
+    setAlertVisible,
+    alertMessage,
+    setAlertMessage,
+    showAlert,
+    closeAlert,
+    handleOK,
+    isFormValid,
+    setIsFormValid,
+    loginError,
+    setLoginError,
     saveDriverRequest,
     driverDetailsEditRequest,
     workHistoryDetailsRequest,

@@ -1,12 +1,5 @@
 import React, {useEffect, useState, memo} from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Modal,
-  Image,
-  Alert,
-} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Modal, Image} from 'react-native';
 import {Colors} from '../../../constants/colors';
 import StatusCard from '../../../components/cards/StatusCard';
 // import CustomCard from '../../components/cards/CustomCard';
@@ -28,11 +21,16 @@ import Space from '../../../components/reusableComponents/Space';
 import {useAuthServiceHook} from '../../../services/hooks/auth/useAuthServiceHook';
 import NotFound from '../../../components/reusableComponents/NotFound';
 import Spinner from '../../../components/reusableComponents/Spinner';
+import Alert from '../../../components/reusableComponents/Alert';
 
 const Home = ({navigation}) => {
   const {
     loading,
     setLoading,
+    loginError,
+    isFormValid,
+    setIsFormValid,
+    setLoginError,
     fetchVehicleListRequest,
     deleteVehicleRequest,
     vehicleName,
@@ -41,6 +39,13 @@ const Home = ({navigation}) => {
     setVehicleNumber,
     driverName,
     setDriverName,
+    alertVisible,
+    setAlertVisible,
+    alertMessage,
+    setAlertMessage,
+    showAlert,
+    closeAlert,
+    handleOK,
     saveVehicleRequest,
   } = useVehicleServiceHook();
   const {logoutRequest} = useAuthServiceHook();
@@ -48,14 +53,41 @@ const Home = ({navigation}) => {
   const {vehicle} = useSelector(state => state.vehicleState);
   const [vehicleData, setVehicleData] = useState([]);
   // console.log('hey vehicleReducer in home :', vehicle);
+  const checkFormValidity = () => {
+    const isVehicleNameValid = vehicleName.length >= 3; // Ensure password length is greater than 6
+    const isVehicleNumberValid = vehicleNumber.length >= 3;
+    const isDriverName = driverName.length >= 3;
+    const isValid = isVehicleNameValid && isVehicleNumberValid && isDriverName;
+
+    const errorCheck = {
+      vehicleName: !isVehicleNameValid
+        ? 'Vehicle Name length should be atleast 3'
+        : '',
+      vehicleNumber: !isVehicleNumberValid
+        ? 'Vehicle Number length should be atleast 3'
+        : '',
+      driverName: !isDriverName ? 'Driver Name length should be atleast 3' : '',
+    };
+    setLoginError({
+      ...loginError,
+      vehicleName: errorCheck.vehicleName,
+      vehicleNumber: errorCheck.vehicleNumber,
+      driverName: errorCheck.driverName,
+    });
+
+    setIsFormValid(!isValid);
+  };
+
+  useEffect(() => {
+    checkFormValidity(); // Check validity on input change
+  }, [vehicleName, vehicleNumber, driverName]);
+
   useEffect(() => {
     setVehicleData(vehicle);
   }, [vehicle]);
 
   useEffect(() => {
-
     const res = fetchVehicleListRequest();
-
   }, []);
 
   const handleNavigation = item => {
@@ -73,15 +105,18 @@ const Home = ({navigation}) => {
     deleteShow: true,
   };
   const handleVehicleRequest = async () => {
+    setLoading(true);
     if (
       driverName.length < 3 ||
       vehicleName.length < 3 ||
       vehicleNumber.length < 3
     ) {
-      Alert.alert('Fields Input length sould be atleast three !');
+      showAlert('Fields Input length sould be atleast three !');
+      setLoading(false);
     } else {
       const response = await saveVehicleRequest();
       handleClose();
+      setLoading(false);
     }
   };
   const handleAddItem = () => {
@@ -166,6 +201,14 @@ const Home = ({navigation}) => {
         setDriverName={setDriverName}
         handleVehicleRequest={handleVehicleRequest}
         handleClose={handleClose}
+        loginError={loginError}
+        isFormValid={isFormValid}
+      />
+      <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={closeAlert}
+        onOK={handleOK}
       />
     </View>
   );
@@ -188,15 +231,20 @@ const ModalContainer = memo(props => (
         </TouchableOpacity>
         <CustomTextInput
           logoName={userLogo}
-          // errorText={'props.loginError.fullName'}
+          errorText={
+            props.vehicleName.length > 0 ? props.loginError.vehicleName : ''
+          }
           placeholder={'Enter Vehicle Name'}
           onChangeText={text => {
             props.setVehicleName(text);
           }}
+
         />
         <CustomTextInput
           logoName={userLogo}
-          // errorText={'props.loginError.fullName'}
+          errorText={
+            props.vehicleNumber.length > 0 ? props.loginError.vehicleNumber : ''
+          }
           placeholder={'Enter Vehicle Number'}
           onChangeText={text => {
             props.setVehicleNumber(text);
@@ -204,7 +252,9 @@ const ModalContainer = memo(props => (
         />
         <CustomTextInput
           logoName={userLogo}
-          // errorText={'props.loginError.fullName'}
+          errorText={
+            props.driverName.length > 0 ? props.loginError.driverName : ''
+          }
           placeholder={'Enter Driver Name'}
           onChangeText={text => props.setDriverName(text)}
         />
@@ -212,7 +262,8 @@ const ModalContainer = memo(props => (
         <Space />
         <View style={styles.modalButtons}>
           <TouchableOpacity
-            style={styles.saveButton}
+            style={[styles.saveButton, props.isFormValid && {opacity: 0.8}]}
+            disabled={props.isFormValid}
             onPress={() => props.handleVehicleRequest()}>
             <Text style={styles.buttonText}>Save</Text>
           </TouchableOpacity>

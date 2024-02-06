@@ -12,10 +12,21 @@ import {useAuthServiceHook} from '../../../services/hooks/auth/useAuthServiceHoo
 import {navigationPopUpList} from '../../../constants/navigation';
 import NotFound from '../../../components/reusableComponents/NotFound';
 import Spinner from '../../../components/reusableComponents/Spinner';
+import Alert from '../../../components/reusableComponents/Alert';
 
 const OnlineDrivers = ({navigation}) => {
-  const {loading, setLoading, fetchOnlineDriversRequest} =
-    useDriverOnlineServiceHook();
+  const {
+    loading,
+    setLoading,
+    fetchOnlineDriversRequest,
+    alertVisible,
+    setAlertVisible,
+    alertMessage,
+    setAlertMessage,
+    closeAlert,
+    handleOK,
+    showAlert,
+  } = useDriverOnlineServiceHook();
   const {logoutRequest} = useAuthServiceHook();
   const [data, setData] = useState([]);
   //  const [editable, setEditable] = useState(false);
@@ -38,8 +49,15 @@ const OnlineDrivers = ({navigation}) => {
     fetchData();
   }, []);
 
-  const handleNavigation = () => {
-    navigation.navigate('LocationScreen');
+  const handleLocationNavigation = item => {
+    if (item.latitude && item.longitude) {
+      navigation.navigate('LocationScreen', {
+        latitude: item.latitude,
+        longitude: item.longitude,
+      });
+    } else {
+      showAlert('No Data Available to show location!!');
+    }
   };
 
   const handleCardClick = index => {
@@ -69,7 +87,7 @@ const OnlineDrivers = ({navigation}) => {
           <View style={styles.statusCardContainer}>
             <BreakDetailsCard
               breakData={item.breaks}
-              handleNavigation={handleNavigation}
+              handleNavigation={() => handleLocationNavigation(item)}
             />
           </View>
         )}
@@ -82,6 +100,7 @@ const OnlineDrivers = ({navigation}) => {
     }
     return null;
   };
+
   return (
     <View style={styles.mainContainer}>
       {renderSpinner()}
@@ -93,11 +112,8 @@ const OnlineDrivers = ({navigation}) => {
         showBackground={true}
         label={'Online Drivers'}
         containerStyle={styles.headContainer}
-        handleNavigation={navigateScreen => {
-          navigation.navigate(navigateScreen);
-        }}
-        handleBackNavigation={() => navigation.pop()}
-        handlePopUpNavigation={handlePopUpNavigation}
+        handleNavigation={handlePopUpNavigation}
+        handleBackNavigation={labels.handleDirectNavigation}
         navigationPopUpList={navigationPopUpList}
       />
 
@@ -109,6 +125,12 @@ const OnlineDrivers = ({navigation}) => {
         ''
       )}
       <FooterContainer containerStyle={styles.footerContainer} />
+      <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={closeAlert}
+        onOK={handleOK}
+      />
     </View>
   );
 };
@@ -123,11 +145,9 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     flex: 0.7,
-
   },
   statusCardContainer: {
     height: 200,
-
   },
   footerContainer: {
     flex: 0.2,

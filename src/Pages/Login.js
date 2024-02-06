@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect, useState} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, Alert} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import NetworkWrapper from '../NetworkWrapper';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import CustomTextInput from '../components/reusableComponents/CustomTextInput';
@@ -14,6 +15,8 @@ import HeaderContainer from '../components/reusableComponents/Container/HeaderCo
 import {useAuthServiceHook} from '../services/hooks/auth/useAuthServiceHook';
 import Spinner from '../components/reusableComponents/Spinner';
 import Space from '../components/reusableComponents/Space';
+import Alert from '../components/reusableComponents/Alert';
+
 
 
 const Login = ({navigation,route}) => {
@@ -31,6 +34,11 @@ const Login = ({navigation,route}) => {
     isFormValid,
     setIsFormValid,
     setPasswordVisible,
+    alertVisible,
+    alertMessage,
+    showAlert,
+    closeAlert,
+    handleOK,
     loginRequest,
   } = useAuthServiceHook();
 
@@ -54,7 +62,7 @@ const Login = ({navigation,route}) => {
       setLoading(false);
       try {
         if (response.result === 'verfication_failed') {
-          Alert.alert('Please validate fields!');
+          showAlert('Please validate fields!');
         } else if (response.result === 'success') {
           if(response.role === '1')
           {
@@ -66,16 +74,18 @@ const Login = ({navigation,route}) => {
           }
          // navigation.navigate(screenName);
         } else if (response.result === 'failed') {
-          Alert.alert('Credentials Invalid');
+          showAlert('Credentials Invalid');
         } else {
 
 
         }
       } catch (error) {
-        console.error('Login error:', error);
+        showAlert('No internet connection!');
+        //console.error('Login error:', error);
       }
     },
   };
+
   const checkFormValidity = () => {
     const isPasswordValid = password.length > 5; // Ensure password length is greater than 6
     const emailValidationRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -138,7 +148,14 @@ const Login = ({navigation,route}) => {
 
         <ButtonContainer {...labels} isFormValid={isFormValid} />
         <FooterContainer {...labels} />
+
       </View>
+      <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={closeAlert}
+        onOK={handleOK}
+      />
     </View>
   );
 };
@@ -254,4 +271,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(Login);
+export default Login;

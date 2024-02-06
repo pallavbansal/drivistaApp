@@ -6,10 +6,9 @@ import {
   StyleSheet,
   Text,
   ImageBackground,
-  Alert,
   TouchableOpacity,
   PermissionsAndroid,
-  Platform
+  Platform,
 } from 'react-native';
 import moment from 'moment';
 import BackgroundContainer from '../../components/reusableComponents/Container/BackgroundContainer';
@@ -22,21 +21,39 @@ import themeLogo from '../../storage/images/theme.png';
 import journey from '../../storage/images/journey.png';
 import CustomButton from '../../components/reusableComponents/CustomButton';
 import {useDriverShiftServiceHook} from '../../services/hooks/shift/useDriverShiftServiceHook';
-import { useDispatch, useSelector } from 'react-redux';
-import { useAuthServiceHook } from '../../services/hooks/auth/useAuthServiceHook';
-import { setIncrementTimer, setStartBreakTime } from '../../redux/actions/userActions';
-import { startBackgroundLocationService, stopBackgroundLocationService } from '../../services/hooks/BackgroundLocationService';
+import {useDispatch, useSelector} from 'react-redux';
+import {useAuthServiceHook} from '../../services/hooks/auth/useAuthServiceHook';
+import {
+  setIncrementTimer,
+  setStartBreakTime,
+} from '../../redux/actions/userActions';
+import {
+  startBackgroundLocationService,
+  stopBackgroundLocationService,
+} from '../../services/hooks/BackgroundLocationService';
 import {isLocationEnabled} from 'react-native-android-location-enabler';
 import {promptForEnableLocationIfNeeded} from 'react-native-android-location-enabler';
 import Spinner from '../../components/reusableComponents/Spinner';
+import Alert from '../../components/reusableComponents/Alert';
 
 const ActionShift = ({navigation}) => {
   const {current} = useSelector(state => state.shiftState);
-  const {loading, setLoading, endShiftRequest,currentShiftRequest,startEndBreakShiftRequest} = useDriverShiftServiceHook();
+  const {
+    loading,
+    setLoading,
+    showAlert,
+    closeAlert,
+    handleOK,
+    alertVisible,
+    alertMessage,
+    endShiftRequest,
+    currentShiftRequest,
+    startEndBreakShiftRequest,
+  } = useDriverShiftServiceHook();
   const {logoutRequest} = useAuthServiceHook();
-  const [time,setTime]=useState("");
-  const [breaksNo,setBreaksNo]=useState(0);
-  const [promptOpen,setPromptOpen]=useState(false);
+  const [time, setTime] = useState('');
+  const [breaksNo, setBreaksNo] = useState(0);
+  const [promptOpen, setPromptOpen] = useState(false);
   const dispatch = useDispatch();
   const labels = {
     label: 'Take a break',
@@ -62,7 +79,7 @@ const ActionShift = ({navigation}) => {
           stopBackgroundService();
           navigation.navigate('StartShift');
         } else if (response.result === 'failed') {
-          Alert.alert(response.message);
+          showAlert(response.message);
         } else {
           navigation.navigate(screenName);
         }
@@ -83,7 +100,7 @@ const ActionShift = ({navigation}) => {
         if (response.result === 'success') {
           navigation.navigate('BreakShift');
         } else if (response.result === 'failed') {
-          Alert.alert(response.message);
+          showAlert(response.message);
         } else {
           navigation.navigate(screenName);
         }
@@ -91,7 +108,7 @@ const ActionShift = ({navigation}) => {
         console.error('Login error:', error);
       }
     },
-   // handleBreakNavigation: () => navigation.navigate('BreakShift'),
+    // handleBreakNavigation: () => navigation.navigate('BreakShift'),
   };
   const startBackgroundService = async () => {
     await startBackgroundLocationService();
@@ -99,9 +116,7 @@ const ActionShift = ({navigation}) => {
   };
   const requestLocationPermission = async () => {
     try {
-
       const granted = await PermissionsAndroid.request(
-
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
           title: 'App Location Permission',
@@ -113,7 +128,7 @@ const ActionShift = ({navigation}) => {
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('Location permission granted');
-        const enableResult =await promptForEnableLocationIfNeeded({
+        const enableResult = await promptForEnableLocationIfNeeded({
           title: 'Enable Location',
           text: 'This app requires location access to function properly.',
           positiveButtonText: 'Enable',
@@ -125,15 +140,13 @@ const ActionShift = ({navigation}) => {
           startBackgroundService();
 
           // Location is now enabled, perform additional actions if needed
-        }
-        else {
+        } else {
           console.log('User denied enabling location.');
           startBackgroundService();
           // Handle the case where the user denied enabling location
         }
 
         // Location permission granted, start the background service
-
       } else {
         console.log('Location permission denied');
         // Handle denied permission (show an alert, etc.)
@@ -151,8 +164,8 @@ const ActionShift = ({navigation}) => {
         );
       }
     } catch (err) {
-     // console.warn(err);
-   //  requestLocationPermission();
+      // console.warn(err);
+      //  requestLocationPermission();
 
       console.log('User selected "No Thanks". Handle accordingly.');
     }
@@ -160,37 +173,35 @@ const ActionShift = ({navigation}) => {
 
   async function handleCheckPressed() {
     if (Platform.OS === 'android') {
-      const checkEnabled= await isLocationEnabled();
-      console.log('checkEnabled', checkEnabled)
-      if(!checkEnabled && !promptOpen)
-      {
+      const checkEnabled = await isLocationEnabled();
+      console.log('checkEnabled', checkEnabled);
+      if (!checkEnabled && !promptOpen) {
         requestLocationPermission();
       }
     }
   }
   useEffect(() => {
     const intervalId = setInterval(() => {
-     // handleCheckPressed();
+      // handleCheckPressed();
     }, 1000);
 
     // Clean up the interval when the component is unmounted
     return () => clearInterval(intervalId);
   }, []);
 
-
   const stopBackgroundService = async () => {
     await stopBackgroundLocationService();
     // setIsServiceRunning(true);
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     currentShiftRequest();
-  },[]);
+  }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     setTime(formatShiftTime());
     setBreaksNo(current.number_of_breaks);
-  },[current]);
+  }, [current]);
 
   function formatShiftTime() {
     const parsedDate = new Date(current.shift_start_time);
@@ -199,7 +210,9 @@ const ActionShift = ({navigation}) => {
     const minutes = parsedDate.getMinutes();
 
     // Format the time
-    const formattedTime = `${hours % 12 || 12}:${minutes < 10 ? '0' : ''}${minutes} ${hours < 12 ? 'AM' : 'PM'}`;
+    const formattedTime = `${hours % 12 || 12}:${
+      minutes < 10 ? '0' : ''
+    }${minutes} ${hours < 12 ? 'AM' : 'PM'}`;
 
     return formattedTime;
   }
@@ -227,13 +240,26 @@ const ActionShift = ({navigation}) => {
         modalStyle={{height: 40, marginTop: 20}}
         handleNavigation={navigateScreen => {
           if (navigateScreen === 'logout') {
+
+            // labels.handleEndShiftNavigation(labels.navigateScreen);
             logoutRequest();
           }
           console.log('handleNavigation bb:', navigateScreen);
         }}
         handleBackNavigation={() => labels.navigateBackNavigation(navigation)}
       />
-      <CardContainer labels={labels} current={current} formatShiftTime={time} breaksNo={breaksNo}/>
+      <CardContainer
+        labels={labels}
+        current={current}
+        formatShiftTime={time}
+        breaksNo={breaksNo}
+      />
+      <Alert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={closeAlert}
+        onOK={handleOK}
+      />
     </BackgroundContainer>
   );
 };
@@ -248,7 +274,10 @@ const CardContainer = props => (
     <View style={styles.mainContainer}>
       <View style={styles.headingLabel}>
         <Text style={styles.textHead}>{props.formatShiftTime}</Text>
-        <Text style={styles.textSubHead}>{'Total breaks : '}{props.breaksNo}</Text>
+        <Text style={styles.textSubHead}>
+          {'Total breaks : '}
+          {props.breaksNo}
+        </Text>
       </View>
       <View style={styles.cardContainer}>
         <View style={{flex: 1}}>
