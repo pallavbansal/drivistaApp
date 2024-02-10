@@ -83,7 +83,7 @@ const App = () => {
   if (!isConnected) {
     return (
       <NavigationContainer>
-        <StatusBar backgroundColor={statusBarBackgroundColor} />
+
         <Stack.Navigator screenOptions={{headerShown: false}}>
           <Stack.Screen name="NoInternet" component={NoInternet} />
         </Stack.Navigator>
