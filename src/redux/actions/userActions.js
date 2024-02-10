@@ -6,6 +6,7 @@ import {
   SET_VEHICLE_DATA,
   SET_DRIVERS_DATA,
   SET_CURRENT_SHIFT_DATA,
+  RESET_SUBSCRIPTION_USER_DATA,
   SET_INCREMENT_TIMER,
   SET_SUBSCRIPTION_USER_DATA
 } from '../constants/ActionTypes';
@@ -75,6 +76,18 @@ export function setSubscriptionUserData(data) {
   return {
     type: SET_SUBSCRIPTION_USER_DATA,
     data: data,
+  };
+}
+export function resetSubscriptionUserData() {
+  return {
+    type: RESET_SUBSCRIPTION_USER_DATA,
+  };
+}
+
+
+export function updateCancelledSubscriptionData() {
+  return {
+    type: 'UPDATE_SUBSCRIPTION_CANCELLED_DATA',
   };
 }
 

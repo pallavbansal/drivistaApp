@@ -51,7 +51,7 @@ const Calender = ({navigation, route}) => {
         showBackArrow={true}
         showLabel={true}
         showBackground={true}
-        showPopUp={true}
+        showPopUp={false}
         //  containerStyle={styles.headContainer}
         //  handleNavigation={handlePopUpNavigation}
         handleBackNavigation={labels.handleDirectNavigation}

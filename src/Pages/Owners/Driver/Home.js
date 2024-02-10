@@ -135,7 +135,7 @@ const Home = ({navigation}) => {
     const response = await saveDriverRequest();
 
     if (response.result === 'failed') {
-      // showAlert(response.message);
+      showAlert(response.message);
       setLoading(false);
     } else {
       //  showAlert('Success');

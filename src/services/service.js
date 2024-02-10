@@ -109,6 +109,11 @@ export const checkoutSessionService = async config => {
 };
 
 
+export const cancelSubscriptionService = async config => {
+  return await apiConfig.post('payment/cancel-subscription', '', config);
+};
+
+
 
 
 //

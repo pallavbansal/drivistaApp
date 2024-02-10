@@ -36,6 +36,9 @@ const publishableKey =
 const App = () => {
   // Create a navigation stack
   const {current} = useSelector(state => state.shiftState);
+  const {subscription, caseType} = useSelector(
+    state => state.subscriptionState,
+  );
   const {isAuth, user} = useSelector(state => state.userState);
   console.log('in app js:', current);
   const Stack = createNativeStackNavigator();
@@ -76,9 +79,11 @@ const App = () => {
   console.log('in app:', isAuth);
   const currentStatus = current ? current.current_status : null;
 
+  const statusBarBackgroundColor = '#ffffff';
   if (!isConnected) {
     return (
       <NavigationContainer>
+        <StatusBar backgroundColor={statusBarBackgroundColor} />
         <Stack.Navigator screenOptions={{headerShown: false}}>
           <Stack.Screen name="NoInternet" component={NoInternet} />
         </Stack.Navigator>
@@ -140,10 +145,13 @@ const App = () => {
               <Stack.Screen name="StartShift" component={StartShift} />
               <Stack.Screen name="BreakShift" component={BreakShift} />
               <Stack.Screen name="ActionShift" component={ActionShift} />
-              <Stack.Screen
-                name="SubscriptionScreen"
-                component={SubscriptionScreen}
-              />
+              {caseType === 'suscribe_as' ? (
+                <Stack.Screen
+                  name="SubscriptionScreen"
+                  component={SubscriptionScreen}
+                />
+              ) : null}
+
               <Stack.Screen
                 name="SubscriptionDescription"
                 component={SubscriptionDescription}

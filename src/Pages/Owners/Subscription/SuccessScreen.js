@@ -1,4 +1,4 @@
-import React, {memo} from 'react';
+import React, {memo, useEffect} from 'react';
 import {View, StyleSheet, Image, Text} from 'react-native';
 import success from '../../../storage/images/success.png';
 import HeaderContainer from '../../../components/reusableComponents/Container/HeaderContainer';
@@ -7,15 +7,25 @@ import CustomButton from '../../../components/reusableComponents/CustomButton';
 import {Fonts} from '../../../constants/fonts';
 import Space from '../../../components/reusableComponents/Space';
 import LogoWithLabel from '../../../components/reusableComponents/LogoWithLabel';
+import {useSubscriptionServiceHook} from '../../../services/hooks/subscription/useSubscriptionServiceHook';
 
 const SuccessScreen = ({navigation}) => {
+  const {
+    fetchSubscriptionDataRequest,
+  } = useSubscriptionServiceHook();
   const props = {
-    label:'Total Payment',
-    heading: 'Payment SuccessFul!',
+    label: 'Total Payment',
+    heading: 'Payment Successful!',
     buttonLabel: 'Done',
-    navigateScreen: 'SubscriptionScreen',
-    handleNavigation: screenName => navigation.navigate(screenName),
+    navigateScreen: 'OwnerHomeScreen',
+    handleNavigation: screenName => {
+      navigation.pop();
+      navigation.navigate(screenName);
+    },
   };
+  useEffect(() => {
+    const response = fetchSubscriptionDataRequest();
+  }, []);
 
   const MainContainer = ({children}) => (
     <View style={styles.mainContainer}>{children}</View>
@@ -36,11 +46,9 @@ const SuccessScreen = ({navigation}) => {
   );
 };
 
-
 const ButtonContainer = memo(props => (
   <View style={styles.button}>
     <CustomButton {...props} />
-
   </View>
 ));
 
@@ -48,8 +56,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     flexDirection: 'column',
-    marginHorizontal:20
-    // backgroundColor: Colors.primary,
+    marginHorizontal: 20,
   },
 
   container: {
@@ -57,26 +64,18 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     margin: 10,
-    // borderRadius: 5,
-    // borderWidth: 1,
-    // borderColor: 'white',
     padding: 20,
-
-
   },
   buttonContainer: {
     flex: 0.3,
     justifyContent: 'center',
-    marginHorizontal:20
-
+    marginHorizontal: 20,
   },
   logoContainer: {
     flex: 0.9,
     justifyContent: 'center',
     alignItems: 'center',
-
   },
-
 });
 
 export default memo(SuccessScreen);

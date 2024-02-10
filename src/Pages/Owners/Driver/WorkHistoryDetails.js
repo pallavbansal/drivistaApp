@@ -10,6 +10,8 @@ import Space from '../../../components/reusableComponents/Space';
 import {useAuthServiceHook} from '../../../services/hooks/auth/useAuthServiceHook';
 import {navigationPopUpList} from '../../../constants/navigation';
 import WorkHistory from '../../../components/reusableComponents/Profile/WorkHistory';
+import Spinner from '../../../components/reusableComponents/Spinner';
+import NotFound from '../../../components/reusableComponents/NotFound';
 
 const WorkHistoryDetails = ({route, navigation}) => {
   const {
@@ -38,8 +40,9 @@ const WorkHistoryDetails = ({route, navigation}) => {
   const [details, setDetails] = useState([]);
   useEffect(() => {
     const fetchDetails = async () => {
+      setLoading(true);
       const response = await workHistoryDetailsRequest(driver_id, date);
-
+      setLoading(false);
       setDetails(response.data);
     };
     fetchDetails();
@@ -92,16 +95,22 @@ const WorkHistoryDetails = ({route, navigation}) => {
       navigation.navigate(navigateScreen);
     }
   };
-
+  const renderSpinner = () => {
+    if (loading) {
+      return <Spinner />;
+    }
+    return null;
+  };
   return (
     <View style={styles.mainContainer}>
+        {renderSpinner()}
       <HeaderContainer
         labels={labels}
         label={labels.label}
         showBackArrow={true}
         showLabel={true}
         showBackground={true}
-        showPopUp={false}
+        showPopUp={true}
         containerStyle={styles.headContainer}
         handleNavigation={handlePopUpNavigation}
         handleBackNavigation={labels.handleDirectNavigation}
@@ -128,15 +137,17 @@ const WorkHistoryDetails = ({route, navigation}) => {
   ) : null
 }
 
+{/* {details.shift_details < 1 ? (
+        <NotFound />
+      ) :  (
+        ''
+      )} */}
+
 
         </View>
-        {/* <TextInput
-          style={styles.input}
-          placeholder="Enter Vehicle Name"
-          value={vehicleName}
-          onChangeText={text =>setVehicleName(text)}
-        /> */}
+
       </View>
+
     </View>
   );
 };

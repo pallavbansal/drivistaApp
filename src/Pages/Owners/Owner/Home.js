@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
-import React, {memo} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Colors} from '../../../constants/colors';
 import NavigationCard from '../../../components/cards/NavigationCard';
@@ -16,9 +16,21 @@ import shade3 from '../../../storage/images/shade3.png';
 import BackgroundContainer from '../../../components/reusableComponents/Container/BackgroundContainer';
 import {useAuthServiceHook} from '../../../services/hooks/auth/useAuthServiceHook';
 import {navigationPopUpList} from '../../../constants/navigation';
+import {useSubscriptionServiceHook} from '../../../services/hooks/subscription/useSubscriptionServiceHook';
+import {useSelector} from 'react-redux';
 
 const Home = ({navigation}) => {
   const {logoutRequest} = useAuthServiceHook();
+
+  const {loading, setLoading, fetchSubscriptionDataRequest} =
+    useSubscriptionServiceHook();
+
+  const {caseType} = useSelector(state => state.subscriptionState);
+  const [subsCaseType,setSubsCaseType]=useState(caseType);
+  useEffect(() => {
+    setSubsCaseType(caseType);
+  }, [caseType]);
+  console.log("oyeeee:",caseType);
   const navigationData = [
     {
       label: 'Employees Online',
@@ -48,10 +60,19 @@ const Home = ({navigation}) => {
   const handleNavigation = navigateScreen => {
     if (navigateScreen === 'logout') {
       logoutRequest();
+    } else if (
+      subsCaseType === 'trail_et' ||
+      subsCaseType === 'suscribe_es' ||
+      subsCaseType === 'cancelled'
+    ) {
+      navigation.navigate('PaymentDetails');
     } else {
       navigation.navigate(navigateScreen);
     }
   };
+  useEffect(() => {
+    const response = fetchSubscriptionDataRequest();
+  }, []);
 
   const MainContainer = ({children}) => (
     <View style={styles.mainContainer}>{children}</View>
@@ -70,6 +91,7 @@ const Home = ({navigation}) => {
         containerStyle={styles.headContainer}
         handleNavigation={handleNavigation}
         navigationPopUpList={navigationPopUpList}
+
       />
       <CardContainer>
         {navigationData.map((item, index) => (
@@ -101,6 +123,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   card: {
+    borderRadius: 12,
     flex: 0.25,
     marginVertical: 10,
     width: '60%',
@@ -112,10 +135,11 @@ const styles = StyleSheet.create({
     width: 150,
     marginLeft: -50,
   },
+
   imageBackground: {
     flex: 1,
     borderRadius: 12, // Add border radius here
-
+    // overflow:'hidden',
     justifyContent: 'flex-end',
   },
 });

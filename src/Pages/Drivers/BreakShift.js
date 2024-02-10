@@ -12,9 +12,10 @@ import moment from 'moment';
 import BackgroundTimer from 'react-native-background-timer';
 import BackgroundContainer from '../../components/reusableComponents/Container/BackgroundContainer';
 import HeaderContainer from '../../components/reusableComponents/Container/HeaderContainer';
-import {Fonts} from '../../constants/fonts';
-import {globalStyles} from '../../constants/globalStyles';
-import actionshiftbg from '../../storage/images/actionshiftbg.png';
+import {
+  startBackgroundLocationService,
+  stopBackgroundLocationService,
+} from '../../services/hooks/BackgroundLocationService';
 import shiftbg from '../../storage/images/break_shift.png';
 import themeLogo from '../../storage/images/theme.png';
 import journey from '../../storage/images/journey.png';
@@ -40,9 +41,11 @@ const BreakShift = ({navigation}) => {
     handleOK,
     alertVisible,
     alertMessage,
+    endShiftRequest,
     startEndBreakShiftRequest,
   } = useDriverShiftServiceHook();
   const {logoutRequest} = useAuthServiceHook();
+
   const {timer, startBreakTime} = useSelector(state => state.shiftState);
   // const timer = useSelector((state) => state.user.timer);
   const dispatch = useDispatch();
@@ -123,6 +126,29 @@ const BreakShift = ({navigation}) => {
     // stopBackgroundLocationService(); // Stop background location service
     BackgroundTimer.clearInterval(timerInterval); // Clear the timer interval
   };
+  const handleEndShiftNavigationLogout=async screenName => {
+    console.log('what is screen:', screenName);
+    setLoading(true);
+    const response = await endShiftRequest();
+    logoutRequest();
+    setLoading(false);
+    try {
+      if (response.result === 'success') {
+        stopBackgroundService();
+
+      } else if (response.result === 'failed') {
+        showAlert(response.message);
+      } else {
+        navigation.navigate(screenName);
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+  };
+  const stopBackgroundService = async () => {
+    await stopBackgroundLocationService();
+    // setIsServiceRunning(true);
+  };
 
   useEffect(() => {
     let timerInterval;
@@ -173,7 +199,7 @@ const BreakShift = ({navigation}) => {
         modalStyle={{height: 40, marginTop: 20}}
         handleNavigation={navigateScreen => {
           if (navigateScreen === 'logout') {
-            logoutRequest();
+            handleEndShiftNavigationLogout();
           }
           console.log('handleNavigation bb:', navigateScreen);
         }}

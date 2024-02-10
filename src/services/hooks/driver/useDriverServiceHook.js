@@ -92,7 +92,7 @@ export const useDriverServiceHook = () => {
     console.log('before saveDriverRequest profile:', params, config);
     try {
       const response = await saveDriverDetailsService(params, config);
-      console.log('after saveDriverRequest profile:', response.data.data);
+      console.log('after saveDriverRequest profile:', response.data);
       if (response.data.status_code === 1) {
         dispatch(setDriversData(response.data.data.users));
         return {result: 'success'};
