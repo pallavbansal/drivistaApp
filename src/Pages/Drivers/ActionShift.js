@@ -31,13 +31,17 @@ import {
   startBackgroundLocationService,
   stopBackgroundLocationService,
 } from '../../services/hooks/BackgroundLocationService';
-import {isLocationEnabled} from 'react-native-android-location-enabler';
+// import {isLocationEnabled} from 'react-native-android-location-enabler';
 import {promptForEnableLocationIfNeeded} from 'react-native-android-location-enabler';
 import Spinner from '../../components/reusableComponents/Spinner';
 import Alert from '../../components/reusableComponents/Alert';
+import useLocationStatus from '../../services/hooks/useLocationStatus';
 
 const ActionShift = ({navigation}) => {
   const {current} = useSelector(state => state.shiftState);
+  const {isLocationEnabled, enableLocationIfNeeded} =
+    useLocationStatus();
+
   const {
     loading,
     setLoading,
@@ -72,7 +76,7 @@ const ActionShift = ({navigation}) => {
       console.log('what is screen:', screenName);
       setLoading(true);
       const response = await endShiftRequest();
-    //  logoutRequest();
+      //  logoutRequest();
       setLoading(false);
       try {
         if (response.result === 'success') {
@@ -110,7 +114,7 @@ const ActionShift = ({navigation}) => {
     },
     // handleBreakNavigation: () => navigation.navigate('BreakShift'),
   };
-  const handleEndShiftNavigationLogout=async screenName => {
+  const handleEndShiftNavigationLogout = async screenName => {
     console.log('what is screen:', screenName);
     setLoading(true);
     const response = await endShiftRequest();
@@ -119,7 +123,6 @@ const ActionShift = ({navigation}) => {
     try {
       if (response.result === 'success') {
         stopBackgroundService();
-
       } else if (response.result === 'failed') {
         showAlert(response.message);
       } else {
@@ -128,11 +131,31 @@ const ActionShift = ({navigation}) => {
     } catch (error) {
       console.error('Login error:', error);
     }
-  }
+  };
   const startBackgroundService = async () => {
     await startBackgroundLocationService();
     // setIsServiceRunning(true);
   };
+
+  async function handleCheckPressed() {
+    if (Platform.OS === 'android') {
+      const checkEnabled = await isLocationEnabled();
+      console.log('checkEnabled', checkEnabled, ' ', promptOpen);
+      if (!checkEnabled) {
+        setPromptOpen(!promptOpen);
+        requestLocationPermission();
+      }
+    }
+  }
+  useEffect(()=>{
+    if(!isLocationEnabled)
+    {
+      requestLocationPermission();
+    }
+    console.log("check location");
+  //  requestLocationPermission();
+
+  },[isLocationEnabled]);
   const requestLocationPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -169,7 +192,7 @@ const ActionShift = ({navigation}) => {
       } else {
         console.log('Location permission denied');
         // Handle denied permission (show an alert, etc.)
-        Alert.alert(
+        showAlert(
           'Permission Denied',
           'Location permission is required for this app to function properly.',
           [
@@ -184,29 +207,22 @@ const ActionShift = ({navigation}) => {
       }
     } catch (err) {
       // console.warn(err);
-      //  requestLocationPermission();
-
+      requestLocationPermission();
       console.log('User selected "No Thanks". Handle accordingly.');
     }
   };
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     if(!promptOpen)
+  //     {
+  //       handleCheckPressed();
+  //     }
 
-  async function handleCheckPressed() {
-    if (Platform.OS === 'android') {
-      const checkEnabled = await isLocationEnabled();
-      console.log('checkEnabled', checkEnabled);
-      if (!checkEnabled && !promptOpen) {
-        requestLocationPermission();
-      }
-    }
-  }
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      // handleCheckPressed();
-    }, 1000);
+  //   }, 3000);
 
-    // Clean up the interval when the component is unmounted
-    return () => clearInterval(intervalId);
-  }, []);
+  //   // Clean up the interval when the component is unmounted
+  //   return () => clearInterval(intervalId);
+  // }, []);
 
   const stopBackgroundService = async () => {
     await stopBackgroundLocationService();
@@ -259,14 +275,14 @@ const ActionShift = ({navigation}) => {
         modalStyle={{height: 40, marginTop: 20}}
         handleNavigation={navigateScreen => {
           if (navigateScreen === 'logout') {
-
             handleEndShiftNavigationLogout(labels.navigateScreen);
-           // logoutRequest();
+            // logoutRequest();
           }
           console.log('handleNavigation bb:', navigateScreen);
         }}
         handleBackNavigation={() => labels.navigateBackNavigation(navigation)}
       />
+      {/* <Text>Location is {isLocationEnabled ? 'enabled' : 'disabled'}</Text> */}
       <CardContainer
         labels={labels}
         current={current}

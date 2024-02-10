@@ -191,7 +191,7 @@ const BreakShift = ({navigation}) => {
       {renderSpinner()}
       <HeaderContainer
         labels={labels}
-        showPopUp={true}
+        showPopUp={false}
         showBackArrow={false}
         containerStyle={styles.headContainer}
         handleBackNavigation={() => labels.navigateBackNavigation(navigation)}

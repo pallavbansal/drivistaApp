@@ -49,7 +49,7 @@ const StartShift = ({navigation}) => {
     handleNavigation: async screenName => {
       console.log('what is screen:', screenName);
       setLoading(true);
-      requestLocationPermission();
+    //  requestLocationPermission();
       const response = await startShiftRequest();
 
       setLoading(false);
