@@ -18,6 +18,7 @@ import edit from '../../../storage/images/edit.png';
 import calender from '../../../storage/images/calender.png';
 import HeaderContainer from '../Container/HeaderContainer';
 import {globalStyles} from '../../../constants/globalStyles';
+import NotFound from '../NotFound';
 
 const WorkHistory = ({
   editable,
@@ -93,6 +94,7 @@ const WorkHistory = ({
       ))}
 
     </ScrollView>
+
       </View>
 
       {/* <ProfileEdit editable={editable} email={email} mobileNumber={mobileNumber} labels={labels} setEmail={setEmail} setMobileNumber={setMobileNumber}/> */}

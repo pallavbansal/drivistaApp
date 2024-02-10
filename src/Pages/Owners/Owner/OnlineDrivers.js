@@ -113,7 +113,7 @@ const OnlineDrivers = ({navigation}) => {
         label={'Online Drivers'}
         containerStyle={styles.headContainer}
         handleNavigation={handlePopUpNavigation}
-        handleBackNavigation={labels.handleDirectNavigation}
+        handleBackNavigation={() => navigation.pop()}
         navigationPopUpList={navigationPopUpList}
       />
 

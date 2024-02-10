@@ -64,10 +64,10 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 10,
+
     paddingHorizontal: 10,
     backgroundColor: 'transparent', // Optional: use a transparent background for the inner content
-     borderRadius:12
+
   },
   imageContainer: {
     flex:1,
@@ -77,6 +77,8 @@ const styles = StyleSheet.create({
   },
   logoSection: {
     flex: 0.5,
+
+    overflow:'visible'
   },
   labelSection: {
     flex: 0.5,

@@ -72,7 +72,7 @@ const ActionShift = ({navigation}) => {
       console.log('what is screen:', screenName);
       setLoading(true);
       const response = await endShiftRequest();
-
+    //  logoutRequest();
       setLoading(false);
       try {
         if (response.result === 'success') {
@@ -110,6 +110,25 @@ const ActionShift = ({navigation}) => {
     },
     // handleBreakNavigation: () => navigation.navigate('BreakShift'),
   };
+  const handleEndShiftNavigationLogout=async screenName => {
+    console.log('what is screen:', screenName);
+    setLoading(true);
+    const response = await endShiftRequest();
+    logoutRequest();
+    setLoading(false);
+    try {
+      if (response.result === 'success') {
+        stopBackgroundService();
+
+      } else if (response.result === 'failed') {
+        showAlert(response.message);
+      } else {
+        navigation.navigate(screenName);
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+  }
   const startBackgroundService = async () => {
     await startBackgroundLocationService();
     // setIsServiceRunning(true);
@@ -241,8 +260,8 @@ const ActionShift = ({navigation}) => {
         handleNavigation={navigateScreen => {
           if (navigateScreen === 'logout') {
 
-            // labels.handleEndShiftNavigation(labels.navigateScreen);
-            logoutRequest();
+            handleEndShiftNavigationLogout(labels.navigateScreen);
+           // logoutRequest();
           }
           console.log('handleNavigation bb:', navigateScreen);
         }}

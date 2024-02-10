@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
-import React, {memo, useState} from 'react';
+import React, {memo, useState,useEffect} from 'react';
 import {View, StyleSheet, Image, Text} from 'react-native';
 import {Colors} from '../../../constants/colors';
 import clock from '../../../storage/images/clock.png';
@@ -15,9 +15,17 @@ import LogoWithLabel from '../../../components/reusableComponents/LogoWithLabel'
 import ModalView from '../../../components/reusableComponents/ModalView';
 import {useAuthServiceHook} from '../../../services/hooks/auth/useAuthServiceHook';
 import { useSelector } from 'react-redux';
+import { useSubscriptionServiceHook } from '../../../services/hooks/subscription/useSubscriptionServiceHook';
+import Spinner from '../../../components/reusableComponents/Spinner';
 
 const Home = ({navigation}) => {
-  const {subscription} = useSelector(state => state.subscriptionState);
+  const {subscription, caseType} = useSelector(
+    state => state.subscriptionState,
+  );
+  const {loading, setLoading, fetchSubscriptionDataRequest,cancelSubscription} =
+  useSubscriptionServiceHook();
+
+
   const {logoutRequest} = useAuthServiceHook();
   const [isConfirmationModalVisible, setIsConfirmationModalVisible] =
     useState(false);
@@ -29,7 +37,7 @@ const Home = ({navigation}) => {
     heading:heading,
     subHeading:subheading,
     email: 'Email Id',
-    buttonLabel1: 'Add/delete employees',
+    buttonLabel1: 'Subscribe',
     buttonLabel2: 'Cancel Subscription',
     linkText: 'Resend OTP',
     navigateScreen: 'SubscriptionDescription',
@@ -46,6 +54,9 @@ const Home = ({navigation}) => {
     },
   };
 
+  useEffect(()=>{
+    const response=fetchSubscriptionDataRequest();
+  },[])
   const confirnationModal = {
     label: 'Cancel Subscription',
     description: 'Are you sure! you want to cancel monitoring your employees? ',
@@ -56,17 +67,31 @@ const Home = ({navigation}) => {
     description: 'Your subscription plan has been canceled',
   };
 
-  const handleCancelCardNavigation = nextAction => {
+  const handleCancelCardNavigation =async nextAction => {
     if (nextAction === 'OpenMessageModal') {
       setIsConfirmationModalVisible(false);
       setMessageModalVisible(true);
+      setLoading(true);
+      console.log("hh OpenMessageModal: ");
+      const res= await cancelSubscription();
+      setLoading(false);
+      // if(res)
+      // {
+      //   setMessageModalVisible(true);
+      // }
+
+
+    //  setMessageModalVisible(true);
     } else if (nextAction === 'CancelConfirmationModal') {
       setMessageModalVisible(false);
       setIsConfirmationModalVisible(false);
     } else if (nextAction === 'CancelMessageModal') {
+      console.log("hh CancelMessageModal: ");
+
       setMessageModalVisible(false);
       setIsConfirmationModalVisible(false);
-      navigation.navigate('OwnerHomeScreen');
+
+     // navigation.navigate('OwnerHomeScreen');
     }
   };
   const handlePopUpNavigation = navigateScreen => {
@@ -79,6 +104,12 @@ const Home = ({navigation}) => {
   const labels = {
     navigateBackScreen: '',
     handleDirectNavigation: screenName => navigation.pop(),
+  };
+  const renderSpinner = () => {
+    if (loading) {
+      return <Spinner />;
+    }
+    return null;
   };
   const MainContainer = ({children}) => (
     <View style={styles.mainContainer}>
@@ -104,6 +135,7 @@ const Home = ({navigation}) => {
 
   return (
     <MainContainer>
+         {renderSpinner()}
       <HeaderContainer
         label={'Your Subscription'}
         labels={props}
@@ -122,7 +154,7 @@ const Home = ({navigation}) => {
           <LogoWithLabel logo={clock} label={props.heading} headsize={18} />
         </View>
         <HeadingContainer {...props} />
-        <ButtonsMixContainer {...props} />
+        <ButtonsMixContainer {...props} caseType={caseType} />
       </View>
     </MainContainer>
   );
@@ -136,11 +168,15 @@ const HeadingContainer = memo(({subHeading}) => (
 ));
 const ButtonsMixContainer = memo(props => (
   <View style={styles.buttonContainer}>
-    <ButtonContainer
-      {...props}
-      isModal={false}
-      buttonLabel={props.buttonLabel1}
-    />
+    {
+      props.caseType !== "suscribe_as" ?
+      ( <ButtonContainer
+        {...props}
+        isModal={false}
+        buttonLabel={props.buttonLabel1}
+      />):""
+    }
+
     <Space />
     <ButtonContainer
       {...props}

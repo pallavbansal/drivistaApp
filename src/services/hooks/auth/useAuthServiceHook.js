@@ -5,6 +5,7 @@ import {addDays, format} from 'date-fns';
 import {useNavigation} from '@react-navigation/native';
 import {
   logoutUser,
+  resetSubscriptionUserData,
   setRegisterUserData,
   setUserData,
 } from '../../../redux/actions/userActions';
@@ -38,6 +39,7 @@ export const useAuthServiceHook = () => {
   const [otp, setOtp] = useState(new Array(4).fill(''));
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
+  const [checked, setChecked] = useState(true);
   const dispatch = useDispatch();
   const showAlert = message => {
     setAlertMessage(message);
@@ -305,6 +307,8 @@ export const useAuthServiceHook = () => {
   const logoutRequest = async () => {
     console.log('lohgout is called');
     dispatch(logoutUser());
+    dispatch(resetSubscriptionUserData());
+
   };
 
   return {
@@ -326,6 +330,7 @@ export const useAuthServiceHook = () => {
     setOldPassword,
     isTrialChecked,
     setIsTrialChecked,
+    checked, setChecked,
     setOtp,
     otp,
     errors,

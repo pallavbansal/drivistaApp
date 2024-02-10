@@ -6,11 +6,12 @@ import baseUrl from '../baseUrl';
 
 const sleep = time => new Promise(resolve => setTimeout(resolve, time));
 const sendLocationToServer = async (latitude, longitude, token) => {
+  console.log('sendLocationToServer token:', token);
   const config = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: token,
+      Authorization: `Bearer ${token}`,
       // Add any additional headers required for your API
     },
     body: JSON.stringify({
@@ -24,7 +25,7 @@ const sendLocationToServer = async (latitude, longitude, token) => {
     config,
   );
   try {
-
+    console.log('sendLocationToServer Response Data 2 :', response);
     if (response.ok) {
       const responseData = await response.json();
       console.log('Response Data:', responseData);
@@ -46,7 +47,7 @@ const fetchLocationInBackground = async (taskDataArguments, token) => {
         position => {
           console.log('Background Location:', position.coords);
           const {latitude, longitude} = position.coords;
-          console.log('Background Location:', {latitude, longitude});
+          console.log('Background Location 2:', {latitude, longitude});
 
           sendLocationToServer(latitude, longitude, token);
 

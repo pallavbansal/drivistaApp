@@ -8,22 +8,26 @@ import CustomButton from '../../../components/reusableComponents/CustomButton';
 import {Fonts} from '../../../constants/fonts';
 import LogoWithLabel from '../../../components/reusableComponents/LogoWithLabel';
 import {useSubscriptionServiceHook} from '../../../services/hooks/subscription/useSubscriptionServiceHook';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
+import Spinner from '../../../components/reusableComponents/Spinner';
 
 const ReminderScreen = ({navigation}) => {
-  const {subscription} = useSelector(state => state.subscriptionState);
+  const {subscription, caseType} = useSelector(
+    state => state.subscriptionState,
+  );
   let heading;
-if (subscription.remaining_days === "") {
-    heading = "Your free trial has expired.";
-} else {
+  if (subscription.remaining_days === '') {
+    heading = 'Your free trial has expired.';
+  } else {
     heading = `Your free trial ends in ${subscription.remaining_days} days.`;
-}
+  }
 
   const {loading, setLoading, fetchSubscriptionDataRequest} =
     useSubscriptionServiceHook();
-    useEffect(()=>{
-      const response=fetchSubscriptionDataRequest();
-    },[])
+  useEffect(() => {
+    setLoading(true);
+    const response = fetchSubscriptionDataRequest();
+  }, []);
   const [isConfirmationModalVisible, setIsConfirmationModalVisible] =
     useState(false);
   const [isMessageModalVisible, setMessageModalVisible] = useState(false);
@@ -36,12 +40,23 @@ if (subscription.remaining_days === "") {
     buttonLabel: 'OK',
     text1:
       'We hope you were able to spend the last two weeks exploring how E-State can help you save your time and track your employees!',
-    text2:heading+'To keep using our features, please subscribe to one of our paid plan.',
+    text2:
+      heading +
+      'To keep using our features, please subscribe to one of our paid plan.',
     navigateScreen: 'SubscriptionScreen',
     handleNavigation: (screenName, isModal) => {
       if (!isModal) {
         // Navigate to the SubscriptionDescription screen
-        navigation.navigate(screenName);
+        if (caseType === 'trail_at') {
+          navigation.pop();
+        } else if (caseType === 'trail_et') {
+
+          navigation.navigate('PaymentDetails');
+        } else if (caseType === 'suscribe_as') {
+          navigation.navigate(screenName);
+        } else if (caseType === 'suscribe_es') {
+          navigation.navigate('PaymentDetails');
+        }
       } else {
         // Open modal or perform other actions
         setIsConfirmationModalVisible(!isConfirmationModalVisible); // Set modal visibility to true
@@ -49,13 +64,40 @@ if (subscription.remaining_days === "") {
       }
     },
   };
+  useEffect(() => {
+    setLoading(true);
+    console.log("check in reminder:",caseType);
+    if (caseType === 'trail_et') {
+      navigation.pop();
+      navigation.navigate('PaymentDetails');
+    }
+    else if (caseType === 'suscribe_as') {
+     navigation.pop();
+      navigation.navigate('SubscriptionScreen');
+    } else if (caseType === 'suscribe_es') {
+      navigation.pop();
+      navigation.navigate('PaymentDetails');
+    }
+    else if(caseType === 'cancelled')
+    {
+      navigation.pop();
+      navigation.navigate('PaymentDetails');
+    }
+  },[caseType]);
 
+  console.log('case type here:', caseType);
   const MainContainer = ({children}) => (
     <View style={styles.mainContainer}>{children}</View>
   );
-
+  const renderSpinner = () => {
+    if (loading) {
+      return <Spinner />;
+    }
+    return null;
+  };
   return (
     <MainContainer>
+       {renderSpinner()}
       <View style={styles.logoContainer}>
         <LogoWithLabel
           logo={reminder}

@@ -126,7 +126,13 @@ const PaymentDetails = ({navigation}) => {
           style={{flex: 1}}
           onNavigationStateChange={navState => {
             // Handle navigation state change if needed
-            console.log('oyeeeee', navState);
+            console.log('oyeeeee navstate', navState);
+            if (navState.title.includes("success")) {
+              navigation.pop();
+             navigation.navigate('SuccessScreen');
+          } else {
+              console.log("Title does not contain 'success'");
+          }
           }}
           onError={error => {
             console.error('WebView error:', error);

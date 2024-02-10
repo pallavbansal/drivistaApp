@@ -1,10 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect} from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-} from 'react-native';
+import {View, StyleSheet, ScrollView} from 'react-native';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import CustomTextInput from '../components/reusableComponents/CustomTextInput';
@@ -45,6 +41,8 @@ const Register = ({navigation}) => {
     setConfirmPassword,
     isTrialChecked,
     setIsTrialChecked,
+    checked,
+    setChecked,
     passwordVisible,
     setPasswordVisible,
     confirmPasswordVisible,
@@ -108,7 +106,7 @@ const Register = ({navigation}) => {
     const isEmailValid = emailValidationRegex.test(email);
     const isConfirmPasswordValid =
       confirmPassword.length > 0 && confirmPassword === password;
-
+    const checkedTrial = checked;
     const errorCheck = {
       fullName:
         !isFirstNameValid && fullName !== ''
@@ -139,7 +137,8 @@ const Register = ({navigation}) => {
       isEmailValid &&
       isMobileNumberValid &&
       isPasswordValid &&
-      isConfirmPasswordValid;
+      isConfirmPasswordValid &&
+      checkedTrial;
     setLoginError({
       ...loginError,
       fullName: errorCheck.fullName,
@@ -155,7 +154,15 @@ const Register = ({navigation}) => {
 
   useEffect(() => {
     checkFormValidity(); // Check validity on input change
-  }, [fullName, lastName, mobileNumber, password, confirmPassword, email]);
+  }, [
+    fullName,
+    lastName,
+    mobileNumber,
+    password,
+    confirmPassword,
+    email,
+    checked,
+  ]);
 
   console.log('check first name:', fullName);
 
@@ -198,6 +205,8 @@ const Register = ({navigation}) => {
             setConfirmPassword={setConfirmPassword}
             checkboxText={labels.checkboxText}
             isTrialChecked={isTrialChecked}
+            checked={checked}
+            setChecked={setChecked}
             setIsTrialChecked={setIsTrialChecked}
             passwordVisible={passwordVisible}
             setPasswordVisible={setPasswordVisible}
@@ -284,7 +293,12 @@ const InputContainer = memo(props => (
     />
 
     <Space />
-    <Checkbox label={props.checkboxText} />
+    <Checkbox
+      checked={props.checked}
+      setChecked={props.setChecked}
+      // initialValue={true}
+      label={props.checkboxText}
+    />
   </View>
 ));
 const ButtonContainer = memo(props => (

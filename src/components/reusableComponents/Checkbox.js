@@ -5,8 +5,8 @@ import checked_checkbox from '../../storage/images/checked_checkbox.png';
 import {globalStyles} from '../../constants/globalStyles';
 import { Fonts } from '../../constants/fonts';
 
-const Checkbox = ({label, onChange, initialValue = false}) => {
-  const [checked, setChecked] = useState(initialValue);
+const Checkbox = ({label,checked,setChecked, onChange, initialValue = false}) => {
+
 
   const handleCheckboxChange = () => {
     const newValue = !checked;

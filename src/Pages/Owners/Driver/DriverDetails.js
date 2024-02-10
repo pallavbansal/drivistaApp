@@ -92,7 +92,7 @@ const DriverDetails = ({route, navigation}) => {
         showBackArrow={true}
         showLabel={true}
         showBackground={true}
-        showPopUp={false}
+        showPopUp={true}
         containerStyle={styles.headContainer}
         handleNavigation={handlePopUpNavigation}
         handleBackNavigation={labels.handleDirectNavigation}
