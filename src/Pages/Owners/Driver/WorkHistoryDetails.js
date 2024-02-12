@@ -79,7 +79,7 @@ const WorkHistoryDetails = ({route, navigation}) => {
           Alert.alert(response.message);
         }
       } catch (error) {
-        console.error('Login error:', error);
+        console.error('WorkHistoryDetails error:', error);
       }
     },
   };

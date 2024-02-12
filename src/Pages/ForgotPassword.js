@@ -69,7 +69,7 @@ const ForgotPassword = ({navigation}) => {
         }
       } catch (error) {
         setShowResend(true);
-        console.error('Login error:', error);
+        console.error('forgot pass error:', error);
       }
     },
   };

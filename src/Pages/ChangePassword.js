@@ -79,7 +79,7 @@ const ChangePassword = ({navigation, route}) => {
             showAlert(response.message);
           }
         } catch (error) {
-          console.error('Login error:', error);
+          console.error('change password error:', error);
         }
       }
     },
