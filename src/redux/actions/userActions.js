@@ -8,7 +8,7 @@ import {
   SET_CURRENT_SHIFT_DATA,
   RESET_SUBSCRIPTION_USER_DATA,
   SET_INCREMENT_TIMER,
-  SET_SUBSCRIPTION_USER_DATA
+  SET_SUBSCRIPTION_USER_DATA,
 } from '../constants/ActionTypes';
 export function setUserData(data) {
   return {
@@ -84,10 +84,16 @@ export function resetSubscriptionUserData() {
   };
 }
 
-
 export function updateCancelledSubscriptionData() {
   return {
     type: 'UPDATE_SUBSCRIPTION_CANCELLED_DATA',
+  };
+}
+
+export function setLocation(data) {
+  return {
+    type: 'SET_LOCATION',
+    data: data,
   };
 }
 

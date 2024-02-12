@@ -3,6 +3,8 @@ import Geolocation from '@react-native-community/geolocation';
 import {Alert, Linking, PermissionsAndroid} from 'react-native';
 import axios from 'axios';
 import baseUrl from '../baseUrl';
+import {useDispatch} from 'react-redux';
+import {setLocation} from '../../redux/actions/userActions';
 
 const sleep = time => new Promise(resolve => setTimeout(resolve, time));
 const sendLocationToServer = async (latitude, longitude, token) => {
@@ -48,8 +50,12 @@ const fetchLocationInBackground = async (taskDataArguments, token) => {
           console.log('Background Location:', position.coords);
           const {latitude, longitude} = position.coords;
           console.log('Background Location 2:', {latitude, longitude});
-
-          sendLocationToServer(latitude, longitude, token);
+          //Alert.alert(latitude.toString());
+          //    sendLocationToServer(latitude, longitude, token);
+          //   useDispatch(setLocation({latitude, longitude}));
+          setTimeout(() => {
+            sendLocationToServer(latitude, longitude, token);
+          }, 5000);
 
           // Send location data to the server or handle it as needed
         },

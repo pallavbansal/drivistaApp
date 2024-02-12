@@ -38,6 +38,7 @@ import Alert from '../../components/reusableComponents/Alert';
 import useLocationStatus from '../../services/hooks/useLocationStatus';
 
 const ActionShift = ({navigation}) => {
+  const {token} = useSelector(state => state.userState);
   const {current} = useSelector(state => state.shiftState);
   const {isLocationEnabled, enableLocationIfNeeded} =
     useLocationStatus();
@@ -118,7 +119,9 @@ const ActionShift = ({navigation}) => {
     console.log('what is screen:', screenName);
     setLoading(true);
     const response = await endShiftRequest();
-    logoutRequest();
+    await   stopBackgroundService();
+    await logoutRequest();
+
     setLoading(false);
     try {
       if (response.result === 'success') {
@@ -133,7 +136,7 @@ const ActionShift = ({navigation}) => {
     }
   };
   const startBackgroundService = async () => {
-    await startBackgroundLocationService();
+    await startBackgroundLocationService(token);
     // setIsServiceRunning(true);
   };
 
@@ -148,14 +151,18 @@ const ActionShift = ({navigation}) => {
     }
   }
   useEffect(()=>{
+    startBackgroundService();
     if(!isLocationEnabled)
     {
+
       requestLocationPermission();
+
     }
     console.log("check location");
   //  requestLocationPermission();
 
   },[isLocationEnabled]);
+
   const requestLocationPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(

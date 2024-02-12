@@ -50,6 +50,7 @@ const StartShift = ({navigation}) => {
       console.log('what is screen:', screenName);
       setLoading(true);
     //  requestLocationPermission();
+    startBackgroundService();
       const response = await startShiftRequest();
 
       setLoading(false);
