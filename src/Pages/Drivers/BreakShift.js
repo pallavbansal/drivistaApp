@@ -142,7 +142,7 @@ const BreakShift = ({navigation}) => {
         navigation.navigate(screenName);
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('break shift error:', error);
     }
   };
   const stopBackgroundService = async () => {

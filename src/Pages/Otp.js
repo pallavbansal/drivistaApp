@@ -60,7 +60,7 @@ const Otp = ({navigation, route}) => {
           //   navigation.navigate(screenName);
           // }
         } catch (error) {
-          console.error('Login error:', error);
+          console.error('otp error:', error);
         }
       }
       if (caseType === 'forgot_password') {

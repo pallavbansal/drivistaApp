@@ -93,7 +93,7 @@ const Register = ({navigation}) => {
         }
       } catch (error) {
         showAlert('No internet connection!');
-        console.error('Login error:', error);
+        console.error('register error:', error);
       }
     },
   };

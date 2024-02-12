@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect} from 'react';
+import Geolocation from '@react-native-community/geolocation';
 import {
   View,
   StyleSheet,
@@ -68,7 +69,7 @@ const StartShift = ({navigation}) => {
           navigation.navigate(screenName);
         }
       } catch (error) {
-        console.error('Login error:', error);
+        console.error('StartShift error:', error);
       }
     },
   };
@@ -150,6 +151,9 @@ const StartShift = ({navigation}) => {
     }
     return null;
   };
+
+
+
   return (
     <BackgroundContainer source={themeLogo}>
       {renderSpinner()}

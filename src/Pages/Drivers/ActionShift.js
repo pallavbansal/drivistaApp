@@ -89,7 +89,7 @@ const ActionShift = ({navigation}) => {
           navigation.navigate(screenName);
         }
       } catch (error) {
-        console.error('Login error:', error);
+        console.error('action error:', error);
       }
     },
     handleBreakNavigation: async screenName => {
@@ -110,7 +110,7 @@ const ActionShift = ({navigation}) => {
           navigation.navigate(screenName);
         }
       } catch (error) {
-        console.error('Login error:', error);
+        console.error('action error:', error);
       }
     },
     // handleBreakNavigation: () => navigation.navigate('BreakShift'),
@@ -132,7 +132,7 @@ const ActionShift = ({navigation}) => {
         navigation.navigate(screenName);
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('action error:', error);
     }
   };
   const startBackgroundService = async () => {

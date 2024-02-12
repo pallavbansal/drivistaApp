@@ -58,7 +58,7 @@ const VehicleDetails = ({route, navigation}) => {
         }
       } catch (error) {
         showAlert('No Internet Connection');
-        console.error('Login error:', error);
+        console.error('vehicle error:', error);
       }
     },
   };
