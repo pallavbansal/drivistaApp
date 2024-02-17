@@ -1,5 +1,6 @@
 import {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
+import {socket} from '../WebSocketService';
 import {
   setCurrentShiftData,
   setDriversData,
@@ -11,7 +12,7 @@ import {
   startEndBreakShiftService,
 } from '../../service';
 export const useDriverShiftServiceHook = () => {
-  const {token} = useSelector(state => state.userState);
+  const {token, user} = useSelector(state => state.userState);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -31,6 +32,10 @@ export const useDriverShiftServiceHook = () => {
   const handleOK = () => {
     closeAlert();
   };
+  function sendShiftStartEvent(userData) {
+    console.log('sendShiftStartEvent:', userData);
+    socket.emit('shift_start', userData);
+  }
   const startShiftRequest = async () => {
     const config = {
       headers: {Authorization: `Bearer ${token}`},
@@ -42,7 +47,7 @@ export const useDriverShiftServiceHook = () => {
       console.log('after startShiftRequest profile:', response.data.data.shift);
       if (response.data.status_code === 1) {
         // console.log('login resounse:', response.data.data.users);
-
+        sendShiftStartEvent(user);
         return {result: 'success', message: 'Navigate to next screen'};
       } else if (response.data.status_code === 2) {
         return {result: 'failed', message: response.data.message};
