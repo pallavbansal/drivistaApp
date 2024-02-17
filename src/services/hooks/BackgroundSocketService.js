@@ -10,10 +10,10 @@ const connectToSocketAndCreateRoom = id => {
     console.log('WebSocket connected inside:', id);
     socket.emit('create_room', id);
   });
-  socket.on('error', error => {
-    console.error('Socket connection error:', error);
-    // Handle connection error (e.g., display an error message to the user)
-  });
+  // socket.on('error', error => {
+  //   console.error('Socket connection error:', error);
+  //   // Handle connection error (e.g., display an error message to the user)
+  // });
   socket.on('notification', notification => {
     console.log('Received notification:', notification);
     // Handle the notification here (e.g., display a notification to the user)
@@ -63,10 +63,11 @@ const startBackgroundSocketService = async id => {
   }
 };
 
-const stopBackgroundSocketService = async () => {
+const stopBackgroundSocketService = async id => {
   try {
     // Disconnect the socket when stopping the background service
-    socket.disconnect();
+    // socket.disconnect();
+    socket.emit('leave_room', id);
     await BackgroundService.stop();
     console.log('Background socket service stopped successfully!');
   } catch (e) {

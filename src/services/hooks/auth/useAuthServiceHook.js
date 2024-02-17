@@ -313,7 +313,7 @@ export const useAuthServiceHook = () => {
     // });
 
     dispatch(resetSubscriptionUserData());
-    stopBackgroundSocketService();
+    stopBackgroundSocketService('1');
     dispatch(logoutUser());
   };
 
