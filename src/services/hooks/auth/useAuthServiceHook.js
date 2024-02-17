@@ -18,9 +18,12 @@ import {
   changePasswordService,
   changeProfilePasswordService,
 } from '../../service';
+import io from 'socket.io-client';
 import {Alert} from 'react-native';
+import {stopBackgroundSocketService} from '../BackgroundSocketService';
 export const useAuthServiceHook = () => {
   const navigation = useNavigation();
+  const socket = io('https://drivista.onrender.com');
   const {user, token} = useSelector(state => state.userState);
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
@@ -110,13 +113,12 @@ export const useAuthServiceHook = () => {
         return {result: 'failed'};
       }
     } catch (error) {
-     // console.log('vvv:', error.message);
+      // console.log('vvv:', error.message);
       //  Alert.alert('No internet connection!');
-
       // if (error.message === 'No internet connection') {
       //   console.log('internet connection issue:');
       // }
-    //   return {result: 'failed'};
+      //   return {result: 'failed'};
       //  console.log('vvv:', error.response);
       //  console.log(error.response);
     }
@@ -154,7 +156,7 @@ export const useAuthServiceHook = () => {
         return {result: 'failed', message: response.data.message};
       }
     } catch (error) {
-     // console.log('vvv:', error.response);
+      // console.log('vvv:', error.response);
       //return {result: 'failed'};
       //   console.log('vvv:', error.response);
       //  console.log(error.response);
@@ -306,9 +308,13 @@ export const useAuthServiceHook = () => {
 
   const logoutRequest = async () => {
     console.log('lohgout is called');
-    dispatch(logoutUser());
-    dispatch(resetSubscriptionUserData());
+    // socket.on('disconnect', () => {
+    //   console.log('WebSocket disconnedted');
+    // });
 
+    dispatch(resetSubscriptionUserData());
+    stopBackgroundSocketService();
+    dispatch(logoutUser());
   };
 
   return {
@@ -330,7 +336,8 @@ export const useAuthServiceHook = () => {
     setOldPassword,
     isTrialChecked,
     setIsTrialChecked,
-    checked, setChecked,
+    checked,
+    setChecked,
     setOtp,
     otp,
     errors,

@@ -50,9 +50,9 @@ const fetchLocationInBackground = async token => {
           async position => {
             const {latitude, longitude} = position.coords;
             console.log('Background Location:', {latitude, longitude});
-            setTimeout(() => {
-              sendLocationToServer(latitude, longitude, token);
-            }, 5000);
+            // setTimeout(() => {
+            //   sendLocationToServer(latitude, longitude, token);
+            // }, 5000);
             setTimeout(async () => {
               await sendLocationToServer(latitude, longitude, token);
               resolve();

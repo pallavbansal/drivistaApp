@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "807194845919",
+    "project_id": "drivistanotifications",
+    "storage_bucket": "drivistanotifications.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:807194845919:android:6c2e5d6bb14e3c3973bf6a",
+        "android_client_info": {
+          "package_name": "com.drivista"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMfRfLH1WgtxX0iKXPQIv3Nc45O_dsev4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

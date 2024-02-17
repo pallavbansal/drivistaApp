@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect, useState} from 'react';
+import BackgroundService from 'react-native-background-actions';
 import {
   View,
   StyleSheet,
@@ -40,8 +41,7 @@ import useLocationStatus from '../../services/hooks/useLocationStatus';
 const ActionShift = ({navigation}) => {
   const {token} = useSelector(state => state.userState);
   const {current} = useSelector(state => state.shiftState);
-  const {isLocationEnabled, enableLocationIfNeeded} =
-    useLocationStatus();
+  const {isLocationEnabled, enableLocationIfNeeded} = useLocationStatus();
 
   const {
     loading,
@@ -119,7 +119,7 @@ const ActionShift = ({navigation}) => {
     console.log('what is screen:', screenName);
     setLoading(true);
     const response = await endShiftRequest();
-    await   stopBackgroundService();
+    await stopBackgroundService();
     await logoutRequest();
 
     setLoading(false);
@@ -150,18 +150,33 @@ const ActionShift = ({navigation}) => {
       }
     }
   }
-  useEffect(()=>{
+  useEffect(() => {
     startBackgroundService();
-    if(!isLocationEnabled)
-    {
-
+    if (!isLocationEnabled) {
       requestLocationPermission();
-
     }
-    console.log("check location");
-  //  requestLocationPermission();
+    console.log('check location');
+    //  requestLocationPermission();
+  }, [isLocationEnabled]);
 
-  },[isLocationEnabled]);
+   const checkBackgroundServiceStatus = async () => {
+    try {
+      const isServiceRunning = await BackgroundService.isRunning();
+      console.log('Background Service is running:', isServiceRunning);
+      if (!isServiceRunning) {
+        showAlert("allowwww");
+      }
+    } catch (error) {
+      console.error('Error checking background service status:', error);
+    }
+  };
+
+  // useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     checkBackgroundServiceStatus();
+  //   }, 5000); // Delay of 10 seconds
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   const requestLocationPermission = async () => {
     try {
@@ -175,6 +190,7 @@ const ActionShift = ({navigation}) => {
           buttonPositive: 'OK',
         },
       );
+      console.log('PermissionsAndroid Location has been enabled.', granted);
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('Location permission granted');
         const enableResult = await promptForEnableLocationIfNeeded({
@@ -197,6 +213,7 @@ const ActionShift = ({navigation}) => {
 
         // Location permission granted, start the background service
       } else {
+        requestLocationPermission();
         console.log('Location permission denied');
         // Handle denied permission (show an alert, etc.)
         showAlert(
@@ -205,7 +222,9 @@ const ActionShift = ({navigation}) => {
           [
             {
               text: 'OK',
-              onPress: () => console.log('OK Pressed'),
+              onPress: () => {
+                requestLocationPermission();
+              },
               style: 'cancel',
             },
           ],
@@ -241,8 +260,12 @@ const ActionShift = ({navigation}) => {
   }, []);
 
   useEffect(() => {
-    setTime(formatShiftTime());
-    setBreaksNo(current.number_of_breaks);
+    if(current)
+    {
+      setTime(formatShiftTime());
+      setBreaksNo(current.number_of_breaks);
+    }
+
   }, [current]);
 
   function formatShiftTime() {

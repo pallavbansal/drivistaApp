@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
+import {socket} from './src/services/hooks/WebSocketService';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from './src/Pages/Login';
 import RegisterScreen from './src/Pages/Register';
@@ -30,16 +31,100 @@ import BreakShift from './src/Pages/Drivers/BreakShift';
 import WorkHistoryDetails from './src/Pages/Owners/Driver/WorkHistoryDetails';
 import NetInfo from '@react-native-community/netinfo';
 import {StripeProvider} from '@stripe/stripe-react-native';
+import {Platform, PermissionsAndroid, Alert} from 'react-native';
+import {
+  notificationHandler,
+  createChannel,
+} from './src/services/hooks/AndroidNotificationHandler';
+
 const publishableKey =
   'pk_test_51OerSaSBV6gdBMXr5xtVLzH9X77xY9VCyJKaVxHroXamfoPBWaDYkXlxsDspRPLYk4AUDTbtSivvwy6q4M26dswq00NG5ueTyb';
-
+import io from 'socket.io-client';
+import {startBackgroundSocketService} from './src/services/hooks/BackgroundSocketService';
 const App = () => {
-  // Create a navigation stack
-  const {current} = useSelector(state => state.shiftState);
-  const {subscription, caseType} = useSelector(
-    state => state.subscriptionState,
-  );
   const {isAuth, user} = useSelector(state => state.userState);
+  const {current} = useSelector(state => state.shiftState);
+  const {caseType} = useSelector(state => state.subscriptionState);
+  useEffect(() => {
+    createChannel(); // Call createChannel when the component mounts
+  }, []);
+  useEffect(() => {
+    if (isAuth) {
+      startBackgroundSocketService('1');
+    }
+  }, [user]);
+  // useEffect(() => {
+  //   let id = '';
+  //   console.log('ooooooooooo parent id', user);
+  //   if (user && isAuth && user.parent_id === '-1') {
+  //     id = user.id;
+
+  //     startBackgroundSocketService(id);
+  //   } else if (user && isAuth && user.parent_id !== '-1') {
+  //     id = user.parent_id;
+  //     startBackgroundSocketService(id);
+  //   }
+  // }, [user]);
+
+  const requestNotificationPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+        {
+          title: 'Notification Permission',
+          message: 'Allow the app to access notifications.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Notification permission granted');
+        // Start background socket service if notification permission is granted
+        startBackgroundSocketService();
+      } else if (granted === PermissionsAndroid.RESULTS.DENIED) {
+        console.log('Notification permission denied');
+        // Handle denied permission (show an alert, etc.)
+        //    requestNotificationPermission();
+        // Alert.alert(
+        //   'Permission Denied',
+        //   'Notification permission is required for this app to function properly.',
+        //   [
+        //     {
+        //       text: 'OK',
+        //       onPress: () => console.log('OK Pressed'),
+        //       style: 'cancel',
+        //     },
+        //   ],
+        //   {cancelable: false},
+        // );
+      } else {
+        console.log('Permission request cancelled by user');
+        // Handle cancelled permission request
+        // requestNotificationPermission();
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  useEffect(() => {
+    // Listen for the shiftNotification event
+    // socket.on('connect', () => {
+    //   console.log('WebSocket connected in app js');
+    // });
+    // socket.on('notification', notification => {
+    //   console.log('Received shift notification:', notification);
+    //   //   handleNotification();
+    //   notificationHandler(notification.event, notification.message, new Date());
+    //   // Handle the notification (e.g., display it to the owner)
+    // });
+    // return () => {
+    //   // Clean up event listener
+    //   socket.off('notification');
+    // };
+  }, []);
+
   console.log('in app js:', current);
   const Stack = createNativeStackNavigator();
   let initialScreen;
@@ -79,11 +164,9 @@ const App = () => {
   console.log('in app:', isAuth);
   const currentStatus = current ? current.current_status : null;
 
-  const statusBarBackgroundColor = '#ffffff';
   if (!isConnected) {
     return (
       <NavigationContainer>
-
         <Stack.Navigator screenOptions={{headerShown: false}}>
           <Stack.Screen name="NoInternet" component={NoInternet} />
         </Stack.Navigator>
