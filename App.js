@@ -48,11 +48,40 @@ const App = () => {
   useEffect(() => {
     createChannel(); // Call createChannel when the component mounts
   }, []);
+  // useEffect(() => {
+  //   if (user && isAuth) {
+  //     startBackgroundSocketService('1');
+  //   }
+  // }, [isAuth]);
   useEffect(() => {
     if (isAuth) {
-      startBackgroundSocketService('1');
+      // Establish a socket connection when user is authenticated
+      console.log('isAuth value:', isAuth);
+
+      // Listen for 'connect' event
+      socket.on('connect', () => {
+        console.log('Socket connected');
+      });
+
+      // Listen for 'notification' event to receive notifications
+      socket.on('notification', notification => {
+        console.log('Received notification:', notification);
+        // Handle the notification here (e.g., display a notification to the user)
+      });
+
+      // Clean up the socket connection when the component unmounts or user logs out
+      return () => {
+        socket.disconnect();
+      };
     }
-  }, [user]);
+  }, [isAuth]);
+  // useEffect(() => {
+  //   socket.on('notification', notification => {
+  //     console.log('Received notification:', notification);
+  //     // Handle the notification here (e.g., display a notification to the user)
+  //     notificationHandler(notification.event, notification.message, new Date());
+  //   });
+  // }, [socket]);
   // useEffect(() => {
   //   let id = '';
   //   console.log('ooooooooooo parent id', user);
