@@ -48,11 +48,12 @@ const StartShift = ({navigation}) => {
     navigateBackNavigation: navigation => navigation.pop(),
     //   handleNavigation: (screenName) => navigation.navigate(screenName),
     handleNavigation: async screenName => {
-      console.log('what is screen:', screenName);
+
       setLoading(true);
     //  requestLocationPermission();
 
     startBackgroundService();
+
       const response = await startShiftRequest();
 
       setLoading(false);
@@ -86,61 +87,7 @@ const StartShift = ({navigation}) => {
     },
   ];
 
-  const requestLocationPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: 'App Location Permission',
-          message: 'App needs access to your location.',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Location permission granted');
-        const enableResult = await promptForEnableLocationIfNeeded({
-          title: 'Enable Location',
-          text: 'This app requires location access to function properly.',
-          positiveButtonText: 'Enable',
-          negativeButtonText: 'Cancel',
-        });
 
-        if (enableResult === 'enabled') {
-          console.log('Location has been enabled.');
-          startBackgroundService();
-
-          // Location is now enabled, perform additional actions if needed
-        } else {
-          console.log('User denied enabling location.');
-          startBackgroundService();
-          // Handle the case where the user denied enabling location
-        }
-
-        // Location permission granted, start the background service
-      } else {
-        console.log('Location permission denied');
-        // Handle denied permission (show an alert, etc.)
-        showAlert(
-          'Permission Denied',
-          'Location permission is required for this app to function properly.',
-          [
-            {
-              text: 'OK',
-              onPress: () => console.log('OK Pressed'),
-              style: 'cancel',
-            },
-          ],
-          {cancelable: false},
-        );
-      }
-    } catch (err) {
-      // console.warn(err);
-      requestLocationPermission();
-      console.log('User selected "No Thanks". Handle accordingly.');
-    }
-  };
 
   const startBackgroundService = async () => {
     await startBackgroundLocationService(token);

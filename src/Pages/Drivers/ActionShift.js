@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   PermissionsAndroid,
   Platform,
+  Linking,
 } from 'react-native';
 import moment from 'moment';
 import BackgroundContainer from '../../components/reusableComponents/Container/BackgroundContainer';
@@ -41,7 +42,7 @@ import useLocationStatus from '../../services/hooks/useLocationStatus';
 const ActionShift = ({navigation}) => {
   const {token} = useSelector(state => state.userState);
   const {current} = useSelector(state => state.shiftState);
-  const {isLocationEnabled, enableLocationIfNeeded} = useLocationStatus();
+  const {isLocationEnabled,enableLocationIfNeeded} = useLocationStatus();
 
   const {
     loading,
@@ -150,21 +151,40 @@ const ActionShift = ({navigation}) => {
       }
     }
   }
+  // useEffect(() => {
+  //   startBackgroundService();
+  //   if (!isLocationEnabled) {
+  //     repeatedlyCheckPermission();
+  //   }
+  //   console.log('check location:',isLocationEnabled);
+  //   //  requestLocationPermission();
+  // }, [isLocationEnabled]);
   useEffect(() => {
-    startBackgroundService();
-    if (!isLocationEnabled) {
-      requestLocationPermission();
-    }
-    console.log('check location');
-    //  requestLocationPermission();
-  }, [isLocationEnabled]);
+    const startServiceAndCheckPermission = async () => {
+      // Start your background service
+      startBackgroundService();
 
-   const checkBackgroundServiceStatus = async () => {
+      // Check if location permission is granted
+      const permissionGranted = await checkLocationPermission();
+      console.log('check location:', permissionGranted, ' ', isLocationEnabled);
+      // If permission is not granted and location is not enabled, repeatedly check permission
+      if (!permissionGranted && isLocationEnabled) {
+        repeatedlyCheckPermission();
+      }
+      else if (!isLocationEnabled) {
+      //  enableLocationIfNeeded();
+        checkLocationEnabledPermission();
+      }
+    };
+
+    startServiceAndCheckPermission();
+  }, [isLocationEnabled]);
+  const checkBackgroundServiceStatus = async () => {
     try {
       const isServiceRunning = await BackgroundService.isRunning();
       console.log('Background Service is running:', isServiceRunning);
       if (!isServiceRunning) {
-        showAlert("allowwww");
+        showAlert('allowwww');
       }
     } catch (error) {
       console.error('Error checking background service status:', error);
@@ -177,66 +197,143 @@ const ActionShift = ({navigation}) => {
   //   }, 5000); // Delay of 10 seconds
   //   return () => clearTimeout(timer);
   // }, []);
+  const checkLocationEnabledPermission = async () => {
+    try {
+      const enableResult = await promptForEnableLocationIfNeeded({
+        title: 'Enable Location',
+        text: 'This app requires location access to function properly.',
+        positiveButtonText: 'Enable',
+        negativeButtonText: 'Cancel',
+      });
+
+      if (!enableResult) {
+        // User chose to cancel enabling location services
+        return false;
+      }
+      return true; // Location services enabled
+    } catch (err) {
+      checkLocationEnabledPermission();
+     // console.warn('Error checking location permission:', err);
+     // return false;
+    }
+  };
+
+
+  const checkLocationPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION
+      );
+
+
+        if (!granted) {
+          // User chose to cancel enabling location services
+          return false;
+        }
+      return granted;
+    } catch (err) {
+      console.warn('Error checking location permission:', err);
+
+    }
+  };
 
   const requestLocationPermission = async () => {
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      const backgroundPermissionGranted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
         {
           title: 'App Location Permission',
-          message: 'App needs access to your location.',
+          message: 'App needs access to your location for better functionality.',
           buttonNeutral: 'Ask Me Later',
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',
         },
       );
-      console.log('PermissionsAndroid Location has been enabled.', granted);
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Location permission granted');
-        const enableResult = await promptForEnableLocationIfNeeded({
-          title: 'Enable Location',
-          text: 'This app requires location access to function properly.',
-          positiveButtonText: 'Enable',
-          negativeButtonText: 'Cancel',
-        });
-
-        if (enableResult === 'enabled') {
-          console.log('Location has been enabled.');
-          startBackgroundService();
-
-          // Location is now enabled, perform additional actions if needed
-        } else {
-          console.log('User denied enabling location.');
-          startBackgroundService();
-          // Handle the case where the user denied enabling location
-        }
-
-        // Location permission granted, start the background service
+     console.log("backgroundPermissionGranted:",backgroundPermissionGranted);
+      // If background location permission is not granted, return false
+      if (backgroundPermissionGranted !== PermissionsAndroid.RESULTS.GRANTED) {
+        return false;
       } else {
-        requestLocationPermission();
-        console.log('Location permission denied');
-        // Handle denied permission (show an alert, etc.)
-        showAlert(
-          'Permission Denied',
-          'Location permission is required for this app to function properly.',
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                requestLocationPermission();
-              },
-              style: 'cancel',
-            },
-          ],
-          {cancelable: false},
-        );
+        return false; // Permission not granted
       }
     } catch (err) {
-      // console.warn(err);
-      requestLocationPermission();
-      console.log('User selected "No Thanks". Handle accordingly.');
+      console.warn('Error requesting location permission:', err);
+      return false;
     }
   };
+
+  const repeatedlyCheckPermission = async () => {
+    let permissionGranted = await checkLocationPermission();
+
+    while (!permissionGranted) {
+      showAlert(
+        'Enable "Allow all the time" Background Location Permission',
+        'This app needs access to your location for better functionality.',
+        [
+          {
+            text: 'OK',
+            onPress: async () => {
+              const requested = await requestLocationPermission();
+              if (requested) {
+                permissionGranted = true;
+              }
+              else{
+                repeatedlyCheckPermission();
+              }
+            },
+          },
+        ],
+        {cancelable: false},
+      );
+
+      await new Promise(resolve => setTimeout(resolve, 3000)); // Check every 3 seconds
+      permissionGranted = await checkLocationPermission(); // Check permission again
+    }
+
+    console.log('Location permission granted');
+    // Start your background service here
+  };
+
+  // const requestLocationPermission = async () => {
+  //   try {
+  //     const granted = await PermissionsAndroid.request(
+  //       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+  //       {
+  //         title: 'App Location Permission',
+  //         message: 'App needs access to your location.',
+  //         buttonNeutral: 'Ask Me Later',
+  //         buttonNegative: 'Cancel',
+  //         buttonPositive: 'OK',
+  //       },
+  //     );
+
+  //     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+  //       console.log('Location permission granted');
+  //       startBackgroundService();
+  //       // Location permission granted, start the background service
+  //     } else {
+  //       console.log('Location permission denied !!');
+  //       // Handle denied permission (show an alert, etc.)
+  //       Linking.openSettings();
+  //       // showAlert(
+  //       //   'Permission Denied',
+  //       //   'Location permission is required for this app to function properly.',
+  //       //   [
+  //       //     {
+  //       //       text: 'OK',
+  //       //       onPress: () => {
+  //       //         Linking.openSettings();
+  //       //       },
+  //       //       style: 'cancel',
+  //       //     },
+  //       //   ],
+  //       //   { cancelable: false },
+  //       // );
+  //     }
+  //   } catch (err) {
+  //     console.warn('Error requesting location permission:', err);
+  //   }
+  // };
   // useEffect(() => {
   //   const intervalId = setInterval(() => {
   //     if(!promptOpen)
@@ -260,12 +357,10 @@ const ActionShift = ({navigation}) => {
   }, []);
 
   useEffect(() => {
-    if(current)
-    {
+    if (current) {
       setTime(formatShiftTime());
       setBreaksNo(current.number_of_breaks);
     }
-
   }, [current]);
 
   function formatShiftTime() {

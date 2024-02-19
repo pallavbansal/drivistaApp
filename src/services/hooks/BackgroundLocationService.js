@@ -23,7 +23,7 @@ const sendLocationToServer = async (latitude, longitude, token) => {
     config,
   );
   try {
-   // console.log('sendLocationToServer Response Data 2 :', response);
+    // console.log('sendLocationToServer Response Data 2 :', response);
     if (response.ok) {
       const responseData = await response.json();
       console.log('Response Data:', responseData);
@@ -38,9 +38,9 @@ const sendLocationToServer = async (latitude, longitude, token) => {
 const fetchLocationInBackground = async token => {
   try {
     const options = {
-      enableHighAccuracy: true,
+      enableHighAccuracy: false,
       timeout: 60000, // Adjust timeout as needed
-      maximumAge: 60000, // Adjust maximumAge as needed
+      // maximumAge: 60000, // Adjust maximumAge as needed
     };
 
     const fetchLocation = async () => {
@@ -117,40 +117,42 @@ const fetchLocationInBackground = async token => {
 // ... (imports remain unchanged)
 
 const startBackgroundLocationService = async token => {
-  try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      {
-        title: 'App Location Permission',
-        message: 'App needs access to your location.',
-        buttonNeutral: 'Ask Me Later',
-        buttonNegative: 'Cancel',
-        buttonPositive: 'OK',
-      },
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      console.log('Location permission granted');
-      // Location permission granted, start the background service
-      requestLocationPermission(token);
-    } else {
-      console.log('Location permission denied');
-      // Handle denied permission (show an alert, etc.)
-      Alert.alert(
-        'Permission Denied',
-        'Location permission is required for this app to function properly.',
-        [
-          {
-            text: 'OK',
-            onPress: () => console.log('OK Pressed'),
-            style: 'cancel',
-          },
-        ],
-        {cancelable: false},
-      );
-    }
-  } catch (err) {
-    console.warn(err);
-  }
+  requestLocationPermission(token);
+  // try {
+  //   const granted = await PermissionsAndroid.request(
+  //     PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+  //     {
+  //       title: 'App Location Permission',
+  //       message: 'App needs access to your location.',
+  //       buttonNeutral: 'Ask Me Later',
+  //       buttonNegative: 'Cancel',
+  //       buttonPositive: 'OK',
+  //     },
+  //   );
+  //   if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+  //     console.log('Location permission granted');
+  //     // Location permission granted, start the background service
+  //     const res = requestLocationPermission(token);
+  //   } else {
+  //     console.log('Location permission denied 2');
+  //     // Handle denied permission (show an alert, etc.)
+  //     // return "yes";
+  //     Alert.alert(
+  //       'Permission Denied',
+  //       'Location permission is required for this app to function properly.',
+  //       [
+  //         {
+  //           text: 'OK',
+  //           onPress: () => console.log('OK Pressed'),
+  //           style: 'cancel',
+  //         },
+  //       ],
+  //       {cancelable: false},
+  //     );
+  //   }
+  // } catch (err) {
+  //   console.warn(err);
+  // }
 };
 
 // Rest of the code remains unchanged
