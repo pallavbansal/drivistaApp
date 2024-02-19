@@ -23,7 +23,7 @@ const sendLocationToServer = async (latitude, longitude, token) => {
     config,
   );
   try {
-    console.log('sendLocationToServer Response Data 2 :', response);
+   // console.log('sendLocationToServer Response Data 2 :', response);
     if (response.ok) {
       const responseData = await response.json();
       console.log('Response Data:', responseData);
@@ -35,41 +35,84 @@ const sendLocationToServer = async (latitude, longitude, token) => {
     // Handle any errors that occur during the fetch request
   }
 };
-
 const fetchLocationInBackground = async token => {
   try {
     const options = {
       enableHighAccuracy: true,
-      timeout: 10000, // Adjust timeout as needed
-      maximumAge: 10000, // Adjust maximumAge as needed
+      timeout: 60000, // Adjust timeout as needed
+      maximumAge: 60000, // Adjust maximumAge as needed
     };
 
-    while (BackgroundService.isRunning()) {
-      await new Promise(resolve => {
+    const fetchLocation = async () => {
+      return new Promise((resolve, reject) => {
         Geolocation.getCurrentPosition(
           async position => {
             const {latitude, longitude} = position.coords;
             console.log('Background Location:', {latitude, longitude});
-            // setTimeout(() => {
-            //   sendLocationToServer(latitude, longitude, token);
-            // }, 5000);
-            setTimeout(async () => {
-              await sendLocationToServer(latitude, longitude, token);
-              resolve();
-            }, 5000);
+            await sendLocationToServer(latitude, longitude, token);
+            resolve();
           },
           error => {
             console.error('Background Location Error:', error);
-            resolve(); // Resolve even if there's an error to continue the loop
+            reject(error);
           },
           options,
         );
       });
-    }
+    };
+
+    const intervalId = setInterval(async () => {
+      try {
+        await fetchLocation();
+      } catch (error) {
+        console.error('Error fetching location:', error);
+      }
+    }, 60000);
+
+    // Stop fetching location when BackgroundService is stopped
+    await new Promise(resolve => {
+      BackgroundService.on('stop', () => {
+        clearInterval(intervalId);
+        resolve();
+      });
+    });
+
+    console.log('Background location service stopped successfully!');
   } catch (error) {
     console.error('Error in fetchLocationInBackground:', error);
   }
 };
+// const fetchLocationInBackground = async token => {
+//   try {
+//     const options = {
+//       enableHighAccuracy: true,
+//       timeout: 60000, // Adjust timeout as needed
+//       maximumAge: 60000, // Adjust maximumAge as needed
+//     };
+
+//     while (BackgroundService.isRunning()) {
+//       await new Promise(resolve => {
+//         Geolocation.getCurrentPosition(
+//           async position => {
+//             const {latitude, longitude} = position.coords;
+//             console.log('Background Location:', {latitude, longitude});
+//             await sendLocationToServer(latitude, longitude, token);
+//             resolve(); // Resolve the promise to continue the loop
+//           },
+//           error => {
+//             console.error('Background Location Error:', error);
+//             resolve(); // Resolve even if there's an error to continue the loop
+//           },
+//           options,
+//         );
+//         // Add a delay before fetching the next location
+//         setTimeout(resolve, 60000); // Wait 5 seconds before resolving the promise
+//       });
+//     }
+//   } catch (error) {
+//     console.error('Error in fetchLocationInBackground:', error);
+//   }
+// };
 
 // ... (imports remain unchanged)
 
@@ -123,7 +166,7 @@ const requestLocationPermission = async token => {
     },
     color: '#ff00ff',
     parameters: {
-      delay: 5000, // Adjust the delay as needed
+      delay: 60000, // Adjust the delay as needed
     },
   };
 
