@@ -143,20 +143,30 @@ const ActionShift = ({navigation}) => {
     // setIsServiceRunning(true);
   };
 
-  async function handleCheckPressed() {
-    if (Platform.OS === 'android') {
-      const checkEnabled = await isLocationEnabled();
-      console.log('checkEnabled', checkEnabled, ' ', promptOpen);
-      if (!checkEnabled) {
-        setPromptOpen(!promptOpen);
-        requestLocationPermission();
-      }
-    }
-  }
-  const getCurrentPositionWithPermission = async () => {
-    // const hasPermission = await requestLocationPermission();
+  const requestGeoLocationPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION // Add this for background location access
+      ], {
+        title: 'Location Permission',
+        message: 'This app needs access to your location in order to function properly.',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      });
 
-    // if (hasPermission) {
+      return granted['android.permission.ACCESS_FINE_LOCATION'] === PermissionsAndroid.RESULTS.GRANTED &&
+             granted['android.permission.ACCESS_BACKGROUND_LOCATION'] === PermissionsAndroid.RESULTS.GRANTED;
+    } catch (err) {
+      console.warn('Error requesting location permission:', err);
+      return false;
+    }
+  };
+  const getCurrentPositionWithPermission = async () => {
+    const hasPermission = await requestGeoLocationPermission();
+
+    if (!hasPermission) {
       Geolocation.getCurrentPosition(
         position => {
           // console.log(
@@ -167,7 +177,7 @@ const ActionShift = ({navigation}) => {
           // Handle position data
         },
         error => {
-          Alert.alert('Oopsnnn!', error.message, [
+          Alert.alert('Oops!', error.message, [
             {
               text: 'OK',
               onPress: () => { Linking.openSettings();},
@@ -181,16 +191,16 @@ const ActionShift = ({navigation}) => {
             android: 'high',
             ios: 'best',
           },
-          enableHighAccuracy: true,
-          timeout: 15000,
-          maximumAge: 10000,
+          enableHighAccuracy: false,
+          timeout: 6000,
+          // maximumAge: 000,
           distanceFilter: 0,
           forceRequestLocation: true,
           forceLocationManager: false,
           showLocationDialog: true,
         },
       );
-
+      }
   };
 
   useEffect(() => {
@@ -256,16 +266,17 @@ const ActionShift = ({navigation}) => {
   };
 
   const checkLocationPermission = async () => {
+
     try {
       const granted = await PermissionsAndroid.check(
         PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
       );
-
+      console.log('checkLocationPermission permission:', granted);
       if (!granted) {
         // User chose to cancel enabling location services
         return false;
       }
-      return granted;
+      return true;
     } catch (err) {
       console.warn('Error checking location permission:', err);
     }
@@ -273,24 +284,17 @@ const ActionShift = ({navigation}) => {
 
   const requestLocationPermission = async () => {
     try {
-      const backgroundPermissionGranted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
-        {
-          title: 'App Location Permission',
-          message:
-            'App needs access to your location for better functionality.',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
+      const backgroundPermissionGranted = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION
       );
+
       console.log('backgroundPermissionGranted:', backgroundPermissionGranted);
       // If background location permission is not granted, return false
-      if (backgroundPermissionGranted !== PermissionsAndroid.RESULTS.GRANTED) {
+      if (!backgroundPermissionGranted) {
+        // User chose to cancel enabling location services
         return false;
-      } else {
-        return false; // Permission not granted
       }
+    return backgroundPermissionGranted;
     } catch (err) {
       console.warn('Error requesting location permission:', err);
       return false;
