@@ -117,6 +117,11 @@ const fetchLocationInBackground = async token => {
 // ... (imports remain unchanged)
 
 const startBackgroundLocationService = async token => {
+  if (BackgroundService.isRunning()) {
+    console.log('Background socket service is already running');
+    return;
+  }
+
   requestLocationPermission(token);
   // try {
   //   const granted = await PermissionsAndroid.request(

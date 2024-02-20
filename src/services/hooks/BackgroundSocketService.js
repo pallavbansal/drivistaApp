@@ -23,13 +23,10 @@ const connectToSocketAndCreateRoom = id => {
 
 const startBackgroundSocketService = async id => {
   console.log('WebSocket connected 1:', id);
-  connectToSocketAndCreateRoom(id);
-  return;
   try {
-    if (BackgroundService.isRunning()) {
-      console.log('Background socket service is already running');
-      return;
-    }
+
+    connectToSocketAndCreateRoom(id);
+    return;
 
     const options = {
       taskName: 'BackgroundSocketTask',
