@@ -52,7 +52,7 @@ const StartShift = ({navigation}) => {
       setLoading(true);
     //  requestLocationPermission();
 
-    startBackgroundService();
+   // startBackgroundService();
 
       const response = await startShiftRequest();
 
