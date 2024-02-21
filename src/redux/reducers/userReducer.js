@@ -4,7 +4,6 @@ import {
   SET_LOGIN_USER_DATA,
   SET_REGISTER_USER_DATA,
   SET_USER_PROFILE_DATA,
-  SET_NEW_VEHICLE_DATA,
 } from '../constants/ActionTypes';
 const initialState = {
   user: {},
@@ -15,7 +14,6 @@ const initialState = {
 export const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_LOGIN_USER_DATA:
-      console.log('hey userReducer :', action.data.token);
       return {
         ...state,
         user: action.data.user,
@@ -24,7 +22,6 @@ export const userReducer = (state = initialState, action) => {
       };
 
     case SET_USER_PROFILE_DATA:
-      console.log('hey userReducer :', action.data.user);
       return {
         ...state,
         user: action.data.user,
@@ -33,7 +30,6 @@ export const userReducer = (state = initialState, action) => {
       };
 
     case SET_REGISTER_USER_DATA:
-      //   console.log('hey userReducer :', action.data);
       return {
         ...state,
         user: action.data,

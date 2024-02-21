@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {globalStyles} from '../../constants/globalStyles';
-import {Fonts} from '../../constants/fonts';
+
 
 const NavigationCard = ({
   label,
@@ -71,9 +71,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     flex:1,
-    // Apply border radius to the container
-   // Ensure border radius is applied correctly
-  //  marginLeft: -20, // Apply the negative margin here
+
   },
   logoSection: {
     flex: 0.5,

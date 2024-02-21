@@ -1,12 +1,9 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {addDays, format} from 'date-fns';
-
 import {useNavigation} from '@react-navigation/native';
 import {
   logoutUser,
   resetSubscriptionUserData,
-  setRegisterUserData,
   setUserData,
 } from '../../../redux/actions/userActions';
 import {
@@ -19,12 +16,9 @@ import {
   changeProfilePasswordService,
 } from '../../service';
 import io from 'socket.io-client';
-import {Alert} from 'react-native';
 import {stopBackgroundSocketService} from '../BackgroundSocketService';
 export const useAuthServiceHook = () => {
-  const navigation = useNavigation();
-  const socket = io('https://drivista.onrender.com');
-  const {user, token} = useSelector(state => state.userState);
+  const {token} = useSelector(state => state.userState);
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const [lastName, setLastName] = useState('');
@@ -58,25 +52,6 @@ export const useAuthServiceHook = () => {
     return email && password.length > 5;
   };
 
-  function convertCamelToSnake(obj) {
-    if (!obj || typeof obj !== 'object') {
-      return obj;
-    }
-
-    const snakeObj = {};
-    for (const [key, value] of Object.entries(obj)) {
-      const snakeKey = key.replace(
-        /[A-Z]/g,
-        letter => `_${letter.toLowerCase()}`,
-      );
-      snakeObj[snakeKey] =
-        value !== null && typeof value === 'object'
-          ? convertCamelToSnake(value)
-          : value;
-    }
-    return snakeObj;
-  }
-
   const validateRegister = (email, password) => {
     console.log('validation ', email, ' ', password);
     return email && password.length > 5;
@@ -89,13 +64,6 @@ export const useAuthServiceHook = () => {
     return false;
   };
 
-  const handleRegistrationVerification = () => {
-    if (validateRegister(fullName, lastName, email, mobileNumber, password)) {
-      return {fullName, lastName, email, mobileNumber, password};
-    }
-    return false;
-  };
-
   const loginRequest = async () => {
     const validation = handleLoginVerification();
     if (!validation) {
@@ -104,24 +72,13 @@ export const useAuthServiceHook = () => {
 
     try {
       const response = await loginService(validation);
-      console.log('vvv login:', response);
       if (response.data.status_code === 1) {
-        console.log('login resounse:', response.data.data);
         dispatch(setUserData(response.data.data));
         return {result: 'success', role: response.data.data.user.role};
       } else if (response.data.status_code === 2) {
         return {result: 'failed'};
       }
-    } catch (error) {
-      // console.log('vvv:', error.message);
-      //  Alert.alert('No internet connection!');
-      // if (error.message === 'No internet connection') {
-      //   console.log('internet connection issue:');
-      // }
-      //   return {result: 'failed'};
-      //  console.log('vvv:', error.response);
-      //  console.log(error.response);
-    }
+    } catch (error) {}
   };
   const registrationRequest = async () => {
     if (fullName.length < 5) {
@@ -145,7 +102,6 @@ export const useAuthServiceHook = () => {
       password: password,
     };
     console.log('before sending register:', params);
-    // const params = convertCamelToSnake(validation);
 
     try {
       const response = await registerService(params);
@@ -155,12 +111,7 @@ export const useAuthServiceHook = () => {
       } else if (response.data.status_code === 2) {
         return {result: 'failed', message: response.data.message};
       }
-    } catch (error) {
-      // console.log('vvv:', error.response);
-      //return {result: 'failed'};
-      //   console.log('vvv:', error.response);
-      //  console.log(error.response);
-    }
+    } catch (error) {}
   };
   const otpVerifyRequest = async id => {
     if (isNaN(parseInt(otp.join(''), 10))) {
@@ -186,8 +137,6 @@ export const useAuthServiceHook = () => {
       }
     } catch (error) {
       return {result: 'failed', message: 'Something went wrong!'};
-      console.log('vvv:', error.response);
-      //  console.log(error.response);
     }
   };
 
@@ -211,8 +160,6 @@ export const useAuthServiceHook = () => {
     } catch (error) {
       console.log('vvv:', error.response);
       return {result: 'failed', message: 'Something went wrong'};
-
-      //  console.log(error.response);
     }
   };
   const otpForgotPassVerifyRequest = async id => {
@@ -242,8 +189,6 @@ export const useAuthServiceHook = () => {
       }
     } catch (error) {
       return {result: 'failed', message: 'Something went wrong!'};
-      console.log('vvv:', error.response);
-      //  console.log(error.response);
     }
   };
   const changePasswordRequest = async (id, verification_uid) => {
@@ -269,10 +214,7 @@ export const useAuthServiceHook = () => {
         return {result: 'failed', message: 'Envalid Otp!'};
       }
     } catch (error) {
-      console.log('vvv:', error.response);
       return {result: 'failed', message: 'Something went wrong!'};
-
-      //  console.log(error.response);
     }
   };
   const changePasswordProfileRequest = async () => {
@@ -301,8 +243,6 @@ export const useAuthServiceHook = () => {
     } catch (error) {
       console.log('vvv:', error.response);
       return {result: 'failed', message: 'Something went wrong!'};
-
-      //  console.log(error.response);
     }
   };
 

@@ -4,18 +4,14 @@ import {View, StyleSheet, Text} from 'react-native';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import CustomTextInput from '../components/reusableComponents/CustomTextInput';
-import emailLogo from '../storage/images/email.png';
 import lockLogo from '../storage/images/lock.png';
-import Heading from '../components/reusableComponents/Heading';
-import PageLabel from '../components/reusableComponents/PageLabel';
-import AuthFooter from '../components/reusableComponents/Footer/AuthFooter';
 import themeLogo from '../storage/images/theme.png';
 import BackgroundContainer from '../components/reusableComponents/Container/BackgroundContainer';
 import Space from '../components/reusableComponents/Space';
 import HeaderContainer from '../components/reusableComponents/Container/HeaderContainer';
 import {useAuthServiceHook} from '../services/hooks/auth/useAuthServiceHook';
 import Spinner from '../components/reusableComponents/Spinner';
-import { globalStyles } from '../constants/globalStyles';
+import {globalStyles} from '../constants/globalStyles';
 import Alert from '../components/reusableComponents/Alert';
 
 const ChangePassword = ({navigation, route}) => {
@@ -138,12 +134,15 @@ const ChangePassword = ({navigation, route}) => {
           containerStyle={styles.headContainer}
           handleBackNavigation={labels.handleDirectNavigation}
         />
-        {/* <View style={styles.pageLabel}>
-          <PageLabel label={labels.label} />
-        </View> */}
+
         <View style={styles.container}>
-          {/* <InputContainer email={props.oldPassword} password={props.password} /> */}
-          <Text style={[globalStyles.labelHeading, {color: Colors.primary,fontSize:20,fontWeight:'bold'}]}>{"Change Password"}</Text>
+          <Text
+            style={[
+              globalStyles.labelHeading,
+              {color: Colors.primary, fontSize: 20, fontWeight: 'bold'},
+            ]}>
+            {'Change Password'}
+          </Text>
           <InputContainer
             loginError={loginError}
             labels={labels}
@@ -173,12 +172,6 @@ const ChangePassword = ({navigation, route}) => {
     </BackgroundContainer>
   );
 };
-
-const HeadingContainer = memo(({heading}) => (
-  <View style={styles.header}>
-    <Heading label={heading} />
-  </View>
-));
 
 const InputContainer = memo(props => (
   <View style={styles.inputContainer}>
@@ -229,12 +222,6 @@ const ButtonContainer = memo(props => (
   </View>
 ));
 
-const FooterContainer = memo(props => (
-  <View style={styles.footer}>
-    <AuthFooter text={props.authFooterText} navigationText={props.linkText} />
-  </View>
-));
-
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
@@ -281,8 +268,7 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 0.2,
-    marginHorizontal:40
-    // justifyContent:'center'
+    marginHorizontal: 40,
   },
   actionSection: {
     flex: 0.3,

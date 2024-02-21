@@ -4,23 +4,19 @@ import React, {memo, useEffect, useState} from 'react';
 import {View, StyleSheet, Image, Text, TouchableOpacity} from 'react-native';
 //import {OwnerProfilComponent} from '../components/reusableComponents/Profile/Owner';
 import Owner from '../components/reusableComponents/Profile/Owner';
-import FooterContainer from '../components/reusableComponents/Container/FooterContainer';
 import {globalStyles} from '../constants/globalStyles';
-import {Fonts} from '../constants/fonts';
 import HeaderContainer from '../components/reusableComponents/Container/HeaderContainer';
 import {useDriverOnlineServiceHook} from '../services/hooks/auth/useDriverOnlineServiceHook';
 import {useSelector} from 'react-redux';
 import Spinner from '../components/reusableComponents/Spinner';
-import { useAuthServiceHook } from '../services/hooks/auth/useAuthServiceHook';
-import { Colors } from '../constants/colors';
+import {useAuthServiceHook} from '../services/hooks/auth/useAuthServiceHook';
+import {Colors} from '../constants/colors';
 import Alert from '../components/reusableComponents/Alert';
-
 
 const Profile = ({route, navigation}) => {
   const {user} = useSelector(state => state.userState);
-   const [editable, setEditable] = useState(false);
+  const [editable, setEditable] = useState(false);
   console.log('redux user data:', user);
-  //const [details,setDetails]=useState({});
   const {
     loading,
     setLoading,
@@ -41,29 +37,22 @@ const Profile = ({route, navigation}) => {
     closeAlert,
     handleOK,
     updateUserProfileRequest,
-
   } = useDriverOnlineServiceHook();
-  const {
-   logoutRequest
 
-  } = useAuthServiceHook();
-
-  const handleUpdateUserProfileRequest=async ()=>{
+  const handleUpdateUserProfileRequest = async () => {
     setLoading(true);
-    try{
+    try {
       const response = await updateUserProfileRequest();
-      if(response.result === "failed")
-      { setEditable(true);
-        showAlert(response.message)
+      if (response.result === 'failed') {
+        setEditable(true);
+        showAlert(response.message);
       }
       setLoading(false);
+    } catch {
+      showAlert('No Internet Connection!');
     }
-    catch{
-   showAlert("No Internet Connection!")
-
-    }
- setLoading(false);
-  }
+    setLoading(false);
+  };
   useEffect(() => {
     setEmail(user.email);
     setMobileNumber(user.mobile_number);
@@ -87,12 +76,10 @@ const Profile = ({route, navigation}) => {
     linkText: 'Register',
     navigateScreen: 'OwnerHomeScreen',
     footerNavigateScreen: 'RegisterScreen',
-    handleBackNavigation:()=> navigation.pop(),
+    handleBackNavigation: () => navigation.pop(),
     handleDirectNavigation: screenName => navigation.navigate(screenName),
   };
-  const handleBackArrow=()=>{
-
-  }
+  const handleBackArrow = () => {};
   const renderSpinner = () => {
     if (loading) {
       return <Spinner />;
@@ -145,7 +132,7 @@ const Profile = ({route, navigation}) => {
           <Text
             style={[
               globalStyles.text,
-              {fontSize: 20, fontWeight: 'bold',color:Colors.primary},
+              {fontSize: 20, fontWeight: 'bold', color: Colors.primary},
             ]}>
             {'Change password ?'}
           </Text>
@@ -168,7 +155,6 @@ const styles = StyleSheet.create({
   profileContainer: {
     flex: 0.9,
     margin: 20,
-    // backgroundColor: 'white',
     borderRadius: 8,
     shadowColor: '#B0ACAC',
     shadowOffset: {

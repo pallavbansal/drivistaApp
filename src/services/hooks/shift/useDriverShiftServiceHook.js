@@ -1,10 +1,7 @@
 import {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {socket} from '../WebSocketService';
-import {
-  setCurrentShiftData,
-  setDriversData,
-} from '../../../redux/actions/userActions';
+import {setCurrentShiftData} from '../../../redux/actions/userActions';
 import {
   startShiftService,
   endShiftService,
@@ -40,13 +37,11 @@ export const useDriverShiftServiceHook = () => {
     const config = {
       headers: {Authorization: `Bearer ${token}`},
     };
-    console.log('before startShiftRequest profile:', config);
     try {
       const response = await startShiftService(config);
-      const res = await currentShiftRequest();
+      await currentShiftRequest();
       console.log('after startShiftRequest profile:', response.data.data.shift);
       if (response.data.status_code === 1) {
-        // console.log('login resounse:', response.data.data.users);
         sendShiftStartEvent(user);
         return {result: 'success', message: 'Navigate to next screen'};
       } else if (response.data.status_code === 2) {
@@ -64,11 +59,9 @@ export const useDriverShiftServiceHook = () => {
     console.log('before endShiftRequest profile:', config);
     try {
       const response = await endShiftService(config);
-      const res = await currentShiftRequest();
+      await currentShiftRequest();
       console.log('after endShiftRequest profile:', response.data.data.shift);
       if (response.data.status_code === 1) {
-        // console.log('login resounse:', response.data.data.users);
-
         return {result: 'success', message: response.data.message};
       } else if (response.data.status_code === 2) {
         return {result: 'failed', message: response.data.message};
@@ -88,8 +81,6 @@ export const useDriverShiftServiceHook = () => {
       console.log('after currentShiftRequest:', response.data.data.current);
       dispatch(setCurrentShiftData(response.data.data.current));
       if (response.data.status_code === 1) {
-        // console.log('login resounse:', response.data.data.users);
-
         return {result: 'success', message: response.data.message};
       } else if (response.data.status_code === 2) {
         dispatch(setCurrentShiftData(response.data.data));
@@ -107,12 +98,10 @@ export const useDriverShiftServiceHook = () => {
 
     try {
       const response = await startEndBreakShiftService(config);
-      const res = await currentShiftRequest();
+      await currentShiftRequest();
       console.log('after startEndBreakShiftRequest:', response.data.data);
 
       if (response.data.status_code === 1) {
-        // console.log('login resounse:', response.data.data.users);
-
         return {result: 'success', message: response.data.message};
       } else if (response.data.status_code === 2) {
         return {result: 'failed', message: response.data.message};

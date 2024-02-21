@@ -1,7 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
-import React, {memo, useEffect} from 'react';
-import Geolocation from '@react-native-community/geolocation';
+import React, {memo} from 'react';
 import {
   View,
   StyleSheet,
@@ -9,25 +8,19 @@ import {
   ImageBackground,
   Image,
   TouchableOpacity,
-  PermissionsAndroid,
 } from 'react-native';
 import BackgroundContainer from '../../components/reusableComponents/Container/BackgroundContainer';
 import HeaderContainer from '../../components/reusableComponents/Container/HeaderContainer';
-import {Fonts} from '../../constants/fonts';
 import {globalStyles} from '../../constants/globalStyles';
 import shiftbg from '../../storage/images/shiftbg.png';
 import themeLogo from '../../storage/images/theme.png';
 import journey from '../../storage/images/journey.png';
 import {useDriverShiftServiceHook} from '../../services/hooks/shift/useDriverShiftServiceHook';
 import {useAuthServiceHook} from '../../services/hooks/auth/useAuthServiceHook';
-import {
-  startBackgroundLocationService,
-  stopBackgroundLocationService,
-} from '../../services/hooks/BackgroundLocationService.js';
-import {promptForEnableLocationIfNeeded} from 'react-native-android-location-enabler';
+import {startBackgroundLocationService} from '../../services/hooks/BackgroundLocationService.js';
 import Spinner from '../../components/reusableComponents/Spinner';
 import Alert from '../../components/reusableComponents/Alert';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 
 const StartShift = ({navigation}) => {
   const {
@@ -46,25 +39,14 @@ const StartShift = ({navigation}) => {
     label: 'Please click on the start button to start your shift',
     navigateScreen: 'ActionShift',
     navigateBackNavigation: navigation => navigation.pop(),
-    //   handleNavigation: (screenName) => navigation.navigate(screenName),
     handleNavigation: async screenName => {
-
       setLoading(true);
-    //  requestLocationPermission();
-
-   // startBackgroundService();
-
       const response = await startShiftRequest();
-
       setLoading(false);
       try {
         if (response.result === 'success') {
           console.log('response bb:', response);
           navigation.navigate(screenName);
-          // navigation.navigate(screenName, {
-          //   caseType: 'register',
-          //   id: response.id,
-          // });
         } else if (response.result === 'failed') {
           showAlert(response.message);
         } else {
@@ -75,19 +57,13 @@ const StartShift = ({navigation}) => {
       }
     },
   };
-  const handleNavigation = navigateScreen => {
-    if (navigateScreen === 'logout') {
-      logoutRequest();
-    }
-  };
+
   const navigationPopUpList = [
     {
       label: 'logout',
       navigateScreen: 'logout',
     },
   ];
-
-
 
   const startBackgroundService = async () => {
     await startBackgroundLocationService(token);
@@ -99,8 +75,6 @@ const StartShift = ({navigation}) => {
     }
     return null;
   };
-
-
 
   return (
     <BackgroundContainer source={themeLogo}>

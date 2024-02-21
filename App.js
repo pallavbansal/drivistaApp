@@ -31,15 +31,10 @@ import BreakShift from './src/Pages/Drivers/BreakShift';
 import WorkHistoryDetails from './src/Pages/Owners/Driver/WorkHistoryDetails';
 import NetInfo from '@react-native-community/netinfo';
 import {StripeProvider} from '@stripe/stripe-react-native';
-import {Platform, PermissionsAndroid, Alert} from 'react-native';
-import {
-  notificationHandler,
-  createChannel,
-} from './src/services/hooks/AndroidNotificationHandler';
+import {createChannel} from './src/services/hooks/AndroidNotificationHandler';
 
 const publishableKey =
   'pk_test_51OerSaSBV6gdBMXr5xtVLzH9X77xY9VCyJKaVxHroXamfoPBWaDYkXlxsDspRPLYk4AUDTbtSivvwy6q4M26dswq00NG5ueTyb';
-import io from 'socket.io-client';
 import {startBackgroundSocketService} from './src/services/hooks/BackgroundSocketService';
 const App = () => {
   const {isAuth, user} = useSelector(state => state.userState);
@@ -54,27 +49,25 @@ const App = () => {
   //   }
   // }, [isAuth]);
   useEffect(() => {
-    if (isAuth) {
-      // Establish a socket connection when user is authenticated
-      console.log('isAuth value:', isAuth);
+    // Establish a socket connection when user is authenticated
+    console.log('isAuth value:', isAuth);
 
-      // Listen for 'connect' event
-      socket.on('connect', () => {
-        console.log('Socket connected');
-      });
+    // Listen for 'connect' event
+    socket.on('connect', () => {
+      console.log('Socket connected');
+    });
 
-      // Listen for 'notification' event to receive notifications
-      socket.on('notification', notification => {
-        console.log('Received notification:', notification);
-        // Handle the notification here (e.g., display a notification to the user)
-      });
+    // Listen for 'notification' event to receive notifications
+    socket.on('notification', notification => {
+      console.log('Received notification:', notification);
+      // Handle the notification here (e.g., display a notification to the user)
+    });
 
-      // Clean up the socket connection when the component unmounts or user logs out
-      return () => {
-        socket.disconnect();
-      };
-    }
-  }, [isAuth]);
+    // Clean up the socket connection when the component unmounts or user logs out
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
   // useEffect(() => {
   //   socket.on('notification', notification => {
   //     console.log('Received notification:', notification);
@@ -95,47 +88,7 @@ const App = () => {
   //   }
   // }, [user]);
 
-  const requestNotificationPermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-        {
-          title: 'Notification Permission',
-          message: 'Allow the app to access notifications.',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Notification permission granted');
-        // Start background socket service if notification permission is granted
-        startBackgroundSocketService();
-      } else if (granted === PermissionsAndroid.RESULTS.DENIED) {
-        console.log('Notification permission denied');
-        // Handle denied permission (show an alert, etc.)
-        //    requestNotificationPermission();
-        // Alert.alert(
-        //   'Permission Denied',
-        //   'Notification permission is required for this app to function properly.',
-        //   [
-        //     {
-        //       text: 'OK',
-        //       onPress: () => console.log('OK Pressed'),
-        //       style: 'cancel',
-        //     },
-        //   ],
-        //   {cancelable: false},
-        // );
-      } else {
-        console.log('Permission request cancelled by user');
-        // Handle cancelled permission request
-        // requestNotificationPermission();
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  };
+
 
   useEffect(() => {
     // Listen for the shiftNotification event
@@ -153,8 +106,6 @@ const App = () => {
     //   socket.off('notification');
     // };
   }, []);
-
-  console.log('in app js:', current);
   const Stack = createNativeStackNavigator();
   let initialScreen;
   const [isConnected, setIsConnected] = useState(null);

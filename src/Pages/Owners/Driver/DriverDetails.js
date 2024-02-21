@@ -15,9 +15,7 @@ const DriverDetails = ({route, navigation}) => {
   const {
     setLoading,
     alertVisible,
-    setAlertVisible,
     alertMessage,
-    setAlertMessage,
     showAlert,
     closeAlert,
     handleOK,
@@ -34,11 +32,7 @@ const DriverDetails = ({route, navigation}) => {
     driverDetailsEditRequest,
   } = useDriverServiceHook();
   const {logoutRequest} = useAuthServiceHook();
-  const {
-    headLabel = 'Vehicle Details',
-    type = 'Default Type',
-    details = [],
-  } = route.params;
+  const {details = []} = route.params;
   const [editable, setEditable] = useState(false);
   useEffect(() => {
     setFirstName(details.first_name);
@@ -117,12 +111,6 @@ const DriverDetails = ({route, navigation}) => {
             handleCalender={handleCalender}
           />
         </View>
-        {/* <TextInput
-          style={styles.input}
-          placeholder="Enter Vehicle Name"
-          value={vehicleName}
-          onChangeText={text =>setVehicleName(text)}
-        /> */}
       </View>
 
       {editable ? (

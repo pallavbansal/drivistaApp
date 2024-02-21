@@ -8,7 +8,6 @@ import userLogo from '../../../storage/images/user.png';
 import emailLogo from '../../../storage/images/email.png';
 import phoneLogo from '../../../storage/images/phone.png';
 import lockLogo from '../../../storage/images/lock.png';
-import notfound from '../../../storage/images/notfound.jpg';
 import cancelImage from '../../../storage/images/cancel.png';
 import {useSelector} from 'react-redux';
 import showDeleteConfirmation from '../../../components/reusableComponents/showDeleteConfirmation';
@@ -42,9 +41,7 @@ const Home = ({navigation}) => {
     password,
     setPasssword,
     alertVisible,
-    setAlertVisible,
     alertMessage,
-    setAlertMessage,
     showAlert,
     closeAlert,
     handleOK,
@@ -57,7 +54,6 @@ const Home = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const {drivers} = useSelector(state => state.driverState);
   const [driversData, setDriversData] = useState([]);
-  // console.log('hey vehicleReducer in home :', vehicle);
   useEffect(() => {
     setDriversData(drivers);
   }, [drivers]);
@@ -80,7 +76,7 @@ const Home = ({navigation}) => {
     const isFirstNameValid = firstName.length >= 3;
     const isLastNameValid = lastName.length >= 3;
     const isMobileNumberValid = mobileNumber.length >= 10;
-    const isPasswordValid = password.length > 5; // Ensure password length is greater than 6
+    const isPasswordValid = password.length > 5; // Ensure password length is greater than 5
     const emailValidationRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isEmailValid = emailValidationRegex.test(email);
 
@@ -169,7 +165,6 @@ const Home = ({navigation}) => {
             handleDeleteItem={id => handleDeleteItem(id)}
             handleNavigation={id => handleNavigation(item)}
           />
-          {/* onPress={() => handleNavigation(index)} */}
         </View>
       </View>
     ));
@@ -338,7 +333,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: 'rgba(0, 0, 0, 0.5)',
     marginHorizontal: 10,
   },
   modalContent: {
@@ -347,8 +341,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     marginTop: 20,
-    //alignItems: 'center',
-
     width: '100%',
   },
   input: {

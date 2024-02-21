@@ -30,12 +30,6 @@ const BreakDetailsCard = ({
       .toLowerCase();
   };
 
-  const handleCardPress = () => {
-    if (navigateScreen) {
-      handleNavigation(navigateScreen);
-    }
-  };
-
   return (
     <ScrollView style={styles.container}>
       <View style={styles.breakContainer}>

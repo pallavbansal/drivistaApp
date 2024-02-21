@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Colors} from '../../../constants/colors';
 import StatusCard from '../../../components/cards/StatusCard';
-// import CustomCard from '../../components/cards/CustomCard';
 import HeaderContainer from '../../../components/reusableComponents/Container/HeaderContainer';
 import FooterContainer from '../../../components/reusableComponents/Container/FooterContainer';
 import userLogo from '../../../storage/images/user.png';
@@ -20,16 +19,13 @@ const OnlineDrivers = ({navigation}) => {
     setLoading,
     fetchOnlineDriversRequest,
     alertVisible,
-    setAlertVisible,
     alertMessage,
-    setAlertMessage,
     closeAlert,
     handleOK,
     showAlert,
   } = useDriverOnlineServiceHook();
   const {logoutRequest} = useAuthServiceHook();
   const [data, setData] = useState([]);
-  //  const [editable, setEditable] = useState(false);
   const labels = {
     navigateBackScreen: '',
   };

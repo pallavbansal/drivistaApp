@@ -1,14 +1,11 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
 import React, {memo} from 'react';
-import {View, StyleSheet, ImageBackground} from 'react-native';
-import {Colors} from '../constants/colors';
+import {View, StyleSheet} from 'react-native';
 import NavigationCard from '../components/cards/NavigationCard';
 import HeaderContainer from '../components/reusableComponents/Container/HeaderContainer';
-import FooterContainer from '../components/reusableComponents/Container/FooterContainer';
 import authUserLogo from '../storage/images/auth_user_logo.png';
 import themeLogo from '../storage/images/theme.png';
-import logo from '../storage/images/logo.png';
 import shade1 from '../storage/images/shade1.png';
 import shade2 from '../storage/images/shade2.png';
 import shade3 from '../storage/images/shade3.png';
@@ -102,11 +99,8 @@ const styles = StyleSheet.create({
   },
 
   card: {
-
     flex: 0.25,
-   // marginHorizontal:40,
     marginVertical:10,
-   // height:80,
     width: '60%',
     marginLeft: 'auto',
     marginRight: 'auto',
