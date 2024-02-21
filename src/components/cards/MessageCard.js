@@ -1,10 +1,7 @@
 import React, {memo} from 'react';
-import {View, Text, StyleSheet, Pressable} from 'react-native';
-import {globalStyles} from '../../constants/globalStyles';
+import {View, StyleSheet} from 'react-native';
 import accessDenied from '../../storage/images/accessDenied.png';
-import {Colors} from '../../constants/colors';
 import LogoWithLabel from '../reusableComponents/LogoWithLabel';
-import Heading from '../reusableComponents/Heading';
 import CustomButton from '../reusableComponents/CustomButton';
 
 const MessageCard = ({label, description, handleNavigation}) => {
@@ -14,8 +11,7 @@ const MessageCard = ({label, description, handleNavigation}) => {
     email: 'Email Id',
     buttonLabel: 'Yes',
     linkText: 'Resend OTP',
-    //  navigateScreen: 'PaymentDetails',
-    // handleNavigation: screenName => navigation.navigate(screenName),
+
   };
 
 
@@ -46,11 +42,10 @@ const styles = StyleSheet.create({
     flex: 0.5,
     justifyContent: 'center',
     alignItems: 'center',
-    // height:400,
-    // marginTop:100
+
   },
   modalView: {
-    // marginLeft: 'auto',
+
     flex: 1,
     backgroundColor: 'white',
     borderRadius: 20,

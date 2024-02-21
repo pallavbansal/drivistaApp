@@ -1,28 +1,18 @@
 import React, {memo} from 'react';
-import {View, Text, StyleSheet, Pressable} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import {globalStyles} from '../../constants/globalStyles';
 import cancel from '../../storage/images/cancel.png';
-import {Colors} from '../../constants/colors';
 import LogoWithLabel from '../reusableComponents/LogoWithLabel';
-import Heading from '../reusableComponents/Heading';
 import CustomButton from '../reusableComponents/CustomButton';
 
 const CancelCard = ({label, description, handleNavigation}) => {
-//   const handleNavigation = navigateScreen => {
-//     if(navigateScreen =="CancelModal")
-//     {
-//         handlModalAction(navigateScreen);
-//     }
-
-//   };
   const props = {
     label: 'Forgot Password',
     heading: 'How many employees do you have?',
     email: 'Email Id',
     buttonLabel: 'Yes',
     linkText: 'Resend OTP',
-    //  navigateScreen: 'PaymentDetails',
-    // handleNavigation: screenName => navigation.navigate(screenName),
+
   };
 
 
@@ -61,11 +51,10 @@ const styles = StyleSheet.create({
     flex: 0.5,
     justifyContent: 'center',
     alignItems: 'center',
-    // height:400,
-    // marginTop:100
+
   },
   modalView: {
-    // marginLeft: 'auto',
+
     flex: 1,
     backgroundColor: 'white',
     borderRadius: 20,

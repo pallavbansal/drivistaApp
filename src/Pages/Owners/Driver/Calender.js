@@ -1,14 +1,12 @@
-import React, {useState, useEffect, memo} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
-import {Calendar, LocaleConfig} from 'react-native-calendars';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {Calendar} from 'react-native-calendars';
 import HeaderContainer from '../../../components/reusableComponents/Container/HeaderContainer';
 import {navigationPopUpList} from '../../../constants/navigation';
-import CustomButton from '../../../components/reusableComponents/CustomButton';
+
 
 const Calender = ({navigation, route}) => {
   const [selected, setSelected] = useState('');
-  console.log('selected day', selected);
   const {id} = route.params;
   const labels = {
     label: 'Calender',
@@ -19,19 +17,6 @@ const Calender = ({navigation, route}) => {
         driver_id: id,
         date: selected,
       });
-      // setLoading(true);
-      // const response = await driverDetailsEditRequest(details.id);
-      //setLoading(false);
-      // try {
-      //   if (response.result === 'success') {
-      //   //  Alert.alert('Success');
-      //   navigation.pop();
-      //   } else if (response.result === 'failed') {
-      //     Alert.alert(response.message);
-      //   }
-      // } catch (error) {
-      //   console.error('Login error:', error);
-      // }
     },
     handleDirectNavigation: screenName => navigation.pop(),
   };
@@ -52,8 +37,6 @@ const Calender = ({navigation, route}) => {
         showLabel={true}
         showBackground={true}
         showPopUp={false}
-        //  containerStyle={styles.headContainer}
-        //  handleNavigation={handlePopUpNavigation}
         handleBackNavigation={labels.handleDirectNavigation}
         navigationPopUpList={navigationPopUpList}
       />
@@ -64,15 +47,10 @@ const Calender = ({navigation, route}) => {
           // Customize the appearance of the calendar
           disableAllTouchEventsForDisabledDays={false}
           style={{
-            // borderRadius: 5,
             marginh: 12,
-            // height: 450,
-            // elevation: 5,
-            // borderWidth: 4,
             borderColor: 'rgba(100, 100, 100, 0.2)',
           }}
           theme={{
-            // backgroundColor: 'blue',
             selectedDayBackgroundColor: '#6d528f',
             todayTextColor: 'green',
             'stylesheet.calendar.header': {
@@ -111,12 +89,10 @@ const Calender = ({navigation, route}) => {
           current={selected}
           // Callback that gets called when the user selects a day
           onDayPress={day => {
-            // console.log('selected day', day);
             navigation.navigate('WorkHistoryDetails', {
               driver_id: id,
               date: day.dateString,
             });
-            // setSelected(day.dateString);
           }}
           // Mark specific dates as marked
           markedDates={{
@@ -124,22 +100,14 @@ const Calender = ({navigation, route}) => {
               selected: true,
               disableTouchEvent: false,
               selectedDotColor: 'orange',
-              // dotColor: 'red'
             },
           }}
         />
       </View>
-      {/* <View style={styles.buttonContainer}>
-        <ButtonContainer {...labels} />
-      </View> */}
     </View>
   );
 };
-const ButtonContainer = memo(props => (
-  <View style={styles.button}>
-    <CustomButton {...props} />
-  </View>
-));
+
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
@@ -156,11 +124,9 @@ const styles = StyleSheet.create({
     width: '50%',
     marginLeft: 'auto',
     marginRight: 'auto',
-    // backgroundColor:'blue'
   },
   button: {
     flex: 1,
-    //  marginHorizontal:40
   },
 });
 

@@ -5,8 +5,6 @@ import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import themeLogo from '../storage/images/theme.png';
 import Heading from '../components/reusableComponents/Heading';
-import PageLabel from '../components/reusableComponents/PageLabel';
-import AuthFooter from '../components/reusableComponents/Footer/AuthFooter';
 import OtpInput from '../components/reusableComponents/OtpInput';
 import BackgroundContainer from '../components/reusableComponents/Container/BackgroundContainer';
 import HeaderContainer from '../components/reusableComponents/Container/HeaderContainer';
@@ -80,9 +78,7 @@ const Otp = ({navigation, route}) => {
             console.log('otp screwn:', response.message);
             showAlert(response.message);
           }
-          // else{
-          //   navigation.navigate(screenName);
-          // }
+
         } catch (error) {
           console.error('Login error:', error);
         }
@@ -168,11 +164,6 @@ const ButtonContainer = memo(props => (
   </View>
 ));
 
-const FooterContainer = memo(props => (
-  <View style={styles.footer}>
-    <AuthFooter text={props.authFooterText} navigationText={props.linkText} />
-  </View>
-));
 
 const styles = StyleSheet.create({
   mainContainer: {

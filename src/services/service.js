@@ -4,27 +4,22 @@ const apiConfig = createAPIConfig();
 
 // Example enhanced error handling
 export const loginService = async params => {
-  console.log('login user:', params);
   return await apiConfig.post('auth/login', params);
 };
 
 export const registerService = async params => {
-  console.log('register user:', params);
   return await apiConfig.post('auth/register', params);
 };
 
 export const registerVerifyService = async params => {
-  console.log('register user registerVerifyService:', params);
   return await apiConfig.post('auth/register/verify', params);
 };
 
 export const forgotPasswordService = async params => {
-  console.log('register user:', params);
   return await apiConfig.post('auth/forget-password', params);
 };
 
 export const forgetPassVerifyService = async params => {
-  console.log('register user 2:', params);
   return await apiConfig.post('auth/forget-password/verify', params);
 };
 
@@ -108,12 +103,8 @@ export const checkoutSessionService = async config => {
   return await apiConfig.post('payment/create-session', '', config);
 };
 
-
 export const cancelSubscriptionService = async config => {
   return await apiConfig.post('payment/cancel-subscription', '', config);
 };
-
-
-
 
 //

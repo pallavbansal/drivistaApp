@@ -1,11 +1,8 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import {View, Text, StyleSheet, Platform, Image} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import {globalStyles} from '../../constants/globalStyles';
-import {Colors} from '../../constants/colors';
-import editImage from '../../storage/images/edit.png';
-import deleteImage from '../../storage/images/delete.png';
-import onlineStatus from '../../storage/images/onlineStatus.png';
+
 
 
 const SubscriptionPlanCard = ({
@@ -27,7 +24,6 @@ const SubscriptionPlanCard = ({
 
 const styles = StyleSheet.create({
   container: {
-    // height: 40,
     width: '60%',
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -41,7 +37,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#9dc1c4', // Set the background color if needed
   },
   wrapper: {
-    // height: 40,
     width: 200,
     flexDirection: 'column',
     alignItems: 'center',

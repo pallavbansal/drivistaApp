@@ -3,11 +3,11 @@ import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {globalStyles} from '../../constants/globalStyles';
 import {Colors} from '../../constants/colors';
 
-const NavigationPopUpCard = ({navigationPopUpList, handleNavigation, modalStyle = { height: 90, marginTop: 80 }}) => {
-  const handlePress = navigateScreen => {
-    handleNavigation(navigateScreen);
-  };
-
+const NavigationPopUpCard = ({
+  navigationPopUpList,
+  handleNavigation,
+  modalStyle = {height: 90, marginTop: 80},
+}) => {
   return (
     <View style={styles.centeredView}>
       <View style={[styles.modalView, modalStyle]}>
@@ -17,8 +17,7 @@ const NavigationPopUpCard = ({navigationPopUpList, handleNavigation, modalStyle 
             style={[
               styles.button,
               {
-                backgroundColor:
-                  index === 0 ? Colors.headerBg : 'white',
+                backgroundColor: index === 0 ? Colors.headerBg : 'white',
               },
             ]}
             onPress={() => handleNavigation(item.navigateScreen)}>
@@ -41,12 +40,11 @@ const NavigationPopUpCard = ({navigationPopUpList, handleNavigation, modalStyle 
 
 const styles = StyleSheet.create({
   centeredView: {
-  flex:1,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 999,
-    zIndex:999,
-
+    zIndex: 999,
   },
   modalView: {
     width: '30%',
@@ -65,7 +63,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-
   },
   button: {
     borderRadius: 20,

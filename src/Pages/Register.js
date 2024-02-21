@@ -13,7 +13,6 @@ import PageLabel from '../components/reusableComponents/PageLabel';
 import AuthFooter from '../components/reusableComponents/Footer/AuthFooter';
 import Checkbox from '../components/reusableComponents/Checkbox';
 import Space from '../components/reusableComponents/Space';
-import useAuthService from '../hooks/useAuthService';
 import HeaderContainer from '../components/reusableComponents/Container/HeaderContainer';
 import {useAuthServiceHook} from '../services/hooks/auth/useAuthServiceHook';
 import Spinner from '../components/reusableComponents/Spinner';
@@ -101,7 +100,7 @@ const Register = ({navigation}) => {
     const isFirstNameValid = fullName.length >= 3;
     const isLastNameValid = lastName.length >= 3;
     const isMobileNumberValid = mobileNumber.length >= 10;
-    const isPasswordValid = password.length > 5; // Ensure password length is greater than 6
+    const isPasswordValid = password.length > 5; // Ensure password length is greater than 5
     const emailValidationRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isEmailValid = emailValidationRegex.test(email);
     const isConfirmPasswordValid =
@@ -163,8 +162,6 @@ const Register = ({navigation}) => {
     email,
     checked,
   ]);
-
-  console.log('check first name:', fullName);
 
   const renderSpinner = () => {
     if (loading) {
