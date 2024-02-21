@@ -164,9 +164,9 @@ const ActionShift = ({navigation}) => {
     }
   };
   const getCurrentPositionWithPermission = async () => {
-    const hasPermission = await requestGeoLocationPermission();
+    // const hasPermission = await requestGeoLocationPermission();
 
-    if (!hasPermission) {
+    // if (!hasPermission) {
       Geolocation.getCurrentPosition(
         position => {
           // console.log(
@@ -200,7 +200,7 @@ const ActionShift = ({navigation}) => {
           showLocationDialog: true,
         },
       );
-      }
+
   };
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect} from 'react';
-import Geolocation from '@react-native-community/geolocation';
+import {socket} from '../../services/hooks/WebSocketService';
 import {
   View,
   StyleSheet,
@@ -27,7 +27,7 @@ import {
 import {promptForEnableLocationIfNeeded} from 'react-native-android-location-enabler';
 import Spinner from '../../components/reusableComponents/Spinner';
 import Alert from '../../components/reusableComponents/Alert';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 
 const StartShift = ({navigation}) => {
   const {
@@ -48,23 +48,13 @@ const StartShift = ({navigation}) => {
     navigateBackNavigation: navigation => navigation.pop(),
     //   handleNavigation: (screenName) => navigation.navigate(screenName),
     handleNavigation: async screenName => {
-
       setLoading(true);
-    //  requestLocationPermission();
-
-   // startBackgroundService();
-
       const response = await startShiftRequest();
-
       setLoading(false);
       try {
         if (response.result === 'success') {
           console.log('response bb:', response);
           navigation.navigate(screenName);
-          // navigation.navigate(screenName, {
-          //   caseType: 'register',
-          //   id: response.id,
-          // });
         } else if (response.result === 'failed') {
           showAlert(response.message);
         } else {
@@ -75,6 +65,19 @@ const StartShift = ({navigation}) => {
       }
     },
   };
+  // useEffect(() => {
+  //   socket.on('connect', () => {
+  //     console.log('connected to socket server in app.js');
+  //   });
+  //   socket.on('notification', notification => {
+  //     console.log('Received notification:', notification);
+  //     // Handle the notification here (e.g., display a notification to the user)
+  //   });
+  //   return () => {
+  //     socket.disconnect();
+  //     console.log('Socket disconnected');
+  //   };
+  // }, []);
   const handleNavigation = navigateScreen => {
     if (navigateScreen === 'logout') {
       logoutRequest();
@@ -87,8 +90,6 @@ const StartShift = ({navigation}) => {
     },
   ];
 
-
-
   const startBackgroundService = async () => {
     await startBackgroundLocationService(token);
     // setIsServiceRunning(true);
@@ -99,8 +100,6 @@ const StartShift = ({navigation}) => {
     }
     return null;
   };
-
-
 
   return (
     <BackgroundContainer source={themeLogo}>

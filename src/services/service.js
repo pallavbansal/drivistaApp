@@ -4,7 +4,7 @@ const apiConfig = createAPIConfig();
 
 // Example enhanced error handling
 export const loginService = async params => {
-  console.log('login user:', params);
+//  console.log('login user:', params);
   return await apiConfig.post('auth/login', params);
 };
 

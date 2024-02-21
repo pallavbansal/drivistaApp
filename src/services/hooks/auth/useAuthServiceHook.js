@@ -156,10 +156,6 @@ export const useAuthServiceHook = () => {
         return {result: 'failed', message: response.data.message};
       }
     } catch (error) {
-      // console.log('vvv:', error.response);
-      //return {result: 'failed'};
-      //   console.log('vvv:', error.response);
-      //  console.log(error.response);
     }
   };
   const otpVerifyRequest = async id => {
@@ -211,8 +207,6 @@ export const useAuthServiceHook = () => {
     } catch (error) {
       console.log('vvv:', error.response);
       return {result: 'failed', message: 'Something went wrong'};
-
-      //  console.log(error.response);
     }
   };
   const otpForgotPassVerifyRequest = async id => {
@@ -242,8 +236,6 @@ export const useAuthServiceHook = () => {
       }
     } catch (error) {
       return {result: 'failed', message: 'Something went wrong!'};
-      console.log('vvv:', error.response);
-      //  console.log(error.response);
     }
   };
   const changePasswordRequest = async (id, verification_uid) => {
@@ -271,8 +263,6 @@ export const useAuthServiceHook = () => {
     } catch (error) {
       console.log('vvv:', error.response);
       return {result: 'failed', message: 'Something went wrong!'};
-
-      //  console.log(error.response);
     }
   };
   const changePasswordProfileRequest = async () => {
@@ -290,7 +280,6 @@ export const useAuthServiceHook = () => {
     console.log('verify oyee params here:', params);
     try {
       const response = await changeProfilePasswordService(params, config);
-
       if (response.data.status_code === 1) {
         return {
           result: 'success',
@@ -299,10 +288,7 @@ export const useAuthServiceHook = () => {
         return {result: 'failed', message: 'Envalid Old Password!'};
       }
     } catch (error) {
-      console.log('vvv:', error.response);
       return {result: 'failed', message: 'Something went wrong!'};
-
-      //  console.log(error.response);
     }
   };
 
@@ -311,9 +297,9 @@ export const useAuthServiceHook = () => {
     // socket.on('disconnect', () => {
     //   console.log('WebSocket disconnedted');
     // });
-
+    socket.disconnect();
     dispatch(resetSubscriptionUserData());
-    stopBackgroundSocketService('1');
+    stopBackgroundSocketService('1'); // parent id
     dispatch(logoutUser());
   };
 
