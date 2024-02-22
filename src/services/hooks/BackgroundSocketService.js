@@ -24,7 +24,6 @@ const connectToSocketAndCreateRoom = id => {
 const startBackgroundSocketService = async id => {
   console.log('WebSocket connected 1:', id);
   try {
-
     connectToSocketAndCreateRoom(id);
     return;
 
@@ -67,8 +66,8 @@ const stopBackgroundSocketService = async id => {
     // Disconnect the socket when stopping the background service
     // socket.disconnect();
     // socket.emit('leave_room', id);
-    socket.disconnect();
-    socket.off();
+    // socket.disconnect();
+    // socket.off();
     await BackgroundService.stop();
     console.log('Background socket service stopped successfully!');
   } catch (e) {
