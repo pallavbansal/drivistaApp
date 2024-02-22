@@ -35,7 +35,10 @@ import {createChannel} from './src/services/hooks/AndroidNotificationHandler';
 
 const publishableKey =
   'pk_test_51OerSaSBV6gdBMXr5xtVLzH9X77xY9VCyJKaVxHroXamfoPBWaDYkXlxsDspRPLYk4AUDTbtSivvwy6q4M26dswq00NG5ueTyb';
-import {startBackgroundSocketService} from './src/services/hooks/BackgroundSocketService';
+import {
+  startBackgroundSocketService,
+  stopBackgroundSocketService,
+} from './src/services/hooks/BackgroundSocketService';
 const App = () => {
   const {isAuth, user} = useSelector(state => state.userState);
   const {current} = useSelector(state => state.shiftState);
@@ -48,6 +51,12 @@ const App = () => {
   //     startBackgroundSocketService('1');
   //   }
   // }, [isAuth]);
+  useEffect(() => {
+    startBackgroundSocketService('1');
+    return () => {
+      stopBackgroundSocketService();
+    };
+  }, [isAuth]);
   useEffect(() => {
     // Establish a socket connection when user is authenticated
     console.log('isAuth value:', isAuth);
@@ -65,7 +74,8 @@ const App = () => {
 
     // Clean up the socket connection when the component unmounts or user logs out
     return () => {
-      socket.disconnect();
+      // socket.disconnect();
+      socket.off('connect');
     };
   }, []);
   // useEffect(() => {
@@ -87,8 +97,6 @@ const App = () => {
   //     startBackgroundSocketService(id);
   //   }
   // }, [user]);
-
-
 
   useEffect(() => {
     // Listen for the shiftNotification event

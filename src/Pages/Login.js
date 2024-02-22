@@ -16,6 +16,12 @@ import Spinner from '../components/reusableComponents/Spinner';
 import Space from '../components/reusableComponents/Space';
 import Alert from '../components/reusableComponents/Alert';
 
+const HeadingContainer = memo(({heading}) => (
+  <View style={styles.header}>
+    <Heading label={heading} />
+  </View>
+));
+
 const Login = ({navigation, route}) => {
   const {type} = route.params;
   const {
@@ -41,7 +47,7 @@ const Login = ({navigation, route}) => {
 
   const labels = {
     label: 'Login',
-    heading:'Please enter your valid email address ',
+    heading: 'Please enter your valid email address ',
     email: 'Email Id',
     buttonLabel: 'Login',
     password: 'Password',
@@ -127,12 +133,12 @@ const Login = ({navigation, route}) => {
       <View style={styles.pageLabel}>
         <PageLabel label={labels.label} />
       </View>
-      <Space/>
+      <Space />
       <View style={styles.container}>
-          <Space/>
+        <Space />
         <HeadingContainer heading={labels.heading} />
-          <Space/>
-          <Space />
+        <Space />
+        <Space />
         <InputContainer
           labels={labels}
           loginError={loginError}
@@ -143,10 +149,16 @@ const Login = ({navigation, route}) => {
           passwordVisible={passwordVisible}
           setPasswordVisible={setPasswordVisible}
         />
-        <Space/>
-        {
-          type === "Owner Login" ? <ForgetPasswordContainer {...labels} /> : <Text style={{color: 'gray',marginTop:50,textAlign:'center'}} >{"In case you forgot your user name/password please contact your supervisor"}</Text>
-        }
+        <Space />
+        {type === 'Owner Login' ? (
+          <ForgetPasswordContainer {...labels} />
+        ) : (
+          <Text style={{color: 'gray', marginTop: 50, textAlign: 'center'}}>
+            {
+              'In case you forgot your user name/password please contact your supervisor'
+            }
+          </Text>
+        )}
         <ButtonContainer {...labels} isFormValid={isFormValid} />
         <FooterContainer {...labels} />
       </View>
