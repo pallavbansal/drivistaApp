@@ -144,6 +144,8 @@ const ChangePassword = ({navigation, route}) => {
         <View style={styles.container}>
           {/* <InputContainer email={props.oldPassword} password={props.password} /> */}
           <Text style={[globalStyles.labelHeading, {color: Colors.primary,fontSize:20,fontWeight:'bold'}]}>{"Change Password"}</Text>
+          <Space/>
+          <Space/>
           <InputContainer
             loginError={loginError}
             labels={labels}

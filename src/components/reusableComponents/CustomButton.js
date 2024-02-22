@@ -28,7 +28,7 @@ const CustomButton = (props) => {
           onPress={()=>props.handleNavigation(props.navigateScreen,isModal)}>
           <Text
             // eslint-disable-next-line react-native/no-inline-styles
-            style={[globalStyles.buttonText, {color: 'white', fontWeight: 'bold'}]}>
+            style={[globalStyles.buttonText, {color: 'white'}]}>
             {props.buttonLabel}
           </Text>
         </TouchableOpacity>

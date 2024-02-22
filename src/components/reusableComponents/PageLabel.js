@@ -5,7 +5,7 @@ import { Fonts } from '../../constants/fonts';
 
 const PageLabel = ({label}) => {
   return (
-    <Text style={[globalStyles.labelHeading, {color: 'white', fontWeight: 'bold', fontSize: Fonts.sizes.large}]}>{label}</Text>
+    <Text style={[globalStyles.labelHeading, {color: 'white', fontWeight: '400', fontSize: Fonts.sizes.large}]}>{label}</Text>
   );
 };
 

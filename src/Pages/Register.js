@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect} from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
+import {View, StyleSheet, ScrollView, Text} from 'react-native';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import CustomTextInput from '../components/reusableComponents/CustomTextInput';
@@ -18,6 +18,7 @@ import HeaderContainer from '../components/reusableComponents/Container/HeaderCo
 import {useAuthServiceHook} from '../services/hooks/auth/useAuthServiceHook';
 import Spinner from '../components/reusableComponents/Spinner';
 import Alert from '../components/reusableComponents/Alert';
+import { Fonts } from '../constants/fonts';
 
 const Register = ({navigation}) => {
   const {
@@ -60,7 +61,7 @@ const Register = ({navigation}) => {
     heading: 'Fill up the following details.',
     email: 'Email Id',
     buttonLabel: 'Sign Up',
-    authFooterText: 'Already have an Account?',
+    authFooterText: 'Already have an account ?',
     linkText: 'Sign In',
     fullName: 'First Name',
     lastName: 'Last Name',
@@ -187,7 +188,9 @@ const Register = ({navigation}) => {
       <ScrollView style={{flex: 0.9}}>
         <View style={styles.container}>
           <Space />
+          <Space/>
           <HeadingContainer heading={labels.heading} />
+          <Space/>
           <InputContainer
             labels={labels}
             fullName={fullName}
@@ -219,7 +222,10 @@ const Register = ({navigation}) => {
           <Space />
           <ButtonContainer {...labels} isFormValid={isFormValid} />
           <FooterContainer {...labels} />
-          <Space />
+          <Space/>
+          <Space/>
+          <Space/>
+          <Space/>
         </View>
       </ScrollView>
       <Alert
@@ -340,7 +346,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 10,
     marginHorizontal: 20,
-    marginBottom: 20,
+    // marginBottom: 20,
 
     backgroundColor: Colors.inputWrapperBg,
   },

@@ -12,7 +12,7 @@ import {
   Alert,
 } from 'react-native';
 import {Colors} from '../../../constants/colors';
-import vehicle from '../../../storage/images/vehicle.png';
+import vehicle from '../../../storage/images/vehicle-front.png';
 import edit from '../../../storage/images/edit.png';
 import HeaderContainer from '../Container/HeaderContainer';
 import {globalStyles} from '../../../constants/globalStyles';

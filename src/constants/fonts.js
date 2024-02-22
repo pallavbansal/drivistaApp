@@ -5,7 +5,7 @@ export const Fonts = {
   sizes: {
     small: 12,
     medium: 14,
-    large: 30,
+    large: 35,
     logoWithLabel:20,
     textInput:14
     // Add more font sizes here as per your project's requirement
@@ -20,5 +20,5 @@ export const Fonts = {
     bold: 'bold',
     // Add more font styles here as needed (e.g., italic, semibold, etc.)
   },
-  family: 'Verdana',
+  family: 'Alata-Regular',
 };

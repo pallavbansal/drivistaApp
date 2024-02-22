@@ -44,8 +44,7 @@ const Login = ({navigation,route}) => {
 
   const labels = {
     label: 'Login',
-    heading:
-      '',
+    heading:'Please enter your valid email address ',
     email: 'Email Id',
     buttonLabel: 'Login',
     password: 'Password',
@@ -129,8 +128,12 @@ const Login = ({navigation,route}) => {
       <View style={styles.pageLabel}>
         <PageLabel label={labels.label} />
       </View>
+      <Space/>
       <View style={styles.container}>
-        {/* <HeadingContainer heading={labels.heading} /> */}
+          <Space/>
+        <HeadingContainer heading={labels.heading} />
+          <Space/>
+          <Space />
         <InputContainer
           labels={labels}
           loginError={loginError}
@@ -143,7 +146,7 @@ const Login = ({navigation,route}) => {
         />
         <Space/>
         {
-          type === "Owner Login" ? <ForgetPasswordContainer {...labels} /> :""
+          type === "Owner Login" ? <ForgetPasswordContainer {...labels} /> : <Text style={{color: 'gray',marginTop:50,textAlign:'center'}} >{"In case you forgot your user name/password please contact your supervisor"}</Text>
         }
 
         <ButtonContainer {...labels} isFormValid={isFormValid} />
@@ -226,7 +229,7 @@ const styles = StyleSheet.create({
     marginTop:-20
   },
   container: {
-    flex: 0.7,
+    flex: 0.9,
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     borderWidth: 1,
@@ -235,7 +238,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginHorizontal: 20,
     paddingTop: 20,
-    marginBottom: 20,
+    // marginBottom: 20,
     backgroundColor: Colors.inputWrapperBg,
   },
   header: {

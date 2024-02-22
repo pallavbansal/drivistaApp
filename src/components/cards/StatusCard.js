@@ -44,7 +44,7 @@ const StatusCard = ({
         <View style={styles.actionSection}>
           <View style={styles.actionSection}>
             {status === "started" && (
-              <Image source={onlineStatus} style={globalStyles.logoImage} />
+              <Image source={onlineStatus} style={[globalStyles.logoImage, {height: 13, width: 13}]} />
             )}
             {editShow === true && (
                <TouchableOpacity onPress={() => handleNavigation(id)}>
