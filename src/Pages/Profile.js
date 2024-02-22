@@ -155,15 +155,16 @@ const styles = StyleSheet.create({
   profileContainer: {
     flex: 0.9,
     margin: 20,
-    borderRadius: 8,
-    shadowColor: '#B0ACAC',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 1,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    // shadowColor: '#B0ACAC',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 4,
+    // },
+    // shadowOpacity: 0.1,
+    // shadowRadius: 6,
+    elevation: 3,
   },
 
   footerContainer: {

@@ -178,15 +178,11 @@ const LogoHeaderContainer = memo(props => (
 
 const ProfileInfoContainer = memo(props => (
   <View>
+    
     <View style={styles.wrapper}>
-      <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>{'Email '}</Text>
-
-      <Text style={styles.text}>: {props.email}</Text>
-    </View>
-    <View style={styles.wrapper}>
-      <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
+      {/* <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>
         {'Mobile Number'}
-      </Text>
+      </Text> */}
       {props.editable ? (
         <TextInput
           keyboardType="numeric"
@@ -195,8 +191,13 @@ const ProfileInfoContainer = memo(props => (
           onChangeText={text => props.setMobileNumber(text)}
         />
       ) : (
-        <Text style={styles.text}>: {props.mobileNumber}</Text>
+        <Text style={styles.text}>{props.mobileNumber}</Text>
       )}
+    </View>
+    <View style={styles.wrapper}>
+      {/* <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>{'Email '}</Text> */}
+
+      <Text style={styles.text}> {props.email}</Text>
     </View>
   </View>
 ));
@@ -232,6 +233,8 @@ const styles = StyleSheet.create({
     flex: 0.4,
     justifyContent: 'flex-start',
     alignItems: 'center',
+    position:'relative',
+    top:-80
   },
   footerContainer: {
     flex: 0.1,
