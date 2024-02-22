@@ -4,7 +4,6 @@ import MapView, {Marker} from 'react-native-maps';
 
 const LocationScreen = ({navigation, route}) => {
   const {latitude, longitude} = route.params;
-  console.log('location screen:', route.params);
   const initialRegion = {
     latitude: latitude ? parseFloat(latitude) : 37.78825, // Replace with your initial latitude
     longitude: longitude ? parseFloat(longitude) : -122.4324, // Replace with your initial longitude

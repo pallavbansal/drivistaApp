@@ -2,10 +2,8 @@
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
-import {Colors} from '../../../constants/colors';
 import NavigationCard from '../../../components/cards/NavigationCard';
 import HeaderContainer from '../../../components/reusableComponents/Container/HeaderContainer';
-import FooterContainer from '../../../components/reusableComponents/Container/FooterContainer';
 import vehicleLogo from '../../../storage/images/vehicle.png';
 import driverOnline from '../../../storage/images/driver_online.png';
 import driver from '../../../storage/images/drivers.png';
@@ -22,15 +20,14 @@ import {useSelector} from 'react-redux';
 const Home = ({navigation}) => {
   const {logoutRequest} = useAuthServiceHook();
 
-  const {loading, setLoading, fetchSubscriptionDataRequest} =
-    useSubscriptionServiceHook();
+  const {fetchSubscriptionDataRequest} = useSubscriptionServiceHook();
 
   const {caseType} = useSelector(state => state.subscriptionState);
-  const [subsCaseType,setSubsCaseType]=useState(caseType);
+  const [subsCaseType, setSubsCaseType] = useState(caseType);
   useEffect(() => {
     setSubsCaseType(caseType);
   }, [caseType]);
-  console.log("oyeeee:",caseType);
+  console.log('oyeeee:', caseType);
   const navigationData = [
     {
       label: 'Employees Online',
@@ -70,14 +67,6 @@ const Home = ({navigation}) => {
       navigation.navigate(navigateScreen);
     }
   };
-  useEffect(() => {
-    const response = fetchSubscriptionDataRequest();
-  }, []);
-
-  const MainContainer = ({children}) => (
-    <View style={styles.mainContainer}>{children}</View>
-  );
-
   const CardContainer = ({children}) => (
     <View style={styles.cardContainer}>{children}</View>
   );
@@ -91,7 +80,6 @@ const Home = ({navigation}) => {
         containerStyle={styles.headContainer}
         handleNavigation={handleNavigation}
         navigationPopUpList={navigationPopUpList}
-
       />
       <CardContainer>
         {navigationData.map((item, index) => (
@@ -139,7 +127,6 @@ const styles = StyleSheet.create({
   imageBackground: {
     flex: 1,
     borderRadius: 12, // Add border radius here
-    // overflow:'hidden',
     justifyContent: 'flex-end',
   },
 });

@@ -48,11 +48,6 @@ export const useDriverServiceHook = () => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.log('fetchVehicleListRequest:', error.response);
-      // dispatch(logoutUser());
-      //  return {result: 'unauthenticated.'};
-      //console.log('fetchProfileRequest:', error.response);
-      //  console.log(error.response);
     }
   };
 

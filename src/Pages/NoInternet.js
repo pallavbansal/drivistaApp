@@ -1,16 +1,14 @@
 import React, {memo, useEffect, useState} from 'react';
-import {View, StyleSheet, Image, Text} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 import noInternet from '../storage/images/noInternet.png';
 import LogoWithLabel from '../components/reusableComponents/LogoWithLabel';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import {globalStyles} from '../constants/globalStyles';
 import {Fonts} from '../constants/fonts';
-import {useSelector} from 'react-redux';
 import NetInfo from '@react-native-community/netinfo';
 
 const NoInternet = ({navigation, navigateScreen}) => {
   const [isConnected, setIsConnected] = useState(null);
-  const {isAuth} = useSelector(state => state.userState);
 
   useEffect(() => {
     const checkConnection = async () => {
@@ -33,7 +31,6 @@ const NoInternet = ({navigation, navigateScreen}) => {
       if (state.isConnected) {
         // Internet connection is available, navigate to the desired screen
         navigation.goBack();
-      //  navigation.navigate(isAuth ? 'OwnerHomeScreen' : 'OwnerHomeScreen');
       } else {
         // Still no internet connection, do nothing or display a message
       }
@@ -87,7 +84,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     marginHorizontal: 20,
-    // backgroundColor: Colors.primary,
   },
 
   container: {
@@ -95,9 +91,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     margin: 10,
-    // borderRadius: 5,
-    // borderWidth: 1,
-    // borderColor: 'white',
     padding: 20,
   },
   buttonContainer: {

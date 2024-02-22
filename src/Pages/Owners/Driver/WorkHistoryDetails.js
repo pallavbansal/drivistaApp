@@ -1,26 +1,18 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable prettier/prettier */
 import React, {memo, useEffect, useState} from 'react';
-import {View, StyleSheet, Alert} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import HeaderContainer from '../../../components/reusableComponents/Container/HeaderContainer';
-import CustomButton from '../../../components/reusableComponents/CustomButton';
 import {useDriverServiceHook} from '../../../services/hooks/driver/useDriverServiceHook';
-import Drivers from '../../../components/reusableComponents/Profile/Drivers';
-import Space from '../../../components/reusableComponents/Space';
 import {useAuthServiceHook} from '../../../services/hooks/auth/useAuthServiceHook';
 import {navigationPopUpList} from '../../../constants/navigation';
 import WorkHistory from '../../../components/reusableComponents/Profile/WorkHistory';
 import Spinner from '../../../components/reusableComponents/Spinner';
-import NotFound from '../../../components/reusableComponents/NotFound';
 
 const WorkHistoryDetails = ({route, navigation}) => {
   const {
     setLoading,
     loading,
-    shiftStartTime,
-    setShiftStartTime,
-    shiftEndTime,
-    setShiftEndTime,
     email,
     setEmail,
     mobileNumber,
@@ -32,7 +24,6 @@ const WorkHistoryDetails = ({route, navigation}) => {
     password,
     setPasssword,
     workHistoryDetailsRequest,
-    driverDetailsEditRequest,
   } = useDriverServiceHook();
   const {logoutRequest} = useAuthServiceHook();
 
@@ -51,38 +42,15 @@ const WorkHistoryDetails = ({route, navigation}) => {
     if (details && details.driver) {
       console.log('Driver first name:', details.driver.first_name);
       setFirstName(details.driver.first_name);
-      // setLastName(details.driver.last_name);
     }
 
     // Rest of your code
   }, [details]);
 
-
   const handleCalender = id => {
     navigation.navigate('CalenderScreen');
   };
 
-  const props = {
-    buttonLabel: 'Save',
-    navigateScreen: 'SuccessScreen',
-    // handleNavigation: screenName => navigation.navigate(screenName),
-    handleNavigation: async screenName => {
-      setLoading(true);
-      const response = await driverDetailsEditRequest('details.id');
-      setLoading(false);
-      try {
-        if (response.result === 'success') {
-          //  Alert.alert('Success');
-
-          navigation.pop();
-        } else if (response.result === 'failed') {
-          Alert.alert(response.message);
-        }
-      } catch (error) {
-        console.error('WorkHistoryDetails error:', error);
-      }
-    },
-  };
   const labels = {
     label: 'Work History',
     navigateBackScreen: '',
@@ -103,7 +71,7 @@ const WorkHistoryDetails = ({route, navigation}) => {
   };
   return (
     <View style={styles.mainContainer}>
-        {renderSpinner()}
+      {renderSpinner()}
       <HeaderContainer
         labels={labels}
         label={labels.label}
@@ -118,48 +86,32 @@ const WorkHistoryDetails = ({route, navigation}) => {
       />
       <View style={styles.container}>
         <View style={styles.profileContainer}>
-        {
-  details && details.shift_details ? (
-    <WorkHistory
-      details={details}
-      firstName={firstName}
-      setFirstName={setFirstName}
-      lastName={lastName}
-      setLastName={setLastName}
-      email={email}
-      setEmail={setEmail}
-      password={password}
-      setPasssword={setPasssword}
-      mobileNumber={mobileNumber}
-      setMobileNumber={setMobileNumber}
-    //   handleCalender={handleCalender}
-    />
-  ) : null
-}
-
-{/* {details.shift_details < 1 ? (
-        <NotFound />
-      ) :  (
-        ''
-      )} */}
-
-
+          {details && details.shift_details ? (
+            <WorkHistory
+              details={details}
+              firstName={firstName}
+              setFirstName={setFirstName}
+              lastName={lastName}
+              setLastName={setLastName}
+              email={email}
+              setEmail={setEmail}
+              password={password}
+              setPasssword={setPasssword}
+              mobileNumber={mobileNumber}
+              setMobileNumber={setMobileNumber}
+              //   handleCalender={handleCalender}
+            />
+          ) : null}
         </View>
-
       </View>
-
     </View>
   );
 };
-const ButtonContainer = memo(props => (
-  <View style={styles.button}>
-    <CustomButton {...props} />
-  </View>
-));
+
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor:'white'
+    backgroundColor: 'white',
   },
   headContainer: {},
   container: {

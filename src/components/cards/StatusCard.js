@@ -4,7 +4,6 @@ import {
   View,
   Text,
   StyleSheet,
-  Platform,
   Image,
   TouchableOpacity,
 } from 'react-native';
@@ -13,12 +12,11 @@ import {Colors} from '../../constants/colors';
 import editImage from '../../storage/images/edit.png';
 import deleteImage from '../../storage/images/delete.png';
 import onlineStatus from '../../storage/images/onlineStatus.png';
-import {Fonts} from '../../constants/fonts';
+
 
 const StatusCard = ({
   id,
   imageLink,
-  label,
   textName = 'test',
   status,
   editShow,
@@ -102,7 +100,6 @@ const styles = StyleSheet.create({
   bulletText: {
     fontSize: 16,
     fontWeight: 600,
-    // textTransform: 'capitalize',
     color: Colors.primary,
   },
 });

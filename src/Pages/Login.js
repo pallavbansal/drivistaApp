@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
-import React, {memo, useEffect, useState} from 'react';
+import React, {memo, useEffect} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
-import NetworkWrapper from '../NetworkWrapper';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import CustomTextInput from '../components/reusableComponents/CustomTextInput';
@@ -17,9 +16,7 @@ import Spinner from '../components/reusableComponents/Spinner';
 import Space from '../components/reusableComponents/Space';
 import Alert from '../components/reusableComponents/Alert';
 
-
-
-const Login = ({navigation,route}) => {
+const Login = ({navigation, route}) => {
   const {type} = route.params;
   const {
     loading,
@@ -48,12 +45,12 @@ const Login = ({navigation,route}) => {
     email: 'Email Id',
     buttonLabel: 'Login',
     password: 'Password',
-    authFooterText: type === "Owner Login"  ? 'Do not have an account?' : "",
-    linkText:type === "Owner Login" ?  'Register': "" ,
+    authFooterText: type === 'Owner Login' ? 'Do not have an account?' : '',
+    linkText: type === 'Owner Login' ? 'Register' : '',
     navigateScreen: 'StartShift',
     footerNavigateScreen: 'RegisterScreen',
-    navigateBackScreen:'LoginScreen',
-    navigateBackNavigation:()=> navigation.pop(),
+    navigateBackScreen: 'LoginScreen',
+    navigateBackNavigation: () => navigation.pop(),
     handleDirectNavigation: screenName => navigation.navigate(screenName),
     handleNavigation: async screenName => {
       setLoading(true);
@@ -63,20 +60,15 @@ const Login = ({navigation,route}) => {
         if (response.result === 'verfication_failed') {
           showAlert('Please validate fields!');
         } else if (response.result === 'success') {
-          if(response.role === '1')
-          {
+          if (response.role === '1') {
             navigation.navigate('OwnerHomeScreen');
-          }
-          else if(response.role === '2')
-          {
+          } else if (response.role === '2') {
             navigation.navigate('StartShift');
           }
-         // navigation.navigate(screenName);
+          // navigation.navigate(screenName);
         } else if (response.result === 'failed') {
           showAlert('Credentials Invalid');
         } else {
-
-
         }
       } catch (error) {
         showAlert('No internet connection!');
@@ -86,7 +78,7 @@ const Login = ({navigation,route}) => {
   };
 
   const checkFormValidity = () => {
-    const isPasswordValid = password.length > 5; // Ensure password length is greater than 6
+    const isPasswordValid = password.length > 5; // Ensure password length is greater than 5
     const emailValidationRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isEmailValid = emailValidationRegex.test(email);
 
@@ -119,7 +111,7 @@ const Login = ({navigation,route}) => {
     <View style={styles.mainContainer}>
       {renderSpinner()}
       <HeaderContainer
-      labels={labels}
+        labels={labels}
         showPopUp={false}
         showBackArrow={true}
         containerStyle={styles.headContainer}
@@ -148,10 +140,8 @@ const Login = ({navigation,route}) => {
         {
           type === "Owner Login" ? <ForgetPasswordContainer {...labels} /> : <Text style={{color: 'gray',marginTop:50,textAlign:'center'}} >{"In case you forgot your user name/password please contact your supervisor"}</Text>
         }
-
         <ButtonContainer {...labels} isFormValid={isFormValid} />
         <FooterContainer {...labels} />
-
       </View>
       <Alert
         visible={alertVisible}
@@ -163,23 +153,17 @@ const Login = ({navigation,route}) => {
   );
 };
 
-const HeadingContainer = memo(({heading}) => (
-  <View style={styles.header}>
-    <Heading label={heading} />
-  </View>
-));
-
 const InputContainer = memo(props => (
   <View style={styles.inputContainer}>
     <CustomTextInput
       logoName={emailLogo}
-      errorText={props.email.length > 0 ? props.loginError.email : ""}
+      errorText={props.email.length > 0 ? props.loginError.email : ''}
       onChangeText={text => props.setEmail(text)}
       placeholder={props.labels.email}
     />
     <CustomTextInput
       logoName={lockLogo}
-      errorText={props.password.length > 0 ? props.loginError.password : ""}
+      errorText={props.password.length > 0 ? props.loginError.password : ''}
       onChangeText={text => props.setPasssword(text)}
       passwordVisible={props.passwordVisible}
       handlePasswordVisiblity={() => {
@@ -219,14 +203,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.primary,
   },
-  headContainer: {
-
-  },
+  headContainer: {},
   pageLabel: {
     flex: 0.1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginTop:-20
+    marginTop: -20,
   },
   container: {
     flex: 0.9,

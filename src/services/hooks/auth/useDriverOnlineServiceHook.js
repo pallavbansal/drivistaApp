@@ -1,11 +1,8 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {addDays, format} from 'date-fns';
 import {useNavigation} from '@react-navigation/native';
 import {
   logoutUser,
-  setRegisterUserData,
-  setUserData,
   setUserProfileData,
 } from '../../../redux/actions/userActions';
 import {
@@ -14,8 +11,7 @@ import {
   fetchOnlineDriversService,
 } from '../../service';
 export const useDriverOnlineServiceHook = () => {
-  const navigation = useNavigation();
-  const {user, token} = useSelector(state => state.userState);
+  const {token} = useSelector(state => state.userState);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -39,10 +35,10 @@ export const useDriverOnlineServiceHook = () => {
     const config = {
       headers: {Authorization: `Bearer ${token}`},
     };
-    console.log('fetchProfileRequest token:', token);
+
     try {
       const response = await fetchProfileService(config);
-      console.log('response profile:', response.data.data);
+
       dispatch(setUserProfileData(response.data.data));
     } catch (error) {
       console.log('fetchProfileRequest:', error.response);
@@ -67,7 +63,6 @@ export const useDriverOnlineServiceHook = () => {
       first_name: firstName,
       last_name: lastName,
       mobile_number: mobileNumber,
-
     };
     console.log('fetchProfileRequest:', params);
     try {
@@ -81,11 +76,7 @@ export const useDriverOnlineServiceHook = () => {
         return {result: 'failed'};
       }
     } catch (error) {
-      // dispatch(logoutUser());
-
-      // return {result: 'unauthenticated.'};
       console.log('updateUserProfileRequest:', error.response);
-      //  console.log(error.response);
     }
   };
 
@@ -95,19 +86,13 @@ export const useDriverOnlineServiceHook = () => {
     };
     try {
       const response = await fetchOnlineDriversService(config);
-
       if (response.data.status_code === 1) {
-        //      dispatch(setUserProfileData(response.data.data));
         return {result: 'success', data: response.data.data.online_drivers};
       } else if (response.data.status_code === 2) {
         return {result: 'failed', data: []};
       }
     } catch (error) {
-      // dispatch(logoutUser());
-
-      // return {result: 'unauthenticated.'};
       console.log('updateUserProfileRequest:', error.response);
-      //  console.log(error.response);
     }
   };
 

@@ -1,14 +1,11 @@
 /* eslint-disable prettier/prettier */
-import React, {memo, useEffect,useState} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {Colors} from '../constants/colors';
 import CustomButton from '../components/reusableComponents/CustomButton';
 import CustomTextInput from '../components/reusableComponents/CustomTextInput';
 import emailLogo from '../storage/images/email.png';
-import lockLogo from '../storage/images/lock.png';
 import Heading from '../components/reusableComponents/Heading';
-import PageLabel from '../components/reusableComponents/PageLabel';
-import AuthFooter from '../components/reusableComponents/Footer/AuthFooter';
 import themeLogo from '../storage/images/theme.png';
 import BackgroundContainer from '../components/reusableComponents/Container/BackgroundContainer';
 import HeaderContainer from '../components/reusableComponents/Container/HeaderContainer';
@@ -20,7 +17,6 @@ import Alert from '../components/reusableComponents/Alert';
 
 const ForgotPassword = ({navigation}) => {
   const {
-    loading,
     setEmail,
     email,
     isFormValid,
@@ -35,7 +31,7 @@ const ForgotPassword = ({navigation}) => {
     handleOK,
     forgotPasswordRequest,
   } = useAuthServiceHook();
-  const [showResend,setShowResend]=useState("");
+  const [showResend, setShowResend] = useState('');
   const labels = {
     label: 'Forgot Password',
     heading: 'Enter the e-mail address associated with your account.',
@@ -49,7 +45,6 @@ const ForgotPassword = ({navigation}) => {
     navigateBackScreen: 'LoginScreen',
     handleDirectNavigation: screenName => navigation.navigate(screenName),
     handleNavigation: async screenName => {
-
       //   const response = await loginRequest();
       setLoading(true);
       const response = await forgotPasswordRequest();
@@ -122,7 +117,11 @@ const ForgotPassword = ({navigation}) => {
           <ButtonContainer {...labels} isFormValid={isFormValid} />
 
           {/* <ResendButtonContainer {...labels} buttonLabel={labels.linkText} /> */}
-          <FooterContainer {...labels} isFormValid={isFormValid} showResend={showResend} />
+          <FooterContainer
+            {...labels}
+            isFormValid={isFormValid}
+            showResend={showResend}
+          />
         </View>
       </View>
       <Alert
@@ -159,12 +158,6 @@ const ButtonContainer = memo(props => (
   </View>
 ));
 
-const ResendButtonContainer = memo(props => (
-  <View style={styles.resendButton}>
-    <CustomButton {...props} />
-  </View>
-));
-
 const FooterContainer = memo(props => (
   <TouchableOpacity
     disabled={props.isFormValid}
@@ -172,12 +165,11 @@ const FooterContainer = memo(props => (
     onPress={() => {
       props.handleNavigation(props.navigateScreen);
     }}>
-      {
-        props.showResend ? (
-          <Text style={styles.navigationLinkText}> {props.linkText}</Text>
-        ):""
-      }
-
+    {props.showResend ? (
+      <Text style={styles.navigationLinkText}> {props.linkText}</Text>
+    ) : (
+      ''
+    )}
   </TouchableOpacity>
 ));
 
@@ -236,14 +228,7 @@ const styles = StyleSheet.create({
   },
   resendButton: {
     flex: 0.2,
-    // alignItems:'center',
     justifyContent: 'center',
-    // width:200,
-
-    // margin:'auto',
-    // marginLeft:'50%',
-    // marginRight:'50%',
-    //  width:'60%',
     backgroundColor: 'red',
   },
   actionSection: {
