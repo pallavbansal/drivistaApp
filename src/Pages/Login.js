@@ -107,6 +107,13 @@ const Login = ({navigation, route}) => {
     }
     return null;
   };
+
+  const HeadingContainer = memo(({heading}) => (
+    <View style={styles.header}>
+      <Heading label={heading} color={Colors.primary} />
+    </View>
+  ));
+  
   return (
     <View style={styles.mainContainer}>
       {renderSpinner()}
