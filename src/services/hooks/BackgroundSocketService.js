@@ -4,29 +4,24 @@ import {notificationHandler} from './AndroidNotificationHandler'; // Import your
 import {socket} from './WebSocketService';
 //const socket = io('https://drivista.onrender.com');
 
-const connectToSocketAndCreateRoom = id => {
+const connectToSocketAndCreateRoom = async id => {
   console.log('WebSocket connected:', id);
   socket.on('connect', () => {
     console.log('WebSocket connected inside:', id);
     socket.emit('create_room', id);
   });
-  // socket.on('error', error => {
-  //   console.error('Socket connection error:', error);
-  //   // Handle connection error (e.g., display an error message to the user)
-  // });
-  // socket.on('notification', notification => {
-  //   console.log('Received notification:', notification);
-  //   // Handle the notification here (e.g., display a notification to the user)
-  //   notificationHandler(notification.event, notification.message, new Date());
-  // });
+
+  socket.on('notification', notification => {
+    console.log('Received notification:', notification);
+    // Handle the notification here (e.g., display a notification to the user)
+    notificationHandler(notification.event, notification.message, new Date());
+  });
 };
 
 const startBackgroundSocketService = async id => {
-  console.log('WebSocket connected 1:', id);
-  try {
-    connectToSocketAndCreateRoom(id);
-    return;
+  console.log('Starting background socket service...');
 
+  try {
     const options = {
       taskName: 'BackgroundSocketTask',
       taskTitle: 'Employee Shift Data',
@@ -41,33 +36,24 @@ const startBackgroundSocketService = async id => {
       },
     };
 
-    //  await BackgroundService.start(() => {}, options); // Start background service with empty task function
-    try {
-      await BackgroundService.start(
-        taskData => connectToSocketAndCreateRoom(id),
-        options,
-      );
-      console.log('Background location service started successfully!');
-    } catch (e) {
-      console.error('Failed to start background location service:', e);
-    }
+    await BackgroundService.start(async taskData => {
+      console.log('Background service task started with data:', taskData);
+      try {
+        await connectToSocketAndCreateRoom(id);
+        console.log('Connected to socket and created room successfully.');
+      } catch (error) {
+        console.error('Error connecting to socket and creating room:', error);
+      }
+    }, options);
+
     console.log('Background socket service started successfully!');
-    // connectToSocketAndCreateRoom(id);
-    // setTimeout(() => {
-    //   connectToSocketAndCreateRoom(id);
-    // }, 2000); // 1 second delay// Connect to socket and create room once background service is started
-  } catch (e) {
-    console.error('Failed to start background socket service:', e);
+  } catch (error) {
+    console.error('Failed to start background socket service:', error);
   }
 };
 
 const stopBackgroundSocketService = async id => {
   try {
-    // Disconnect the socket when stopping the background service
-    // socket.disconnect();
-    // socket.emit('leave_room', id);
-    // socket.disconnect();
-    // socket.off();
     await BackgroundService.stop();
     console.log('Background socket service stopped successfully!');
   } catch (e) {
