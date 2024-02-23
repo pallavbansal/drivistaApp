@@ -1,14 +1,15 @@
 import BackgroundService from 'react-native-background-actions';
-import io from 'socket.io-client';
-import {notificationHandler} from './AndroidNotificationHandler'; // Import your notification handler function
+import Geolocation from '@react-native-community/geolocation';
+import {notificationHandler} from './AndroidNotificationHandler';
 import {socket} from './WebSocketService';
-//const socket = io('https://drivista.onrender.com');
-
 const connectToSocketAndCreateRoom = async id => {
+
   console.log('WebSocket connected:', id);
   socket.on('connect', () => {
     console.log('WebSocket connected inside:', id);
     socket.emit('create_room', id);
+    socket.emit('store_owner', id);
+
   });
 
   socket.on('notification', notification => {
@@ -19,45 +20,56 @@ const connectToSocketAndCreateRoom = async id => {
 };
 
 const startBackgroundSocketService = async id => {
-  console.log('Starting background socket service...');
+  if (BackgroundService.isRunning()) {
+    console.log('Background socket service is already running');
+    setInterval(() => {
+      console.log('Background service is not running.');
+      // Handle the case when the background service is not running
+      socket.on('notification', notification => {
+        console.log('Received notification:', notification);
+        // Handle the notification here (e.g., display a notification to the user)
+        notificationHandler(notification.event, notification.message, new Date());
+      });
+    }, 5000);
+
+    return;
+  }
+
+  requestBgService(id);
+};
+
+const requestBgService = async id => {
+  const options = {
+    taskName: 'BackgroundLocationTask',
+    taskTitle: 'Background Location Task',
+    taskDesc: 'Fetches location in the background',
+    taskIcon: {
+      name: 'ic_launcher',
+      type: 'mipmap',
+    },
+    color: '#ff00ff',
+    parameters: {
+      delay: 60000, // Adjust the delay as needed
+    },
+  };
 
   try {
-    const options = {
-      taskName: 'BackgroundSocketTask',
-      taskTitle: 'Employee Shift Data',
-      taskDesc: 'Receive Employee Shift Information',
-      taskIcon: {
-        name: 'ic_launcher',
-        type: 'mipmap',
-      },
-      color: '#ff00ff',
-      parameters: {
-        delay: 5000,
-      },
-    };
-
-    await BackgroundService.start(async taskData => {
-      console.log('Background service task started with data:', taskData);
-      try {
-        await connectToSocketAndCreateRoom(id);
-        console.log('Connected to socket and created room successfully.');
-      } catch (error) {
-        console.error('Error connecting to socket and creating room:', error);
-      }
-    }, options);
-
-    console.log('Background socket service started successfully!');
-  } catch (error) {
-    console.error('Failed to start background socket service:', error);
+    await BackgroundService.start(
+      taskData => connectToSocketAndCreateRoom(id),
+      options,
+    );
+    console.log('Background location service started successfully!');
+  } catch (e) {
+    console.error('Failed to start background location service:', e);
   }
 };
 
-const stopBackgroundSocketService = async id => {
+const stopBackgroundSocketService = async () => {
   try {
     await BackgroundService.stop();
-    console.log('Background socket service stopped successfully!');
+    console.log('Background location service stopped successfully!');
   } catch (e) {
-    console.error('Failed to stop background socket service:', e);
+    console.error('Failed to stop background location service:', e);
   }
 };
 

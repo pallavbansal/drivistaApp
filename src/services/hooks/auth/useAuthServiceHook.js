@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {useNavigation} from '@react-navigation/native';
+import {socket} from '../WebSocketService';
 import {
   logoutUser,
   resetSubscriptionUserData,
@@ -18,6 +18,7 @@ import {
 import io from 'socket.io-client';
 import {stopBackgroundSocketService} from '../BackgroundSocketService';
 export const useAuthServiceHook = () => {
+  const {isAuth, user} = useSelector(state => state.userState);
   const {token} = useSelector(state => state.userState);
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
@@ -251,9 +252,14 @@ export const useAuthServiceHook = () => {
     // socket.on('disconnect', () => {
     //   console.log('WebSocket disconnedted');
     // });
-
+    socket.disconnect();
     dispatch(resetSubscriptionUserData());
-    stopBackgroundSocketService('1');
+    let id = '';
+    if (user && isAuth && user.parent_id === '-1') {
+      id = user.id;
+
+      stopBackgroundSocketService(id);
+    }
     dispatch(logoutUser());
   };
 

@@ -51,12 +51,12 @@ const App = () => {
   //     startBackgroundSocketService('1');
   //   }
   // }, [isAuth]);
-  useEffect(() => {
-    startBackgroundSocketService('1');
-    // return () => {
-    //   stopBackgroundSocketService();
-    // };
-  }, [isAuth]);
+  // useEffect(() => {
+  //   startBackgroundSocketService('1');
+  //   // return () => {
+  //   //   stopBackgroundSocketService();
+  //   // };
+  // }, []);
   useEffect(() => {
     // Establish a socket connection when user is authenticated
     console.log('isAuth value:', isAuth);
@@ -85,18 +85,18 @@ const App = () => {
   //     notificationHandler(notification.event, notification.message, new Date());
   //   });
   // }, [socket]);
-  // useEffect(() => {
-  //   let id = '';
-  //   console.log('ooooooooooo parent id', user);
-  //   if (user && isAuth && user.parent_id === '-1') {
-  //     id = user.id;
+  useEffect(() => {
+    let id = '';
 
-  //     startBackgroundSocketService(id);
-  //   } else if (user && isAuth && user.parent_id !== '-1') {
-  //     id = user.parent_id;
-  //     startBackgroundSocketService(id);
-  //   }
-  // }, [user]);
+    if (user && isAuth && user.parent_id === '-1') {
+      id = user.id;
+
+      startBackgroundSocketService(id);
+    } else if (user && isAuth && user.parent_id !== '-1') {
+      id = user.parent_id;
+    //  startBackgroundSocketService(id);
+    }
+  }, [isAuth,user]);
 
   useEffect(() => {
     // Listen for the shiftNotification event
