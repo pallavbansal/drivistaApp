@@ -53,9 +53,9 @@ const App = () => {
   // }, [isAuth]);
   useEffect(() => {
     startBackgroundSocketService('1');
-    return () => {
-      stopBackgroundSocketService();
-    };
+    // return () => {
+    //   stopBackgroundSocketService();
+    // };
   }, [isAuth]);
   useEffect(() => {
     // Establish a socket connection when user is authenticated
