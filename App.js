@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
+import BackgroundService from 'react-native-background-actions';
 import {socket} from './src/services/hooks/WebSocketService';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from './src/Pages/Login';
@@ -7,6 +8,7 @@ import RegisterScreen from './src/Pages/Register';
 import StartUpScreen from './src/Pages/StartUp';
 import OwnerHomeScreen from './src/Pages/Owners/Owner/Home';
 import ProfileScreen from './src/Pages/Profile';
+import {PermissionsAndroid, Platform,Linking, Alert} from 'react-native';
 import OtpScreen from './src/Pages/Otp';
 import ForgotPasswordScreen from './src/Pages/ForgotPassword';
 import OnlineDrivers from './src/Pages/Owners/Owner/OnlineDrivers';
@@ -39,10 +41,91 @@ import {
   startBackgroundSocketService,
   stopBackgroundSocketService,
 } from './src/services/hooks/BackgroundSocketService';
+import {useDriverShiftServiceHook} from './src/services/hooks/shift/useDriverShiftServiceHook';
 const App = () => {
   const {isAuth, user} = useSelector(state => state.userState);
   const {current} = useSelector(state => state.shiftState);
   const {caseType} = useSelector(state => state.subscriptionState);
+  const {fetchRegularDriversStartShiftRequest} = useDriverShiftServiceHook();
+  const options = {
+    taskName: 'FetchRegularDriversTask',
+    taskTitle: 'Fetching Regular Drivers',
+    taskDesc: 'Fetching regular drivers at regular intervals',
+    taskIcon: {
+      name: 'ic_launcher',
+      type: 'mipmap',
+    },
+    color: '#ff00ff',
+    parameters: {
+      delay: 5 * 60 * 1000, // Interval set to 5 minutes
+    },
+  };
+
+  const veryIntensiveTask = async taskDataArguments => {
+    const {delay} = taskDataArguments;
+    await new Promise(async resolve => {
+      for (let i = 0; BackgroundService.isRunning(); i++) {
+        console.log('Background service task iteration:', i);
+        // Call your fetchRegularDriversStartShiftRequest function here
+        await fetchRegularDriversStartShiftRequest();
+        // Sleep for the specified delay
+        await sleep(delay);
+      }
+      resolve();
+    });
+  };
+
+  const sleep = time =>
+    new Promise(resolve => setTimeout(() => resolve(), time));
+
+  useEffect(() => {
+    const requestNotificationPermission = async () => {
+      if (Platform.OS === 'android') {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+            {
+              title: 'Notification Permission',
+              message: 'Allow notifications for regular drivers updates?',
+              buttonNeutral: 'Ask Me Later',
+              buttonNegative: 'Cancel',
+              buttonPositive: 'OK',
+            },
+          );
+
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            console.log('Notification permission granted');
+          } else {
+            console.log('Notification permission denied');
+            // Alert.alert("Turn on Your Notification!!");
+          //  Linking.openSettings();
+          }
+        } catch (err) {
+          console.warn(err);
+        }
+      }
+    };
+
+    requestNotificationPermission();
+    const startBackgroundService = async () => {
+      try {
+        await BackgroundService.start(veryIntensiveTask, options);
+        console.log('Background service started successfully!');
+      } catch (error) {
+        console.error('Failed to start background service:', error);
+      }
+    };
+    if (isAuth && user.parent_id === '-1') {
+      startBackgroundService();
+    }
+    if (!isAuth) {
+      BackgroundService.stop();
+    }
+
+
+
+  }, [isAuth]); // Empty dependency array ensures the effect runs only once
+
   useEffect(() => {
     createChannel(); // Call createChannel when the component mounts
   }, []);
@@ -85,18 +168,18 @@ const App = () => {
   //     notificationHandler(notification.event, notification.message, new Date());
   //   });
   // }, [socket]);
-  useEffect(() => {
-    let id = '';
+  // useEffect(() => {
+  //   let id = '';
 
-    if (user && isAuth && user.parent_id === '-1') {
-      id = user.id;
+  //   if (user && isAuth && user.parent_id === '-1') {
+  //     id = user.id;
 
-      startBackgroundSocketService(id);
-    } else if (user && isAuth && user.parent_id !== '-1') {
-      id = user.parent_id;
-    //  startBackgroundSocketService(id);
-    }
-  }, [isAuth,user]);
+  //     startBackgroundSocketService(id);
+  //   } else if (user && isAuth && user.parent_id !== '-1') {
+  //     id = user.parent_id;
+  //     //  startBackgroundSocketService(id);
+  //   }
+  // }, [isAuth, user]);
 
   useEffect(() => {
     // Listen for the shiftNotification event
