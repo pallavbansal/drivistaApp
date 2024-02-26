@@ -1,8 +1,9 @@
 // CustomAlert.js
 
 import React, {useState} from 'react';
-import {View, Text, Modal, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, Modal,Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {Colors} from '../../constants/colors';
+import Noimg from '../../storage/images/accessDenied.png'
 
 const Alert = ({visible, message, onClose, onOK}) => {
   return (
@@ -16,6 +17,12 @@ const Alert = ({visible, message, onClose, onOK}) => {
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <Text style={styles.closeButtonText}>X</Text>
           </TouchableOpacity>
+          <View style={{flex: 1,justifyContent: 'center',alignItems: 'center', margin:20}}>
+            <Image
+                source={Noimg}
+                style={{height: 50, width: 50,}}
+              />
+          </View>
           <Text style={styles.alertText}>{message}</Text>
           <TouchableOpacity onPress={onOK} style={styles.okButton}>
             <Text style={styles.okButtonText}>OK</Text>
@@ -34,15 +41,18 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   alertBox: {
-    backgroundColor: Colors.primary,
+    backgroundColor: "#FFFFFF",
     padding: 20,
     borderRadius: 10,
     width: 300,
   },
   alertText: {
-    color: 'white',
-    fontSize: 18,
-    marginBottom: 20,
+    color: 'gray',
+    fontSize: 14,
+    textAlign:'center',
+    justifyContent:'center',
+    fontFamily:'Alata-Regular',
+    marginVertical: 20,
   },
   closeButton: {
     position: 'absolute',
@@ -50,7 +60,7 @@ const styles = StyleSheet.create({
     right: 5,
   },
   closeButtonText: {
-    color: 'white',
+    color: 'purple',
     fontSize: 20,
     marginLeft: 10,
     width: 20,
