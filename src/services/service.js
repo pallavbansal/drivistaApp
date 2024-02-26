@@ -107,4 +107,8 @@ export const cancelSubscriptionService = async config => {
   return await apiConfig.post('payment/cancel-subscription', '', config);
 };
 
-//
+export const fetchRegularDriversStartShiftService = async config => {
+  return await apiConfig.get('shift/notify-owner', config);
+};
+
+

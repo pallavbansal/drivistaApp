@@ -7,7 +7,9 @@ import {
   endShiftService,
   currentShiftService,
   startEndBreakShiftService,
+  fetchRegularDriversStartShiftService,
 } from '../../service';
+import {notificationHandler} from '../AndroidNotificationHandler';
 export const useDriverShiftServiceHook = () => {
   const {token, user} = useSelector(state => state.userState);
   const [loading, setLoading] = useState(false);
@@ -115,6 +117,45 @@ export const useDriverShiftServiceHook = () => {
     console.log('sendLocationToServer mmm', longitude);
   };
 
+  const fetchRegularDriversStartShiftRequest = async () => {
+    const config = {
+      headers: {Authorization: `Bearer ${token}`},
+    };
+
+    try {
+      const response = await fetchRegularDriversStartShiftService(config);
+
+      // console.log(
+      //   'after fetchRegularDriversStartShiftService:',
+      //   response.data.data.current.shifts,
+      // );/
+      response.data.data.current.shifts.forEach(shift => {
+        // Extract the first_name property from the shift object
+        const firstName = shift.first_name;
+        const status = shift.status;
+        console.log('after fetchRegularDriversStartShiftService:', firstName);
+        // Call notificationHandler function for each object
+        // setTimeout(() => {
+        //   notificationHandler(
+        //     'Shift Notification',
+        //     `${firstName}'s shift has ${status}`,
+        //     new Date()
+        //   );
+        // }, 5000); // 5000 milliseconds = 5 seconds
+        notificationHandler(
+          'Shift Notification',
+          `${firstName}'s shift has ${status}`,
+          new Date()
+        );
+
+      });
+
+      //  notificationHandler('notification.event', 'shift started', new Date());
+    } catch (error) {
+      console.log('saveDriverRequest:', error.response);
+    }
+  };
+
   return {
     loading,
     setLoading,
@@ -140,5 +181,6 @@ export const useDriverShiftServiceHook = () => {
     currentShiftRequest,
     startEndBreakShiftRequest,
     sendLocationToServer,
+    fetchRegularDriversStartShiftRequest,
   };
 };
