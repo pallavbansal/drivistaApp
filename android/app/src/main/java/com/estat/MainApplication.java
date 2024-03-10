@@ -1,4 +1,4 @@
-package com.drivista;
+package com.estat;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
