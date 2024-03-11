@@ -5,6 +5,7 @@ import {socket} from './src/services/hooks/WebSocketService';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from './src/Pages/Login';
 import RegisterScreen from './src/Pages/Register';
+import SplashScreen from './src/Pages/Splash';
 import StartUpScreen from './src/Pages/StartUp';
 import OwnerHomeScreen from './src/Pages/Owners/Owner/Home';
 import ProfileScreen from './src/Pages/Profile';
@@ -49,8 +50,8 @@ const App = () => {
   const {fetchRegularDriversStartShiftRequest} = useDriverShiftServiceHook();
   const options = {
     taskName: 'FetchRegularDriversTask',
-    taskTitle: 'Fetching Regular Drivers',
-    taskDesc: 'Fetching regular drivers at regular intervals',
+    taskTitle: 'Fetching Regular Employees',
+    taskDesc: 'Fetching regular employees at regular intervals',
     taskIcon: {
       name: 'ic_launcher',
       type: 'mipmap',
@@ -86,7 +87,7 @@ const App = () => {
             PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
             {
               title: 'Notification Permission',
-              message: 'Allow notifications for regular drivers updates?',
+              message: 'Allow notifications for regular employees updates?',
               buttonNeutral: 'Ask Me Later',
               buttonNegative: 'Cancel',
               buttonPositive: 'OK',
@@ -212,6 +213,7 @@ const App = () => {
     };
   }, []);
 
+
   useEffect(() => {
     const checkConnection = async () => {
       const state = await NetInfo.fetch();
@@ -313,6 +315,7 @@ const App = () => {
             </>
           ) : (
             <>
+              <Stack.Screen name="Splash" component={SplashScreen} />
               <Stack.Screen name="StartUp" component={StartUpScreen} />
 
               <Stack.Screen name="LoginScreen" component={LoginScreen} />
