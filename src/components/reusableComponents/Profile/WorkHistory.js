@@ -159,7 +159,9 @@ const ProfileInfoContainer = memo(props => (
             :{' '}
             {`${props.formatTime(breakItem.start_time)} - ${props.formatTime(
               breakItem.end_time,
-            )}   |   ${breakItem.duration_minutes}`}{ ' mins'}
+            )}   |   ${breakItem.duration_minutes > 60
+              ? (breakItem.duration_minutes / 60).toFixed(2) + ' hrs'
+              : breakItem.duration_minutes + ' min'}`}
           </Text>
         </View>
       </View>

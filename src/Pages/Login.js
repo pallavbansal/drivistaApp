@@ -51,8 +51,8 @@ const Login = ({navigation, route}) => {
     email: 'Email Id',
     buttonLabel: 'Login',
     password: 'Password',
-    authFooterText: type === 'Owner Login' ? 'Do not have an account?' : '',
-    linkText: type === 'Owner Login' ? 'Register' : '',
+    authFooterText: type === 'Manager Login' ? 'Do not have an account?' : '',
+    linkText: type === 'Manager Login' ? 'Register' : '',
     navigateScreen: 'StartShift',
     footerNavigateScreen: 'RegisterScreen',
     navigateBackScreen: 'LoginScreen',
@@ -150,7 +150,7 @@ const Login = ({navigation, route}) => {
           setPasswordVisible={setPasswordVisible}
         />
         <Space />
-        {type === 'Owner Login' ? (
+        {type === 'Manager Login' ? (
           <ForgetPasswordContainer {...labels} />
         ) : (
           <Text style={{color: 'gray', marginTop: 50, textAlign: 'center'}}>

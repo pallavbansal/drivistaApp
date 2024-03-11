@@ -12,6 +12,7 @@ import {Colors} from '../../constants/colors';
 import editImage from '../../storage/images/edit.png';
 import deleteImage from '../../storage/images/delete.png';
 import onlineStatus from '../../storage/images/onlineStatus.png';
+import breakStatus from '../../storage/images/breakStatus.png';
 
 
 const StatusCard = ({
@@ -43,6 +44,9 @@ const StatusCard = ({
           <View style={styles.actionSection}>
             {status === "started" && (
               <Image source={onlineStatus} style={[globalStyles.logoImage, {height: 13, width: 13}]} />
+            )}
+            {status === "break" && (
+              <Image source={breakStatus} style={[globalStyles.logoImage, {height: 13, width: 13}]} />
             )}
             {editShow === true && (
                <TouchableOpacity onPress={() => handleNavigation(id)}>

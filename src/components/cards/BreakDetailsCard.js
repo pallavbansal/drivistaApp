@@ -43,9 +43,14 @@ const BreakDetailsCard = ({
           <BreakInfoCard
             key={index}
             textName={`Break ${index + 1}`}
-            time={`${formatTime(breakItem.start_time)} - ${formatTime(
-              breakItem.end_time,
-            )}   |   ${breakItem.duration_minutes}mins`}
+            // time={`${formatTime(breakItem.start_time)} - ${formatTime(
+            //   breakItem.end_time,
+            // )}   |   ${(breakItem.duration_minutes/60).toFixed(2)} hrs`}
+            time={`${formatTime(breakItem.start_time)} - ${formatTime(breakItem.end_time)} | ${
+              breakItem.duration_minutes > 60
+                ? (breakItem.duration_minutes / 60).toFixed(2) + ' hrs'
+                : breakItem.duration_minutes + ' min'
+            }`}
           />
         ))}
       </View>

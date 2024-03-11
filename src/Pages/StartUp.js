@@ -16,7 +16,7 @@ import BackgroundContainer from '../components/reusableComponents/Container/Back
 const StartUp = ({navigation}) => {
   const navigationData = [
     {
-      label: 'Owner Sign-up',
+      label: 'Manager Sign-up',
       linearGradientColor1: '#A47089',
       linearGradientColor2: '#5A3C76',
       navigateScreen: 'RegisterScreen',
@@ -24,7 +24,7 @@ const StartUp = ({navigation}) => {
       bgImage:shade1
     },
     {
-      label: 'Owner Login',
+      label: 'Manager Login',
       linearGradientColor1: '#70A48E',
       linearGradientColor2: '#5A3C76',
       navigateScreen: 'LoginScreen',
