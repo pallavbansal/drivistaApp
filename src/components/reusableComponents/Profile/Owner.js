@@ -186,7 +186,9 @@ const ProfileInfoContainer = memo(props => (
       {props.editable ? (
         <TextInput
           keyboardType="numeric"
-          style={[styles.input, styles.text]}
+          color="black"
+            placeholderTextColor="black"
+          style={[styles.input2, styles.text]}
           value={props.mobileNumber}
           onChangeText={text => props.setMobileNumber(text)}
         />
@@ -196,8 +198,18 @@ const ProfileInfoContainer = memo(props => (
     </View>
     <View style={styles.wrapper}>
       {/* <Text style={[globalStyles.text, {fontWeight: 'bold'}]}>{'Email '}</Text> */}
-
+      {props.editable ? (
+        <TextInput
+          keyboardType="email"
+          color="black"
+          placeholderTextColor="black"
+          style={[styles.input2, styles.text]}
+          value={props.email}
+          onChangeText={text => props.setEmail(text)}
+        />
+      ) : (
       <Text style={styles.text}> {props.email}</Text>
+      )}
     </View>
   </View>
 ));
@@ -264,6 +276,17 @@ const styles = StyleSheet.create({
     padding: 5,
     width: '50%',
     marginHorizontal: 5,
+    marginVertical:10,
+    justifyContent: 'center',
+  },
+  input2: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+    padding: 5,
+    width: '85%',
+    marginHorizontal: 5,
+    marginVertical:10,
     justifyContent: 'center',
   },
   initialSection: {
