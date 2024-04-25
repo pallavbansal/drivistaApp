@@ -145,13 +145,13 @@ const PaymentDetails = ({navigation}) => {
 const PaymentDetailsContainer = memo(({total_price,subscription_cost_per_week,cost_per_driver}) => (
   <View style={styles.paymentDetailsContainer}>
     <View style={styles.totalAmountContainer}>
-      <Text
+      {/* <Text
         style={[
           globalStyles.text,
           {fontSize: Fonts.sizes.large, fontWeight: 'bold'},
         ]}>
         {'$'}{total_price}
-      </Text>
+      </Text> */}
     </View>
     <View style={styles.amountDetailsContainer}>
       <Text

@@ -31,7 +31,7 @@ const Home = ({navigation}) => {
     useState(false);
   const [isMessageModalVisible, setMessageModalVisible] = useState(false);
   const heading = `${subscription.total_drivers} Registered Employee.`;
-  const subheading = `You currently have ${subscription.total_drivers} registered employees, you can also add and delete more employers.`;
+  const subheading = `You currently have ${subscription.total_drivers} registered employees, you can also add and delete more employees.`;
   const props = {
     label: 'Forgot Password',
     heading:heading,
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     flex: 0.1,
   },
   header: {
-    marginVertical: 10,
+    marginVertical: 20,
     marginBottom: 20,
   },
   container: {

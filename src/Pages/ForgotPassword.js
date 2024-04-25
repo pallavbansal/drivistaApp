@@ -43,7 +43,7 @@ const ForgotPassword = ({navigation}) => {
     navigateScreen: 'OtpScreen',
     footerNavigateScreen: 'OtpScreen',
     navigateBackScreen: 'LoginScreen',
-    handleDirectNavigation: screenName => navigation.navigate(screenName),
+    handleDirectNavigation: screenName => navigation.pop(),
     handleNavigation: async screenName => {
       //   const response = await loginRequest();
       setLoading(true);

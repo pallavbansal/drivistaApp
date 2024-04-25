@@ -63,6 +63,7 @@ export const useDriverOnlineServiceHook = () => {
       first_name: firstName,
       last_name: lastName,
       mobile_number: mobileNumber,
+      email:email,
     };
     console.log('fetchProfileRequest:', params);
     try {
