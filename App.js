@@ -230,11 +230,12 @@ const App = () => {
   if (user.role === '2' && isAuth && current) {
     initialScreen =
       current.current_status === 'started' ? 'ActionShift' : 'StartShift';
-  } else if (user.role === '1' && isAuth) {
+  } else if (user.role == 1 && isAuth) {
+//    console.log('in app initialScreen:', isAuth ," ",user.role);
     initialScreen = 'OwnerHomeScreen';
   }
 
-  console.log('in app:', isAuth);
+  console.log('in app:', isAuth ," ",user.role);
   const currentStatus = current ? current.current_status : null;
 
   if (!isConnected) {
@@ -257,7 +258,7 @@ const App = () => {
           screenOptions={{
             headerShown: false,
           }}>
-          {isAuth && user.role === '2' ? (
+          {isAuth && user.role == 2 ? (
             <>
               {currentStatus === 'started' ? (
                 <>
@@ -273,7 +274,7 @@ const App = () => {
                 </>
               )}
             </>
-          ) : isAuth && user.role === '1' ? (
+          ) : isAuth && user.role == 1 ? (
             <>
               <Stack.Screen
                 name="OwnerHomeScreen"

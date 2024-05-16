@@ -130,7 +130,7 @@ export const useAuthServiceHook = () => {
     try {
       const response = await registerVerifyService(params);
       console.log('verify otp here:', response.data);
-      if (response.data.status_code === 1) {
+      if (response.data.status_code == 1) {
         dispatch(setUserData(response.data.data));
         return {result: 'success'};
       } else {
