@@ -49,7 +49,7 @@ const Otp = ({navigation, route}) => {
 
         try {
           if (response.result === 'success') {
-            // navigation.navigate(screenName);
+            navigation.navigate(screenName);
           } else if (response.result === 'failed') {
             console.log('otp screwn:', response.message);
             showAlert(response.message);
